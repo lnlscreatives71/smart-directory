@@ -6,11 +6,12 @@ import Link from 'next/link';
 export default async function BusinessDetail({
     params
 }: {
-    params: { slug: string }
+    params: { slug: string } | Promise<{ slug: string }>
 }) {
+    const { slug } = await params;
     let listings = [];
     try {
-        listings = await sql`SELECT * FROM listings WHERE slug = ${params.slug} LIMIT 1`;
+        listings = await sql`SELECT * FROM listings WHERE slug = ${slug} LIMIT 1`;
     } catch (err) {
         console.error(err);
         return <div>Database Error. Seed first.</div>;

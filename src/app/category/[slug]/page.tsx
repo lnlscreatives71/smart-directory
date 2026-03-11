@@ -6,9 +6,10 @@ import { notFound } from 'next/navigation';
 export default async function CategoryPage({
     params
 }: {
-    params: { slug: string }
+    params: { slug: string } | Promise<{ slug: string }>
 }) {
-    const categoryStr = params.slug.replace('-', ' ');
+    const { slug } = await params;
+    const categoryStr = slug.replace('-', ' ');
     const titleCaseCategory = categoryStr.charAt(0).toUpperCase() + categoryStr.slice(1);
     const q = `%${categoryStr}%`;
 

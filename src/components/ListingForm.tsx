@@ -175,7 +175,7 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                                     checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} />
                                 <div>
                                     <p className="font-semibold text-sm">Featured Profile</p>
-                                    <p className="text-xs text-slate-500">Adds visual "Featured" UI badges directly onto cards.</p>
+                                    <p className="text-xs text-slate-500">Adds visual &quot;Featured&quot; UI badges directly onto cards.</p>
                                 </div>
                             </label>
                             <label className="flex items-center space-x-3 p-4 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">

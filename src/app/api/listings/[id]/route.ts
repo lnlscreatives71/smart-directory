@@ -3,18 +3,21 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
     try {
-        const result = await sql`SELECT * FROM listings WHERE id = ${params.id} LIMIT 1`;
+        const { id } = await params;
+        const result = await sql`SELECT * FROM listings WHERE id = ${id} LIMIT 1`;
         if (result.length === 0) return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
         return NextResponse.json({ success: true, data: result[0] });
-    } catch (error: any) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const body = await request.json();
         const {
             name, slug, category, description, location_city, location_state, location_region,
@@ -40,21 +43,24 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         feature_flags = ${JSON.stringify(feature_flags || {})},
         contact_email = ${contact_email || null},
         updated_at = NOW()
-      WHERE id = ${params.id}
+      WHERE id = ${id}
       RETURNING *
     `;
 
         return NextResponse.json({ success: true, data: result[0] });
-    } catch (error: any) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
     try {
-        await sql`DELETE FROM listings WHERE id = ${params.id}`;
+        const { id } = await params;
+        await sql`DELETE FROM listings WHERE id = ${id}`;
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }
