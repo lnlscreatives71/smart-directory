@@ -9,31 +9,27 @@ export async function GET(request: Request) {
         const q = searchParams.get('q') || '';
         const plan = searchParams.get('plan') || '';
 
-        let query = `
+        const listings = await sql`
       SELECT l.*, p.name as plan_name, p.monthly_price as plan_price
       FROM listings l
       LEFT JOIN plans p ON l.plan_id = p.id
-      WHERE 1=1
+      WHERE (
+        ${q} = '' OR 
+        l.name ILIKE ${`%${q}%`} OR 
+        l.category ILIKE ${`%${q}%`} OR 
+        l.location_city ILIKE ${`%${q}%`}
+      )
+      AND (
+        ${plan} = '' OR 
+        p.name = ${plan}
+      )
+      ORDER BY l.created_at DESC
     `;
-        const values: any[] = [];
-
-        if (q) {
-            values.push(`%${q}%`);
-            query += ` AND (l.name ILIKE $${values.length} OR l.category ILIKE $${values.length} OR l.location_city ILIKE $${values.length})`;
-        }
-
-        if (plan) {
-            values.push(plan);
-            query += ` AND p.name = $${values.length}`;
-        }
-
-        query += ` ORDER BY l.created_at DESC`;
-
-        const listings = await sql(query, values);
         return NextResponse.json({ success: true, data: listings });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('API Error:', error);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }
 
@@ -63,8 +59,9 @@ export async function POST(request: Request) {
         }
 
         return NextResponse.json({ success: true, data: result[0] });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('API Error:', error);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }
