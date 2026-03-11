@@ -18,7 +18,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         const body = await request.json();
         const {
             name, slug, category, description, location_city, location_state, location_region,
-            lat, lng, services, rating, featured, plan_id, feature_flags
+            lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed
         } = body;
 
         const result = await sql`
@@ -35,8 +35,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         services = ${JSON.stringify(services || [])},
         rating = ${rating || 0},
         featured = ${featured || false},
+        claimed = ${claimed || false},
         plan_id = ${plan_id},
         feature_flags = ${JSON.stringify(feature_flags || {})},
+        contact_email = ${contact_email || null},
         updated_at = NOW()
       WHERE id = ${params.id}
       RETURNING *

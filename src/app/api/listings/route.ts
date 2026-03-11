@@ -42,18 +42,25 @@ export async function POST(request: Request) {
         const body = await request.json();
         const {
             name, slug, category, description, location_city, location_state, location_region,
-            lat, lng, services, rating, featured, plan_id, feature_flags
+            lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed
         } = body;
 
         const result = await sql`
       INSERT INTO listings (
         name, slug, category, description, location_city, location_state, location_region,
-        lat, lng, services, rating, featured, plan_id, feature_flags
+        lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed
       ) VALUES (
         ${name}, ${slug}, ${category}, ${description}, ${location_city}, ${location_state}, ${location_region},
-        ${lat || null}, ${lng || null}, ${JSON.stringify(services || [])}, ${rating || 0}, ${featured || false}, ${plan_id}, ${JSON.stringify(feature_flags || {})}
+        ${lat || null}, ${lng || null}, ${JSON.stringify(services || [])}, ${rating || 0}, ${featured || false}, ${plan_id}, ${JSON.stringify(feature_flags || {})}, ${contact_email || null}, ${claimed || false}
       ) RETURNING *
     `;
+
+        if (result.length > 0) {
+            await sql`
+            INSERT INTO outreach_campaigns (listing_id, status)
+            VALUES (${result[0].id}, 'pending')
+           `;
+        }
 
         return NextResponse.json({ success: true, data: result[0] });
     } catch (error: any) {

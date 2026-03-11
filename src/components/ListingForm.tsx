@@ -14,6 +14,7 @@ export default function ListingForm({ initialData = null }: { initialData?: List
 
     const [formData, setFormData] = useState({
         name: initialData?.name || '',
+        contact_email: initialData?.contact_email || '',
         slug: initialData?.slug || '',
         category: initialData?.category || '',
         description: initialData?.description || '',
@@ -117,6 +118,12 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                             <label className="block text-sm font-semibold mb-1.5">Business Name <span className="text-red-500">*</span></label>
                             <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
                                 value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Contact Email <span className="text-slate-500 text-xs">(for CRM Outreach)</span></label>
+                            <input type="email" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                                placeholder="owner@business.com"
+                                value={formData.contact_email} onChange={e => setFormData({ ...formData, contact_email: e.target.value })} />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">URL Slug <span className="text-red-500">*</span></label>

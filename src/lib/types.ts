@@ -39,4 +39,21 @@ export interface Listing {
     // Joined fields returned by API
     plan_name?: string;
     plan_price?: number;
+    contact_email?: string;
+}
+
+export interface OutreachCampaign {
+    id: number;
+    listing_id: number;
+    status: 'pending' | 'email_1_sent' | 'email_2_sent' | 'email_3_sent' | 'completed';
+    email_1_sent_at: Date | null;
+    email_2_sent_at: Date | null;
+    email_3_sent_at: Date | null;
+    created_at: Date;
+    updated_at: Date;
+
+    // joined fields
+    listing_name?: string;
+    listing_email?: string;
+    claimed?: boolean;
 }
