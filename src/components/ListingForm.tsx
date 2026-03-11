@@ -1,0 +1,264 @@
+'use client';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Plan, Listing } from '@/lib/types';
+import { CheckCircle2, AlertCircle, Save } from 'lucide-react';
+
+export default function ListingForm({ initialData = null }: { initialData?: Listing | null }) {
+    const router = useRouter();
+    const [plans, setPlans] = useState<Plan[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    // Toast State
+    const [toast, setToast] = useState<{ show: boolean, type: 'success' | 'error', message: string }>({ show: false, type: 'success', message: '' });
+
+    const [formData, setFormData] = useState({
+        name: initialData?.name || '',
+        slug: initialData?.slug || '',
+        category: initialData?.category || '',
+        description: initialData?.description || '',
+        location_city: initialData?.location_city || '',
+        location_state: initialData?.location_state || 'NC',
+        location_region: initialData?.location_region || 'Triangle',
+        services: initialData?.services?.join(', ') || '',
+        plan_id: initialData?.plan_id || 1,
+        featured: initialData?.featured || false,
+        claimed: initialData?.claimed || false,
+        feature_flags: initialData?.feature_flags || {
+            highlight_on_home: false,
+            priority_ranking: false,
+            ai_chat_widget: false,
+            booking_calendar: false,
+            extra_images: false
+        }
+    });
+
+    useEffect(() => {
+        fetch('/api/plans').then(res => res.json()).then(data => {
+            if (data.success) setPlans(data.data);
+        });
+    }, []);
+
+    const showToast = (type: 'success' | 'error', message: string) => {
+        setToast({ show: true, type, message });
+        setTimeout(() => setToast({ show: false, type: 'success', message: '' }), 4000);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+
+        // Basic Validation
+        if (!formData.name || !formData.slug || !formData.category || !formData.location_city || !formData.plan_id) {
+            showToast('error', 'Please fill out all required fields.');
+            setLoading(false);
+            return;
+        }
+
+        const payload = {
+            ...formData,
+            services: formData.services.split(',').map(s => s.trim()).filter(Boolean),
+        };
+
+        try {
+            const url = initialData ? `/api/listings/${initialData.id}` : '/api/listings';
+            const method = initialData ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                showToast('success', initialData ? 'Listing updated successfully!' : 'Listing created successfully!');
+                if (!initialData) {
+                    router.push('/dashboard/listings');
+                } else {
+                    router.refresh();
+                }
+            } else {
+                const err = await res.json();
+                showToast('error', err.error || 'Failed to save listing. Please try again.');
+            }
+        } catch (err) {
+            showToast('error', 'Network error occurred.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const selectedPlan = plans.find(p => p.id === Number(formData.plan_id));
+
+    // Layout helper
+    const SectionHeading = ({ title, subtitle }: { title: string, subtitle?: string }) => (
+        <div className="mb-6 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
+            {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
+        </div>
+    );
+
+    return (
+        <div className="relative">
+            {/* Toast Notification */}
+            {toast.show && (
+                <div className={`fixed top-4 right-4 z-50 flex items-center p-4 pr-6 rounded-lg shadow-lg border animate-in slide-in-from-top-2 fade-in ${toast.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/50 dark:border-emerald-900 dark:text-emerald-400' : 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400'}`}>
+                    {toast.type === 'success' ? <CheckCircle2 className="w-5 h-5 mr-3" /> : <AlertCircle className="w-5 h-5 mr-3" />}
+                    <p className="font-medium text-sm">{toast.message}</p>
+                </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-12">
+                {/* Section 1: Business Info */}
+                <section className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <SectionHeading title="Business Info" subtitle="Core details used for directory listing and search." />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Business Name <span className="text-red-500">*</span></label>
+                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                                value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">URL Slug <span className="text-red-500">*</span></label>
+                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                                value={formData.slug} onChange={e => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })} />
+                            <p className="text-xs text-slate-500 mt-1.5">Used in the URL: /biz/<b>{formData.slug || 'your-slug'}</b></p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Category <span className="text-red-500">*</span></label>
+                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                                placeholder="e.g. Restaurants, Med Spas"
+                                value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-semibold mb-1.5">City <span className="text-red-500">*</span></label>
+                                <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                                    value={formData.location_city} onChange={e => setFormData({ ...formData, location_city: e.target.value })} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold mb-1.5">State</label>
+                                <input type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                                    value={formData.location_state} onChange={e => setFormData({ ...formData, location_state: e.target.value })} />
+                            </div>
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-semibold mb-1.5">Description <span className="text-red-500">*</span></label>
+                            <textarea required rows={4} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none resize-y"
+                                value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
+                        </div>
+                    </div>
+                </section>
+
+                {/* Section 2: Services & Network */}
+                <section className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <SectionHeading title="Services & Validation" subtitle="Tags and status badges displayed on the profile." />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Services (comma separated keywords)</label>
+                            <textarea rows={3} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none resize-y placeholder:text-slate-400"
+                                placeholder="e.g. WiFi, Free Parking, Real Estate Consulting"
+                                value={formData.services} onChange={e => setFormData({ ...formData, services: e.target.value })} />
+                            <p className="text-xs text-slate-500 mt-2">These act as filter parameters on the public directory.</p>
+                        </div>
+
+                        <div className="space-y-4 pt-2">
+                            <label className="flex items-center space-x-3 p-4 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                                <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                    checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} />
+                                <div>
+                                    <p className="font-semibold text-sm">Featured Profile</p>
+                                    <p className="text-xs text-slate-500">Adds visual "Featured" UI badges directly onto cards.</p>
+                                </div>
+                            </label>
+                            <label className="flex items-center space-x-3 p-4 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                                <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                    checked={formData.claimed} onChange={e => setFormData({ ...formData, claimed: e.target.checked })} />
+                                <div>
+                                    <p className="font-semibold text-sm">Owner Claimed</p>
+                                    <p className="text-xs text-slate-500">Marks the business as officially verified by the owner.</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Section 3: Plan & Features */}
+                <section className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm border-t-4 border-t-emerald-500">
+                    <SectionHeading title="Plan & Feature Flags" subtitle="Control monetization tier and explicit UI gating for this business." />
+
+                    <div className="mb-8">
+                        <label className="block text-sm font-semibold mb-2">Assigned Subscription Plan <span className="text-red-500">*</span></label>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <select
+                                className="w-full sm:w-1/3 p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500/50 outline-none font-medium"
+                                value={formData.plan_id}
+                                onChange={e => setFormData({ ...formData, plan_id: Number(e.target.value) })}
+                            >
+                                {plans.map(p => <option key={p.id} value={p.id}>{p.name.toUpperCase()}</option>)}
+                            </select>
+
+                            {selectedPlan && (
+                                <div className="flex-1 flex items-center p-3 bg-emerald-50 border border-emerald-100 dark:bg-emerald-950/20 dark:border-emerald-900/50 rounded-lg">
+                                    <span className="font-bold text-lg text-emerald-700 dark:text-emerald-400 mr-3">${selectedPlan.monthly_price}/mo</span>
+                                    <span className="text-sm text-emerald-800 dark:text-emerald-200/70 leading-tight">{selectedPlan.description}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <h4 className="font-bold mb-3 border-b border-slate-100 dark:border-slate-800 pb-2">Component Rendering Overrides</h4>
+                    <p className="text-sm text-slate-500 mb-5">Manually enable or disable premium features specifically for this profile regardless of base plan limitations.</p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {Object.keys(formData.feature_flags).map(flagKey => (
+                            <label key={flagKey} className={`flex items-start space-x-3 p-4 border rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition ${formData.feature_flags[flagKey] ? 'border-emerald-500/50 bg-emerald-50/30' : 'border-slate-200 dark:border-slate-800'}`}>
+                                <input
+                                    type="checkbox"
+                                    className="mt-0.5 w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-800"
+                                    checked={!!formData.feature_flags[flagKey]}
+                                    onChange={e => {
+                                        setFormData({
+                                            ...formData,
+                                            feature_flags: {
+                                                ...formData.feature_flags,
+                                                [flagKey]: e.target.checked
+                                            }
+                                        });
+                                    }}
+                                />
+                                <div>
+                                    <span className="text-sm font-bold text-slate-900 dark:text-white block capitalize">{flagKey.replace(/_/g, ' ')}</span>
+                                    <span className="text-[11px] text-slate-500 font-medium">
+                                        {flagKey === 'ai_chat_widget' && 'Renders real-time GenAI lead bot.'}
+                                        {flagKey === 'highlight_on_home' && 'Displays as verified premium card.'}
+                                        {flagKey === 'priority_ranking' && 'Ranks at top of ILIKE queries.'}
+                                        {flagKey === 'booking_calendar' && 'Shows Calendly/Booking block.'}
+                                        {flagKey === 'extra_images' && 'Unlocks rich media carousel.'}
+                                    </span>
+                                </div>
+                            </label>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Global Save Action Row */}
+                <div className="sticky bottom-6 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-2xl flex justify-between items-center">
+                    <p className="text-sm text-slate-500 hidden sm:block px-2">Ensure all required <span className="text-red-500">*</span> fields are valid.</p>
+                    <div className="flex gap-3 w-full sm:w-auto">
+                        <button type="button" onClick={() => router.back()} className="px-6 py-2.5 rounded-lg font-medium border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition w-full sm:w-auto">
+                            Cancel
+                        </button>
+                        <button type="submit" disabled={loading} className="px-8 py-2.5 rounded-lg font-bold bg-blue-600 hover:bg-blue-700 text-white shadow hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-full sm:w-auto">
+                            {loading ? (
+                                <span className="flex items-center"><svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...</span>
+                            ) : (
+                                <span className="flex items-center"><Save className="w-4 h-4 mr-2" /> {initialData ? 'Save Changes' : 'Create Listing'}</span>
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    );
+}
