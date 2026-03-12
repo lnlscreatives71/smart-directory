@@ -5,7 +5,7 @@ import { Check, Shield, Zap } from 'lucide-react';
 export default async function PlansPage() {
     let plans: Plan[] = [];
     try {
-        plans = await sql<Plan[]>`SELECT * FROM plans ORDER BY monthly_price ASC`;
+        plans = (await sql`SELECT * FROM plans ORDER BY monthly_price ASC`) as Plan[];
     } catch (err) {
         console.error('Failed to load plans', err);
     }
