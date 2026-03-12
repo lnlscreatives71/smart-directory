@@ -1,80 +1,122 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --primary: #1E40AF;
-  /* Blue 800 */
-  --primary-light: #3B82F6;
-  /* Blue 500 */
-  --accent: #10B981;
-  /* Emerald 500 */
-  --accent-hover: #059669;
-  /* Emerald 600 */
-  --text-main: #111827;
-  /* Gray 900 */
-  --text-muted: #4B5563;
-  /* Gray 600 */
-  --bg-main: #F3F4F6;
-  /* Gray 100 */
+  --red: #EF4444;
+  --red-hover: #DC2626;
+  --navy: #0F172A;
+  --bg-page: #F1F3F8;
   --bg-card: #FFFFFF;
+  --text-main: #1F2937;
+  --text-muted: #6B7280;
+  --border: #E5E7EB;
+  --radius-card: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: #3B82F6;
-    --primary-light: #60A5FA;
-    --accent: #10B981;
-    --accent-hover: #34D399;
-    --text-main: #F9FAFB;
-    --text-muted: #9CA3AF;
-    --bg-main: #0F172A;
-    /* Slate 900 for dark mode */
-    --bg-card: #1E293B;
-    /* Slate 800 */
-  }
-}
+* { box-sizing: border-box; }
 
 body {
-  background-color: var(--bg-main);
+  background-color: var(--bg-page);
   color: var(--text-main);
-  font-family: Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Gradient Hero Background */
-.hero-gradient {
-  background: linear-gradient(135deg, rgba(30, 64, 175, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%),
-    url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop') center/cover;
+/* ── Hero ─────────────────────────────────────── */
+.hero-bg {
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.62) 100%),
+    url('https://images.unsplash.com/photo-1565791380713-1756b9a05343?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+  min-height: 380px;
 }
 
-/* Card animations */
-.directory-card {
-  transition: all 0.3s ease;
-  background-color: var(--bg-card);
-  border: 1px solid rgba(156, 163, 175, 0.2);
+/* ── Cards ────────────────────────────────────── */
+.biz-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  border: 1px solid var(--border);
 }
-
-.directory-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  border-color: var(--primary-light);
+.biz-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
 }
-
-.btn-primary {
-  background-color: var(--primary);
+.biz-card-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+}
+.badge-category {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  background: white;
+}
+.badge-featured {
+  background: var(--red);
   color: white;
-  transition: all 0.2s;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 6px;
 }
 
-.btn-primary:hover {
-  background-color: var(--primary-light);
+/* ── Category tiles ───────────────────────────── */
+.cat-tile {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: white;
+  border: 1px solid var(--border);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
+.cat-tile:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.10); }
 
-.btn-accent {
-  background-color: var(--accent);
+/* ── Buttons ──────────────────────────────────── */
+.btn-red {
+  background: var(--red);
   color: white;
-  transition: all 0.2s;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: background 0.15s;
 }
+.btn-red:hover { background: var(--red-hover); }
 
-.btn-accent:hover {
-  background-color: var(--accent-hover);
+.btn-outline {
+  border: 1.5px solid #D1D5DB;
+  background: white;
+  color: var(--text-main);
+  font-weight: 600;
+  border-radius: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
+.btn-outline:hover { border-color: #9CA3AF; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+/* ── Icon action row ──────────────────────────── */
+.action-icon {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #9CA3AF;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+.action-icon:hover { background: #F3F4F6; color: var(--text-main); }
+
+/* ── Section title ────────────────────────────── */
+.section-title { font-size: 1.6rem; font-weight: 800; color: var(--text-main); }
+.section-see-all {
+  font-size: 0.875rem; font-weight: 600; color: var(--text-main);
+  display: flex; align-items: center; gap: 4px;
+  text-decoration: none;
+}
+.section-see-all:hover { color: var(--red); }
