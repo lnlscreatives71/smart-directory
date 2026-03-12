@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db';
+import { Listing } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import { Star, MapPin, CheckCircle, ExternalLink, Calendar, MessageSquare, Tag } from 'lucide-react';
 import Link from 'next/link';
@@ -9,9 +10,9 @@ export default async function BusinessDetail({
     params: { slug: string } | Promise<{ slug: string }>
 }) {
     const { slug } = await params;
-    let listings = [];
+    let listings: Listing[] = [];
     try {
-        listings = await sql`SELECT * FROM listings WHERE slug = ${slug} LIMIT 1`;
+        listings = (await sql`SELECT * FROM listings WHERE slug = ${slug} LIMIT 1`) as Listing[];
     } catch (err) {
         console.error(err);
         return <div>Database Error. Seed first.</div>;

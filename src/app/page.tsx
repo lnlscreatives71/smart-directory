@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db';
+import { Listing } from '@/lib/types';
 import Link from 'next/link';
 import { Search, Star, MapPin, CheckCircle } from 'lucide-react';
 
@@ -9,22 +10,22 @@ export default async function Home({
 }) {
   const query = searchParams.q || '';
 
-  let listings = [];
+  let listings: Listing[] = [];
   try {
     if (query) {
       const q = `%${query}%`;
-      listings = await sql`
+      listings = (await sql`
         SELECT * FROM listings 
         WHERE name ILIKE ${q} OR category ILIKE ${q} OR location_city ILIKE ${q} OR description ILIKE ${q}
         ORDER BY CASE WHEN feature_flags->>'priority_ranking' = 'true' THEN 1 ELSE 0 END DESC, rating DESC 
         LIMIT 12
-      `;
+      `) as Listing[];
     } else {
-      listings = await sql`
+      listings = (await sql`
         SELECT * FROM listings 
         ORDER BY CASE WHEN feature_flags->>'priority_ranking' = 'true' THEN 1 ELSE 0 END DESC, rating DESC 
         LIMIT 12
-      `;
+      `) as Listing[];
     }
   } catch (err) {
     console.error('Failed to fetch listings. Please seed the database first.', err);

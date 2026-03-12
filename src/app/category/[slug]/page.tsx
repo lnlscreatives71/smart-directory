@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db';
+import { Listing } from '@/lib/types';
 import Link from 'next/link';
 import { Star, MapPin, Search } from 'lucide-react';
 import { notFound } from 'next/navigation';
@@ -13,13 +14,13 @@ export default async function CategoryPage({
     const titleCaseCategory = categoryStr.charAt(0).toUpperCase() + categoryStr.slice(1);
     const q = `%${categoryStr}%`;
 
-    let listings = [];
+    let listings: Listing[] = [];
     try {
-        listings = await sql`
+        listings = (await sql`
       SELECT * FROM listings 
       WHERE category ILIKE ${q}
       ORDER BY featured DESC, rating DESC 
-    `;
+    `) as Listing[];
     } catch (err) {
         console.error(err);
         return <div>Database Error. Seed first.</div>;
