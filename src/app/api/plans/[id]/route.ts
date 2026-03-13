@@ -3,9 +3,10 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = parseInt(params.id);
+        const { id: idStr } = await params;
+        const id = parseInt(idStr);
         const body = await request.json();
         const { name, monthly_price, annual_price, description, limits, active, is_default } = body;
 
@@ -34,9 +35,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     }
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = parseInt(params.id);
+        const { id: idStr } = await params;
+        const id = parseInt(idStr);
         // Prevent deleting if listings use this plan
         const inUse = await sql`SELECT COUNT(*) as count FROM listings WHERE plan_id = ${id}`;
         if (parseInt(inUse[0].count as string) > 0) {

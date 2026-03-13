@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
         const result = await sql`SELECT * FROM listings WHERE id = ${id} LIMIT 1`;
@@ -15,7 +15,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
         const body = await request.json();
@@ -55,7 +55,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // Lightweight partial update — for active toggle, claimed, featured etc.
-export async function PATCH(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
         const body = await request.json();
@@ -78,7 +78,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id } = await params;
         await sql`DELETE FROM listings WHERE id = ${id}`;
