@@ -54,6 +54,30 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 }
 
+// Lightweight partial update — for active toggle, claimed, featured etc.
+export async function PATCH(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
+    try {
+        const { id } = await params;
+        const body = await request.json();
+
+        if ('active' in body) {
+            await sql`UPDATE listings SET featured = ${body.active}, updated_at = NOW() WHERE id = ${id}`;
+        }
+        if ('claimed' in body) {
+            await sql`UPDATE listings SET claimed = ${body.claimed}, updated_at = NOW() WHERE id = ${id}`;
+        }
+        if ('plan_id' in body) {
+            await sql`UPDATE listings SET plan_id = ${body.plan_id}, updated_at = NOW() WHERE id = ${id}`;
+        }
+
+        const updated = await sql`SELECT * FROM listings WHERE id = ${id} LIMIT 1`;
+        return NextResponse.json({ success: true, data: updated[0] });
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
+    }
+}
+
 export async function DELETE(request: Request, { params }: { params: { id: string } | Promise<{ id: string }> }) {
     try {
         const { id } = await params;
