@@ -2,8 +2,15 @@ export interface Plan {
     id: number;
     name: string;
     monthly_price: number;
+    annual_price: number;
     description: string;
-    limits: any;
+    limits: {
+        images?: number;
+        categories?: number;
+        [key: string]: number | undefined;
+    };
+    active: boolean;
+    is_default: boolean;
 }
 
 export interface FeatureFlags {

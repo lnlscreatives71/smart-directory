@@ -1,89 +1,383 @@
-import { sql } from '@/lib/db';
-import { Plan } from '@/lib/types';
-import { Check, Shield, Zap } from 'lucide-react';
+'use client';
 
-export default async function PlansPage() {
-    let plans: Plan[] = [];
-    try {
-        plans = (await sql`SELECT * FROM plans ORDER BY monthly_price ASC`) as Plan[];
-    } catch (err) {
-        console.error('Failed to load plans', err);
-    }
+import { useState, useEffect, useCallback } from 'react';
+import { Plus, Pencil, Trash2, Loader2, X, Check, AlertTriangle, CheckCircle2, ChevronRight } from 'lucide-react';
+import { Plan } from '@/lib/types';
+
+const EMPTY_PLAN: Omit<Plan, 'id'> = {
+    name: '',
+    monthly_price: 0,
+    annual_price: 0,
+    description: '',
+    limits: { images: 1, categories: 1 },
+    active: true,
+    is_default: false,
+};
+
+function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+    return (
+        <button
+            onClick={() => onChange(!checked)}
+            className={`relative w-12 h-6 rounded-full transition-colors focus:outline-none ${checked ? 'bg-blue-600' : 'bg-gray-200'}`}
+        >
+            <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${checked ? 'translate-x-7' : 'translate-x-1'}`} />
+        </button>
+    );
+}
+
+function PlanModal({
+    plan, onClose, onSave,
+}: {
+    plan: Partial<Plan> | null;
+    onClose: () => void;
+    onSave: (data: Omit<Plan, 'id'>) => Promise<void>;
+}) {
+    const isNew = !plan?.id;
+    const [form, setForm] = useState<Omit<Plan, 'id'>>({
+        ...EMPTY_PLAN,
+        ...(plan ? { ...plan } : {}),
+    } as Omit<Plan, 'id'>);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
+
+    const set = (key: keyof Omit<Plan, 'id'>, value: unknown) => setForm(p => ({ ...p, [key]: value }));
+
+    const submit = async () => {
+        if (!form.name.trim()) { setError('Plan name is required.'); return; }
+        setSaving(true);
+        setError('');
+        try {
+            await onSave(form);
+            onClose();
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Failed to save plan.');
+        } finally { setSaving(false); }
+    };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Plans & Tiers</h1>
-                    <p className="text-sm text-slate-500 mt-1">Manage monetization hierarchies and directory subscription plans.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    <h2 className="text-lg font-bold text-gray-900">{isNew ? 'Add New Plan' : `Edit Plan — ${plan?.name}`}</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition"><X size={20} /></button>
                 </div>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-5 rounded-lg font-medium shadow-sm transition-colors text-sm flex items-center">
-                    <span className="mr-1">+</span> Add New Plan
-                </button>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-                {plans.map((plan, index) => {
-                    const isPro = plan.name.toLowerCase() === 'pro';
-                    const isPremium = plan.name.toLowerCase() === 'premium';
-
-                    return (
-                        <div key={plan.id} className={`relative bg-white dark:bg-slate-900 rounded-2xl border ${isPro ? 'border-purple-500 ring-2 ring-purple-500/20 shadow-xl shadow-purple-900/10' : isPremium ? 'border-blue-500 shadow-lg shadow-blue-900/5' : 'border-slate-200 dark:border-slate-800 shadow-sm'} p-8 flex flex-col`}>
-
-                            {isPro && (
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-purple-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm">
-                                    Top Tier
-                                </div>
-                            )}
-
-                            <div className="mb-6 border-b border-slate-100 dark:border-slate-800/50 pb-6">
-                                <h3 className={`text-xl font-bold capitalize mb-2 ${isPro ? 'text-purple-600 dark:text-purple-400' : isPremium ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-300'}`}>
-                                    {plan.name}
-                                </h3>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-extrabold text-slate-900 dark:text-white">${plan.monthly_price}</span>
-                                    <span className="text-slate-500 font-medium">/mo</span>
-                                </div>
-                                <p className="text-sm text-slate-500 mt-4 leading-relaxed">
-                                    {plan.description}
-                                </p>
-                            </div>
-
-                            <div className="flex-1">
-                                <p className="text-sm font-semibold text-slate-900 dark:text-slate-200 mb-4 uppercase tracking-wide">Included Limits</p>
-                                <ul className="space-y-3 mb-8">
-                                    <li className="flex items-start">
-                                        <Check size={18} className="text-emerald-500 mr-2 shrink-0 mt-0.5" />
-                                        <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">{plan.limits?.images || 1} Media Images</span>
-                                    </li>
-                                    <li className="flex items-start">
-                                        <Check size={18} className="text-emerald-500 mr-2 shrink-0 mt-0.5" />
-                                        <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">Up to {plan.limits?.categories || 1} Categories</span>
-                                    </li>
-                                    {isPremium || isPro ? (
-                                        <li className="flex items-start">
-                                            <Zap size={18} className="text-amber-500 mr-2 shrink-0 mt-0.5" />
-                                            <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">AI Web Chat Widget</span>
-                                        </li>
-                                    ) : null}
-                                    {isPro && (
-                                        <li className="flex items-start">
-                                            <Shield size={18} className="text-purple-500 mr-2 shrink-0 mt-0.5" />
-                                            <span className="text-sm text-slate-600 dark:text-slate-400 font-medium">Global Exact Match Priority</span>
-                                        </li>
-                                    )}
-                                </ul>
-                            </div>
-
-                            <div className="mt-auto">
-                                <button className={`w-full py-3 rounded-xl font-semibold transition ${isPro ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-md' : isPremium ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}>
-                                    Edit Plan
-                                </button>
-                            </div>
+                {/* Body */}
+                <div className="px-6 py-5 space-y-4">
+                    {error && (
+                        <div className="flex items-center gap-2 bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl border border-red-100">
+                            <AlertTriangle size={15} /> {error}
                         </div>
-                    );
-                })}
+                    )}
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Plan Name *</label>
+                        <input value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g. Community Listing"
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Monthly Price ($)</label>
+                            <input type="number" min="0" step="0.01" value={form.monthly_price}
+                                onChange={e => set('monthly_price', parseFloat(e.target.value) || 0)}
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Annual Price ($)</label>
+                            <input type="number" min="0" step="0.01" value={form.annual_price}
+                                onChange={e => set('annual_price', parseFloat(e.target.value) || 0)}
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+                        <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={2} placeholder="Describe what this plan includes..."
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Max Images</label>
+                            <input type="number" min="1" value={form.limits?.images ?? 1}
+                                onChange={e => set('limits', { ...form.limits, images: parseInt(e.target.value) || 1 })}
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Max Categories</label>
+                            <input type="number" min="1" value={form.limits?.categories ?? 1}
+                                onChange={e => set('limits', { ...form.limits, categories: parseInt(e.target.value) || 1 })}
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-6 pt-1">
+                        <label className="flex items-center gap-2.5 cursor-pointer">
+                            <Toggle checked={form.active} onChange={v => set('active', v)} />
+                            <span className="text-sm font-medium text-gray-700">Active</span>
+                        </label>
+                        <label className="flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" checked={form.is_default} onChange={e => set('is_default', e.target.checked)}
+                                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-400" />
+                            <span className="text-sm font-medium text-gray-700">Set as Default</span>
+                        </label>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+                    <button onClick={onClose} className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:text-gray-800 transition">Cancel</button>
+                    <button onClick={submit} disabled={saving}
+                        className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-bold transition shadow-sm disabled:opacity-60">
+                        {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
+                        {saving ? 'Saving...' : isNew ? 'ADD PLAN' : 'Save Changes'}
+                    </button>
+                </div>
             </div>
+        </div>
+    );
+}
+
+export default function PlansPage() {
+    const [plans, setPlans] = useState<Plan[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [modal, setModal] = useState<{ open: boolean; plan: Partial<Plan> | null }>({ open: false, plan: null });
+    const [deleteConfirm, setDeleteConfirm] = useState<Plan | null>(null);
+    const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
+    const [tab, setTab] = useState<'pricing' | 'advanced'>('pricing');
+
+    const showToast = (type: 'success' | 'error', msg: string) => {
+        setToast({ type, msg }); setTimeout(() => setToast(null), 3500);
+    };
+
+    const fetchPlans = useCallback(async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/plans');
+            const data = await res.json();
+            if (data.success) setPlans(data.data as Plan[]);
+        } catch { showToast('error', 'Failed to load plans.'); }
+        finally { setLoading(false); }
+    }, []);
+
+    useEffect(() => { fetchPlans(); }, [fetchPlans]);
+
+    const handleSave = async (formData: Omit<Plan, 'id'>) => {
+        const isEdit = !!modal.plan?.id;
+        const url = isEdit ? `/api/plans/${modal.plan!.id}` : '/api/plans';
+        const method = isEdit ? 'PATCH' : 'POST';
+
+        const res = await fetch(url, {
+            method, headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Save failed');
+        showToast('success', isEdit ? 'Plan updated.' : 'Plan created.');
+        fetchPlans();
+    };
+
+    const toggleActive = async (plan: Plan) => {
+        await fetch(`/api/plans/${plan.id}`, {
+            method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ active: !plan.active }),
+        });
+        setPlans(prev => prev.map(p => p.id === plan.id ? { ...p, active: !p.active } : p));
+    };
+
+    const handleDelete = async (plan: Plan) => {
+        const res = await fetch(`/api/plans/${plan.id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (!data.success) { showToast('error', data.error || 'Delete failed.'); return; }
+        showToast('success', `"${plan.name}" deleted.`);
+        setDeleteConfirm(null);
+        fetchPlans();
+    };
+
+    const fmt = (n: number) => n === 0 ? '$0' : `$${n}`;
+
+    return (
+        <div className="max-w-5xl mx-auto space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        Plans
+                        <span className="w-5 h-5 rounded-full bg-gray-200 dark:bg-slate-700 text-gray-500 text-xs flex items-center justify-center font-bold cursor-help" title="Manage subscription plans for business listings">?</span>
+                    </h1>
+                    <p className="text-sm text-slate-500 mt-1">Manage directory subscription tiers. Listings on paid plans get premium placement and outreach priority.</p>
+                </div>
+            </div>
+
+            {/* Toast */}
+            {toast && (
+                <div className={`flex items-center gap-3 p-4 rounded-xl text-sm font-medium ${toast.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                    {toast.type === 'success' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
+                    {toast.msg}
+                </div>
+            )}
+
+            {/* Card */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                {/* Tabs + Add button */}
+                <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 px-1">
+                    <div className="flex">
+                        {[{ id: 'pricing', label: 'Price and Planning' }, { id: 'advanced', label: 'Advanced Settings' }].map(t => (
+                            <button key={t.id} onClick={() => setTab(t.id as 'pricing' | 'advanced')}
+                                className={`px-6 py-4 text-sm font-semibold border-b-2 transition-colors ${tab === t.id ? 'text-gray-900 border-gray-900 dark:text-white dark:border-white' : 'text-gray-400 border-transparent hover:text-gray-600'}`}>
+                                {t.label}
+                            </button>
+                        ))}
+                    </div>
+                    <div className="pr-4">
+                        <button onClick={() => setModal({ open: true, plan: null })}
+                            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white rounded-xl text-sm font-bold transition shadow-sm">
+                            <Plus size={15} /> ADD PLAN
+                        </button>
+                    </div>
+                </div>
+
+                {/* Pricing Tab */}
+                {tab === 'pricing' && (
+                    <div className="overflow-x-auto">
+                        {loading ? (
+                            <div className="flex items-center justify-center py-16">
+                                <Loader2 size={24} className="animate-spin text-blue-500" />
+                            </div>
+                        ) : (
+                            <table className="w-full text-left text-sm">
+                                <thead className="border-b border-gray-100 dark:border-slate-800">
+                                    <tr className="text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wide">
+                                        <th className="px-6 py-4 font-semibold w-8"></th>
+                                        <th className="px-6 py-4 font-semibold">Plan Name</th>
+                                        <th className="px-6 py-4 font-semibold text-center">Monthly</th>
+                                        <th className="px-6 py-4 font-semibold text-center">Annual</th>
+                                        <th className="px-6 py-4 font-semibold text-center">Active</th>
+                                        <th className="px-6 py-4 font-semibold text-center">Edit</th>
+                                        <th className="px-6 py-4 font-semibold text-center">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
+                                    {plans.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={7} className="px-6 py-14 text-center text-gray-400">
+                                                No plans yet. Click ADD PLAN to create your first tier.
+                                            </td>
+                                        </tr>
+                                    ) : plans.map(plan => (
+                                        <tr key={plan.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition-colors">
+                                            <td className="px-6 py-4">
+                                                <span className="text-gray-300 cursor-grab text-lg leading-none">⠿</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="font-semibold text-gray-900 dark:text-white">{plan.name}</span>
+                                                    {plan.is_default && (
+                                                        <span className="text-xs bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-slate-400 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                                                            DEFAULT
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                {plan.description && (
+                                                    <p className="text-xs text-gray-400 mt-0.5 truncate max-w-xs">{plan.description}</p>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 text-center font-semibold text-gray-700 dark:text-slate-300">
+                                                {fmt(plan.monthly_price)}
+                                            </td>
+                                            <td className="px-6 py-4 text-center font-semibold text-gray-700 dark:text-slate-300">
+                                                {fmt(plan.annual_price ?? 0)}
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <div className="flex justify-center">
+                                                    <Toggle checked={plan.active ?? true} onChange={() => toggleActive(plan)} />
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <button onClick={() => setModal({ open: true, plan })}
+                                                    className="text-gray-400 hover:text-blue-600 transition p-1.5 rounded-lg hover:bg-blue-50">
+                                                    <Pencil size={15} />
+                                                </button>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <button onClick={() => setDeleteConfirm(plan)}
+                                                    className="text-gray-400 hover:text-red-500 transition p-1.5 rounded-lg hover:bg-red-50">
+                                                    <Trash2 size={15} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+
+                        {/* Pagination */}
+                        {plans.length > 0 && (
+                            <div className="flex items-center justify-center gap-2 py-4 border-t border-gray-50 dark:border-slate-800">
+                                <button className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition">← Previous</button>
+                                <span className="w-8 h-8 flex items-center justify-center bg-slate-900 text-white rounded-lg text-sm font-bold">1</span>
+                                <button className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 font-medium transition">Next →</button>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Advanced Tab */}
+                {tab === 'advanced' && (
+                    <div className="p-8 space-y-5">
+                        <p className="text-sm text-gray-500 mb-6">Configure advanced billing and upgrade settings for your directory plans.</p>
+                        {plans.map(plan => (
+                            <div key={plan.id} className="flex items-center justify-between p-5 rounded-xl border border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/40 transition">
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-2.5 h-2.5 rounded-full ${plan.active ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                                    <div>
+                                        <p className="font-semibold text-gray-900 dark:text-white text-sm">{plan.name}</p>
+                                        <p className="text-xs text-gray-400">{plan.limits?.images ?? 1} images · {plan.limits?.categories ?? 1} categories</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-slate-400">
+                                    <div className="text-right">
+                                        <p className="font-bold">{fmt(plan.monthly_price)}<span className="font-normal text-gray-400">/mo</span></p>
+                                        <p className="text-xs text-gray-400">{fmt(plan.annual_price ?? 0)}/yr</p>
+                                    </div>
+                                    <button onClick={() => setModal({ open: true, plan })}
+                                        className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition">
+                                        Edit <ChevronRight size={12} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Add/Edit Modal */}
+            {modal.open && (
+                <PlanModal
+                    plan={modal.plan}
+                    onClose={() => setModal({ open: false, plan: null })}
+                    onSave={handleSave}
+                />
+            )}
+
+            {/* Delete Confirm */}
+            {deleteConfirm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+                        <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                            <Trash2 size={22} className="text-red-500" />
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-2">Delete &ldquo;{deleteConfirm.name}&rdquo;?</h3>
+                        <p className="text-sm text-gray-500 mb-6">This cannot be undone. Listings on this plan must be reassigned first.</p>
+                        <div className="flex gap-3">
+                            <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition">Cancel</button>
+                            <button onClick={() => handleDelete(deleteConfirm)} className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold transition">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
