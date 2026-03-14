@@ -81,12 +81,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center text-center opacity-60 hover:opacity-100 transition-opacity cursor-default">
                         <span className="text-[9px] font-bold tracking-widest uppercase text-slate-400 mb-1.5">Powered By</span>
                         <div className="flex items-center gap-2">
-                             <div className="h-5 w-5 rounded overflow-hidden bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-[10px] text-white font-black shadow-md border border-white/10">
-                                LNL
-                             </div>
-                             <span className="text-xs font-black tracking-wide text-slate-600 dark:text-slate-300">
-                                LNL Ai AGENCY
-                             </span>
+                             <img src="/ai-agency-logo-no-background.png" alt="LNL Ai Agency" className="h-6 w-auto object-contain" />
                         </div>
                     </div>
                 </div>
