@@ -96,21 +96,11 @@ export default function PricingClient({
                     </div>
 
                     <button 
-                        onClick={async () => {
-                            try {
-                                const res = await fetch('/api/checkout', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ plan: 'premium', billing })
-                                });
-                                const data = await res.json();
-                                if (data.url) {
-                                    window.location.href = data.url;
-                                } else {
-                                    alert('Checkout failed: ' + data.error);
-                                }
-                            } catch (err) {
-                                alert('An error occurred during checkout.');
+                        onClick={() => {
+                            if (billing === 'annually') {
+                                window.location.href = 'https://buy.stripe.com/8x200bgN8eGC6y4403dAk01';
+                            } else {
+                                window.location.href = 'https://buy.stripe.com/9B68wH8gC5623lS547dAk00';
                             }
                         }}
                         className="w-full sm:w-auto px-8 py-3 bg-[#e53e3e] hover:bg-red-600 text-white font-bold rounded shadow-md transition-colors text-sm uppercase tracking-wide">
