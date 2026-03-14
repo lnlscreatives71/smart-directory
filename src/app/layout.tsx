@@ -5,6 +5,7 @@ import { Phone, UserCircle, ArrowUpRight } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 import { verifyLicense } from '@/lib/license';
 import { getSiteSettings } from '@/lib/settings';
+import { Providers } from '@/components/Providers';
 
 export async function generateMetadata() {
   const settings = await getSiteSettings();
@@ -90,7 +91,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body>
-        <div className="min-h-screen flex flex-col">
+        <Providers>
+          <div className="min-h-screen flex flex-col">
 
           {/* ── HEADER ───────────────────────────────────── */}
           <header className="fixed top-0 z-50 w-full glass-nav">
@@ -190,6 +192,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </footer>
         </div>
+      </Providers>
       </body>
     </html>
   );

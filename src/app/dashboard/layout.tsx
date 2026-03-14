@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase } from 'lucide-react';
+import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const { data: session } = useSession();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const navItems = [
@@ -59,15 +61,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
 
                 <div className="p-4 border-t border-slate-100 dark:border-slate-800 shrink-0">
-                    <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary-600 to-secondary-400 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                            A
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary-600 to-secondary-400 flex items-center justify-center text-white font-bold text-sm shadow-sm uppercase shrink-0">
+                            {session?.user?.name?.[0] || 'A'}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">Administrator</p>
-                            <p className="text-xs text-slate-500 truncate">admin@triangle.hub</p>
+                            <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{session?.user?.name || 'Administrator'}</p>
+                            <p className="text-xs text-slate-500 truncate">{session?.user?.email || 'admin@triangle.hub'}</p>
                         </div>
                     </div>
+                    <button 
+                        onClick={() => signOut({ callbackUrl: '/' })}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+                    >
+                        <LogOut size={16} /> Sign Out
+                    </button>
                 </div>
             </aside>
 
