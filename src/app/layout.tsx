@@ -141,11 +141,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </p>
               </div>
               <div>
-                <h4 className="font-bold text-sm uppercase tracking-wider text-slate-400 mb-4">Contact</h4>
+                <h4 className="font-bold text-sm uppercase tracking-wider text-slate-400 mb-4">Contact & Support</h4>
                 <ul className="space-y-2 text-sm text-slate-300">
                   <li>📞 (919) 555-0100</li>
                   <li>📍 Raleigh, NC 27601</li>
-                  <li>✉️ hello@trianglelocalhub.com</li>
+                  <li><Link href="/support" className="hover:text-white transition">Support Center</Link></li>
                 </ul>
               </div>
               <div>
@@ -158,8 +158,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </ul>
               </div>
             </div>
-            <div className="border-t border-slate-800 py-5 text-center text-xs text-slate-500">
-              &copy; {new Date().getFullYear()} Triangle Local Hub. All rights reserved.
+            <div className="border-t border-slate-800 py-5 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 max-w-7xl mx-auto px-6">
+              <span>&copy; {new Date().getFullYear()} Triangle Local Hub. All rights reserved.</span>
+              <div className="flex items-center gap-4 mt-2 md:mt-0">
+                <Link href="/terms" className="hover:text-white transition">Terms of Service</Link>
+                <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
+              </div>
             </div>
           </footer>
         </div>
