@@ -1,8 +1,9 @@
 import { sql } from '@/lib/db';
-import { Listing, Event, Blog } from '@/lib/types';
+import { Listing, Event, Blog, News, Job } from '@/lib/types';
 import { notFound } from 'next/navigation';
-import { Star, MapPin, CheckCircle, ExternalLink, Calendar, MessageSquare, Tag } from 'lucide-react';
+import { Star, MapPin, CheckCircle, ExternalLink, Calendar, MessageSquare, Briefcase, FileText } from 'lucide-react';
 import Link from 'next/link';
+import BookingWidget from '@/components/BookingWidget';
 
 export default async function BusinessDetail({
     params
@@ -13,12 +14,17 @@ export default async function BusinessDetail({
     let listings: Listing[] = [];
     let events: Event[] = [];
     let blogs: Blog[] = [];
+    let news: News[] = [];
+    let jobs: Job[] = [];
     
     try {
         listings = (await sql`SELECT * FROM listings WHERE slug = ${slug} LIMIT 1`) as Listing[];
         if (listings.length > 0) {
-            events = (await sql`SELECT * FROM events WHERE listing_id = ${listings[0].id} ORDER BY date DESC LIMIT 3`) as Event[];
-            blogs = (await sql`SELECT * FROM blogs WHERE listing_id = ${listings[0].id} AND published = true ORDER BY created_at DESC LIMIT 3`) as Blog[];
+            const bizId = listings[0].id;
+            events = (await sql`SELECT * FROM events WHERE listing_id = ${bizId} ORDER BY date DESC LIMIT 4`) as Event[];
+            blogs = (await sql`SELECT * FROM blogs WHERE listing_id = ${bizId} AND published = true ORDER BY created_at DESC LIMIT 3`) as Blog[];
+            news = (await sql`SELECT * FROM news WHERE listing_id = ${bizId} ORDER BY created_at DESC LIMIT 3`) as News[];
+            jobs = (await sql`SELECT * FROM jobs WHERE listing_id = ${bizId} AND active = true ORDER BY created_at DESC LIMIT 3`) as Job[];
         }
     } catch (err) {
         console.error(err);
@@ -96,19 +102,60 @@ export default async function BusinessDetail({
                         </div>
                     </div>
 
-                    {/* Blogs Section */}
-                    {blogs.length > 0 && (
+                    {/* Blogs & News Feed Section */}
+                    {(blogs.length > 0 || news.length > 0) && (
                         <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm mt-8">
-                            <h2 className="text-2xl font-bold mb-6">Latest News & Updates</h2>
+                            <h2 className="text-2xl font-bold mb-6">Latest Updates & News</h2>
                             <div className="grid gap-6">
+                                {news.map(item => (
+                                    <div key={`news-${item.id}`} className="border-l-4 border-blue-600 bg-blue-50/50 dark:bg-slate-700/50 p-5 rounded-r-xl shadow-sm">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <FileText size={16} className="text-blue-600" />
+                                            <span className="text-sm font-bold text-blue-600 tracking-wide uppercase">News</span>
+                                            <span className="text-xs text-gray-500 ml-auto">{new Date(item.created_at).toLocaleDateString()}</span>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
+                                        <p className="text-gray-700 dark:text-gray-300">{item.content}</p>
+                                    </div>
+                                ))}
+
                                 {blogs.map(blog => (
-                                    <div key={blog.id} className="border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                                    <div key={`blog-${blog.id}`} className="border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
                                         <div className="p-5">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Star size={16} className="text-emerald-500" />
+                                                <span className="text-sm font-bold text-emerald-600 tracking-wide uppercase">Blog</span>
+                                            </div>
                                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{blog.title}</h3>
                                             <p className="text-sm text-gray-500 mb-4">{new Date(blog.created_at).toLocaleDateString()}</p>
                                             <p className="text-gray-700 dark:text-gray-300 mb-4">{blog.excerpt || blog.content.substring(0, 150) + '...'}</p>
                                             <button className="text-blue-600 font-bold hover:underline">Read Full Post &rarr;</button>
                                         </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Job Postings */}
+                    {jobs.length > 0 && (
+                        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm mt-8">
+                            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><Briefcase className="text-blue-600" /> Current Openings</h2>
+                            <div className="grid gap-4">
+                                {jobs.map(job => (
+                                    <div key={job.id} className="border border-slate-200 dark:border-slate-700 rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{job.title}</h3>
+                                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
+                                                <span className="font-semibold text-gray-700 dark:text-gray-300">{job.employment_type}</span>
+                                                {job.location && <span>• {job.location}</span>}
+                                                {job.salary_range && <span className="text-emerald-600 font-medium">• {job.salary_range}</span>}
+                                            </div>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">{job.description}</p>
+                                        </div>
+                                        <button className="shrink-0 bg-blue-50 text-blue-700 font-bold px-6 py-2.5 rounded-lg hover:bg-blue-100 transition">
+                                            Apply Now &rarr;
+                                        </button>
                                     </div>
                                 ))}
                             </div>
@@ -139,13 +186,7 @@ export default async function BusinessDetail({
 
                     {/* Premium Features Gates */}
                     {flags.booking_calendar && (
-                        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-6 text-white shadow-lg">
-                            <h3 className="text-xl font-bold mb-2 flex items-center"><Calendar className="mr-2" /> Book Appointment</h3>
-                            <p className="text-emerald-100 mb-4 text-sm">Schedule a time instantly. No waiting required.</p>
-                            <button className="bg-white text-emerald-700 font-bold py-2 px-4 rounded-lg w-full hover:bg-emerald-50 transition">
-                                View Availability
-                            </button>
-                        </div>
+                        <BookingWidget listingId={biz.id} />
                     )}
 
                     {flags.ai_chat_widget && (

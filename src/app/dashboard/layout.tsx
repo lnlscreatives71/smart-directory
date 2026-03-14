@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload } from 'lucide-react';
+import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase } from 'lucide-react';
 import { useState } from 'react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -15,8 +15,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         { name: 'Import Businesses', href: '/dashboard/import', icon: Upload },
         { name: 'Plans', href: '/dashboard/plans', icon: CreditCard },
         { name: 'Leads & CRM', href: '/dashboard/leads', icon: Users },
+        { name: 'Bookings', href: '/dashboard/bookings', icon: Calendar },
         { name: 'Events', href: '/dashboard/events', icon: Bell },
         { name: 'Blogs', href: '/dashboard/blogs', icon: LayoutDashboard },
+        { name: 'News', href: '/dashboard/news', icon: FileText },
+        { name: 'Jobs', href: '/dashboard/jobs', icon: Briefcase },
         { name: 'Branding & Settings', href: '/dashboard/settings', icon: Settings },
     ];
 
