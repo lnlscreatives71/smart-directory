@@ -47,9 +47,9 @@ export async function POST(request: Request) {
 
         for (const row of rows) {
             // Validation
-            if (!row.name || !row.category) {
+            if (!row.name) {
                 results.skipped++;
-                results.errors.push(`Skipped row: missing name or category (row: "${row.name || 'unknown'}")`);
+                results.errors.push(`Skipped row: missing name (row: "${row.name || 'unknown'}")`);
                 continue;
             }
 
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
                     ) VALUES (
                         ${row.name},
                         ${slug},
-                        ${row.category},
+                        ${row.category || 'Other'},
                         ${row.description || `${row.name} is a trusted local business serving the Triangle area.`},
                         ${row.location_city || 'Raleigh'},
                         ${row.location_state || 'NC'},

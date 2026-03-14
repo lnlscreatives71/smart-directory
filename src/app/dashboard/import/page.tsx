@@ -23,8 +23,8 @@ interface ImportResult {
     listings: { name: string; slug: string; hadEmail: boolean }[];
 }
 
-const REQUIRED_COLUMNS = ['name', 'category'];
-const OPTIONAL_COLUMNS = ['description', 'location_city', 'location_state', 'contact_email', 'rating'];
+const REQUIRED_COLUMNS = ['name'];
+const OPTIONAL_COLUMNS = ['category', 'description', 'location_city', 'location_state', 'contact_email', 'rating'];
 const ALL_COLUMNS = [...REQUIRED_COLUMNS, ...OPTIONAL_COLUMNS];
 
 const SAMPLE_CSV = `name,category,description,location_city,location_state,contact_email,rating
