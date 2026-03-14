@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Star, MapPin, CheckCircle, ExternalLink, Calendar, MessageSquare, Briefcase, FileText } from 'lucide-react';
 import Link from 'next/link';
 import BookingWidget from '@/components/BookingWidget';
+import AIChatWidget from '@/components/AIChatWidget';
 
 export default async function BusinessDetail({
     params
@@ -258,6 +259,11 @@ export default async function BusinessDetail({
                     )}
                 </div>
             </div>
+
+            {/* Premium AI Chat Widget (Floating on bottom right) */}
+            {flags.ai_chat_widget && (
+                <AIChatWidget businessName={biz.name} />
+            )}
         </div>
     );
 }
