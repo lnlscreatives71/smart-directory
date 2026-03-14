@@ -9,7 +9,10 @@ interface ParsedRow {
     description?: string;
     location_city?: string;
     location_state?: string;
+    contact_name?: string;
     contact_email?: string;
+    phone?: string;
+    website?: string;
     rating?: string;
     [key: string]: string | undefined;
 }
@@ -24,14 +27,14 @@ interface ImportResult {
 }
 
 const REQUIRED_COLUMNS = ['name'];
-const OPTIONAL_COLUMNS = ['category', 'description', 'location_city', 'location_state', 'contact_email', 'rating'];
+const OPTIONAL_COLUMNS = ['category', 'description', 'location_city', 'location_state', 'contact_name', 'contact_email', 'phone', 'website', 'rating'];
 const ALL_COLUMNS = [...REQUIRED_COLUMNS, ...OPTIONAL_COLUMNS];
 
-const SAMPLE_CSV = `name,category,description,location_city,location_state,contact_email,rating
-Triangle Wellness Spa,Med Spa,Premier wellness and med spa services in Raleigh,Raleigh,NC,hello@trianglewellness.com,4.8
-Oak City Plumbing,Plumbing,Residential and commercial plumbing services,Durham,NC,info@oakcityplumbing.com,4.5
-Cary Pet Grooming,Pet Services,Full-service grooming for dogs and cats,Cary,NC,,4.6
-Triangle HVAC Pros,HVAC,Heating and cooling installation and repair,Raleigh,NC,service@trianglehvac.com,4.7`;
+const SAMPLE_CSV = `name,category,description,location_city,location_state,contact_name,contact_email,phone,website,rating
+Triangle Wellness Spa,Med Spa,Premier wellness and med spa services in Raleigh,Raleigh,NC,Jane Doe,hello@trianglewellness.com,919-555-0100,https://trianglewellness.com,4.8
+Oak City Plumbing,Plumbing,Residential and commercial plumbing services,Durham,NC,John Smith,info@oakcityplumbing.com,919-555-0101,,4.5
+Cary Pet Grooming,Pet Services,Full-service grooming for dogs and cats,Cary,NC,,,,4.6
+Triangle HVAC Pros,HVAC,Heating and cooling installation and repair,Raleigh,NC,,service@trianglehvac.com,,https://trianglehvac.com,4.7`;
 
 function parseCSV(text: string): ParsedRow[] {
     const lines = text.trim().split('\n').map(l => l.replace(/\r/g, ''));

@@ -38,7 +38,17 @@ export default async function BusinessDetail({
 
     const biz = listings[0];
     const flags = biz.feature_flags || {};
-    const services = biz.services || [];
+    let services = [];
+    try {
+        if (Array.isArray(biz.services)) {
+            services = biz.services;
+        } else if (typeof biz.services === 'string') {
+            const parsed = JSON.parse(biz.services);
+            services = Array.isArray(parsed) ? parsed : [];
+        }
+    } catch {
+        services = [];
+    }
 
     return (
         <div className="min-h-screen pb-20 text-white">

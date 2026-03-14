@@ -38,7 +38,8 @@ export async function POST(request: Request) {
         const body = await request.json();
         const {
             name, slug, category, description, location_city, location_state, location_region,
-            lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed
+            lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed,
+            contact_name, phone, website
         } = body;
         let { image_url } = body;
 
@@ -61,10 +62,12 @@ export async function POST(request: Request) {
         const result = await sql`
       INSERT INTO listings (
         name, slug, category, description, location_city, location_state, location_region,
-        lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed, image_url
+        lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed, image_url,
+        contact_name, phone, website
       ) VALUES (
         ${name}, ${slug}, ${category}, ${description}, ${location_city}, ${location_state}, ${location_region},
-        ${lat || null}, ${lng || null}, ${JSON.stringify(services || [])}, ${rating || 0}, ${featured || false}, ${plan_id}, ${JSON.stringify(feature_flags || {})}, ${contact_email || null}, ${claimed || false}, ${image_url || null}
+        ${lat || null}, ${lng || null}, ${JSON.stringify(services || [])}, ${rating || 0}, ${featured || false}, ${plan_id}, ${JSON.stringify(feature_flags || {})}, ${contact_email || null}, ${claimed || false}, ${image_url || null},
+        ${contact_name || null}, ${phone || null}, ${website || null}
       ) RETURNING *
     `;
 

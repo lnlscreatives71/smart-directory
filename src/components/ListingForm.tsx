@@ -17,7 +17,10 @@ export default function ListingForm({ initialData = null }: { initialData?: List
 
     const [formData, setFormData] = useState({
         name: initialData?.name || '',
+        contact_name: initialData?.contact_name || '',
         contact_email: initialData?.contact_email || '',
+        phone: initialData?.phone || '',
+        website: initialData?.website || '',
         slug: initialData?.slug || '',
         category: initialData?.category || '',
         description: initialData?.description || '',
@@ -146,6 +149,24 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                             <label className="block text-sm font-semibold mb-1.5">Business Name <span className="text-red-500">*</span></label>
                             <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
                                 value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Website</label>
+                            <input type="url" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
+                                placeholder="https://example.com"
+                                value={formData.website} onChange={e => setFormData({ ...formData, website: e.target.value })} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Phone Number</label>
+                            <input type="tel" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
+                                placeholder="(555) 123-4567"
+                                value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Contact Name <span className="text-slate-500 text-xs">(Owner/Manager)</span></label>
+                            <input type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
+                                placeholder="Jane Doe"
+                                value={formData.contact_name} onChange={e => setFormData({ ...formData, contact_name: e.target.value })} />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">Contact Email <span className="text-slate-500 text-xs">(for CRM Outreach)</span></label>

@@ -48,7 +48,10 @@ export interface Listing {
     // Joined fields returned by API
     plan_name?: string;
     plan_price?: number;
+    contact_name?: string;
     contact_email?: string;
+    phone?: string;
+    website?: string;
 }
 
 export interface OutreachCampaign {

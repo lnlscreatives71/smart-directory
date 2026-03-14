@@ -12,6 +12,7 @@ interface BusinessRow {
     contact_email?: string;
     website?: string;
     phone?: string;
+    contact_name?: string;
     rating?: string;
 }
 
@@ -87,7 +88,8 @@ export async function POST(request: Request) {
                         name, slug, category, description,
                         location_city, location_state, location_region,
                         lat, lng, services, rating, featured, claimed,
-                        plan_id, feature_flags, contact_email
+                        plan_id, feature_flags, contact_email,
+                        contact_name, phone, website
                     ) VALUES (
                         ${row.name},
                         ${slug},
@@ -98,13 +100,16 @@ export async function POST(request: Request) {
                         ${'Triangle'},
                         ${35.7796},
                         ${-78.6382},
-                        ${'{}'},
+                        ${'[]'},
                         ${safeRating},
                         ${false},
                         ${false},
                         ${freePlanId},
                         ${'{}'},
-                        ${row.contact_email || null}
+                        ${row.contact_email || null},
+                        ${row.contact_name || null},
+                        ${row.phone || null},
+                        ${row.website || null}
                     )
                     RETURNING id
                 `;

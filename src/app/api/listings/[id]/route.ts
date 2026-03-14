@@ -21,7 +21,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const body = await request.json();
         const {
             name, slug, category, description, location_city, location_state, location_region,
-            lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed
+            lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed,
+            contact_name, phone, website
         } = body;
 
         const result = await sql`
@@ -42,6 +43,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         plan_id = ${plan_id},
         feature_flags = ${JSON.stringify(feature_flags || {})},
         contact_email = ${contact_email || null},
+        contact_name = ${contact_name || null},
+        phone = ${phone || null},
+        website = ${website || null},
         updated_at = NOW()
       WHERE id = ${id}
       RETURNING *
