@@ -96,11 +96,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
           {/* ── HEADER ───────────────────────────────────── */}
           <header className="fixed top-0 z-50 w-full glass-nav">
-            <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+            <div className="max-w-7xl mx-auto px-4 h-24 flex items-center justify-between gap-4">
 
               {/* Logo */}
               <Link href="/" className="flex items-center shrink-0">
-                <img src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" className="h-[46px] w-auto drop-shadow-lg" />
+                <img src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" className="h-[75px] w-auto drop-shadow-lg" />
               </Link>
 
               {/* Category Nav */}
