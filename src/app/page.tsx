@@ -58,9 +58,9 @@ export default async function Home({
           <img 
             src="/trianglehubcityimage.png" 
             alt={settings.hero.bannerTitle} 
-            className="w-full h-full object-cover opacity-25 mix-blend-screen"
+            className="w-full h-full object-cover opacity-40 mix-blend-lighten"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/50 via-transparent to-[#0B0F19]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/30 via-transparent to-[#0B0F19]/90"></div>
         </div>
 
         <div className="hero-glow z-0"></div>
