@@ -5,7 +5,7 @@ import { Plan } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
-import { ALL_FEATURES } from '../dashboard/plans/page';
+import { ALL_FEATURES } from '@/lib/constants';
 
 export default async function PricingPage() {
     let plans: Plan[] = [];
