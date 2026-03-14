@@ -48,6 +48,7 @@ function PlanModal({
     } as Omit<Plan, 'id'>);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
+    const [customFeature, setCustomFeature] = useState('');
 
     const set = (key: keyof Omit<Plan, 'id'>, value: unknown) => setForm(p => ({ ...p, [key]: value }));
 
@@ -136,15 +137,15 @@ function PlanModal({
 
                     <div className="pt-4 border-t border-gray-100">
                         <label className="block text-sm font-semibold text-gray-700 mb-3">Included Features</label>
-                        <div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto px-1">
-                            {ALL_FEATURES.map(feat => {
+                        <div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto px-1 mb-3">
+                            {Array.from(new Set([...ALL_FEATURES, ...(form.features || [])])).map(feat => {
                                 const included = (form.features || []).includes(feat);
                                 return (
                                     <label key={feat} className="flex items-center gap-2 cursor-pointer group">
                                         <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${included ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-300 bg-white group-hover:border-primary-400'}`}>
                                             {included && <Check size={12} strokeWidth={3} />}
                                         </div>
-                                        <span className="text-sm text-gray-700 group-hover:text-gray-900 truncate">{feat}</span>
+                                        <span className="text-sm text-gray-700 group-hover:text-gray-900 truncate" title={feat}>{feat}</span>
                                         <input 
                                             type="checkbox" 
                                             className="hidden" 
@@ -157,6 +158,38 @@ function PlanModal({
                                     </label>
                                 );
                             })}
+                        </div>
+                        
+                        {/* Add custom feature */}
+                        <div className="flex items-center gap-2 px-1">
+                            <input 
+                                type="text" 
+                                value={customFeature}
+                                onChange={e => setCustomFeature(e.target.value)}
+                                placeholder="Add custom feature (e.g. SEO Audit)..."
+                                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
+                                onKeyDown={e => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        if (customFeature.trim() && !(form.features || []).includes(customFeature.trim())) {
+                                            set('features', [...(form.features || []), customFeature.trim()]);
+                                            setCustomFeature('');
+                                        }
+                                    }
+                                }}
+                            />
+                            <button 
+                                type="button"
+                                onClick={() => {
+                                    if (customFeature.trim() && !(form.features || []).includes(customFeature.trim())) {
+                                        set('features', [...(form.features || []), customFeature.trim()]);
+                                        setCustomFeature('');
+                                    }
+                                }}
+                                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-lg transition"
+                            >
+                                Add
+                            </button>
                         </div>
                     </div>
                 </div>

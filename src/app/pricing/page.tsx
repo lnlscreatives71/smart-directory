@@ -19,21 +19,29 @@ export default async function PricingPage() {
     const premiumPlan = plans.find(p => p.monthly_price > 0 && p.monthly_price !== 0) || plans[0];
 
     const freeFeaturesFallback = ['Address', 'Phone', 'Website', 'Profile Image', 'Cover Image', 'Email Address', 'Business Description', 'Teams'];
-    const FREE_FEATURES = ALL_FEATURES.map(name => ({
+    const premiumFeaturesFallback = ALL_FEATURES;
+    
+    // Combine standard features and any custom features the user added this session
+    const combinedFeatures = Array.from(new Set([
+        ...ALL_FEATURES,
+        ...(freePlan?.features || []),
+        ...(premiumPlan?.features || [])
+    ]));
+
+    const FREE_FEATURES = combinedFeatures.map(name => ({
         name,
         included: (freePlan?.features && freePlan.features.length > 0) 
             ? freePlan.features.includes(name) 
             : freeFeaturesFallback.includes(name)
     }));
 
-    // Premium gets all features by default as a fallback
-    const premiumFeaturesFallback = ALL_FEATURES;
-    const PREMIUM_FEATURES = ALL_FEATURES.map(name => ({
+    const PREMIUM_FEATURES = combinedFeatures.map(name => ({
         name,
         included: (premiumPlan?.features && premiumPlan.features.length > 0) 
             ? premiumPlan.features.includes(name) 
             : premiumFeaturesFallback.includes(name)
     }));
+
 
     return (
         <div className="bg-[#f0f2f5] min-h-[calc(100vh-64px)] py-16 px-4">
