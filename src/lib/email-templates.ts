@@ -303,3 +303,39 @@ export function getEmailSet(variant: ABVariant) {
         }
     };
 }
+
+// ─── Welcome / Claim Confirmation Email ───────────────────────────────────────
+export function welcomeEmail(businessName: string, contactName: string | null, slug: string): string {
+    const profileUrl = `${SITE_URL}/biz/${slug}`;
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Welcome to The Triangle Hub! 🎉</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            You've successfully claimed <strong style="color:#fff;">${businessName}</strong> on 
+            <strong style="color:#6366f1;">The Triangle Hub</strong>. Your listing now shows a 
+            verified badge and you're live to local customers searching in the Triangle.
+        </p>
+
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid #10b981;">
+            <p style="margin:0 0 4px;color:#6ee7b7;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">✅ Your profile is live at</p>
+            <a href="${profileUrl}" style="color:#6366f1;font-size:16px;font-weight:700;text-decoration:none;">${profileUrl}</a>
+        </div>
+
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">What you can do next:</p>
+        <ul style="color:#cbd5e1;font-size:14px;line-height:2.2;padding-left:20px;margin:0 0 24px;">
+            <li>📷 Add photos to your profile</li>
+            <li>📝 Update your description and services</li>
+            <li>📅 Enable booking so customers can schedule directly</li>
+            <li>🔝 Upgrade to Premium for 4x more visibility</li>
+        </ul>
+
+        ${ctaButton('View My Live Profile →', profileUrl)}
+        <br/><br/>
+        <a href="${UPGRADE_URL}" style="display:inline-block;padding:12px 28px;background:transparent;color:#6366f1;font-weight:600;font-size:14px;text-decoration:none;border-radius:10px;border:2px solid #6366f1;">
+            Explore Premium Features
+        </a>
+
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">Questions? Reply to this email and we'll help you out.</p>
+    `);
+}
