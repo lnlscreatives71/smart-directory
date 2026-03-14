@@ -67,38 +67,40 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="min-h-screen flex flex-col">
 
           {/* ── HEADER ───────────────────────────────────── */}
-          <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
+          <header className="fixed top-0 z-50 w-full glass-nav">
             <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
 
               {/* Logo */}
               <Link href="/" className="flex items-center shrink-0">
-                <span className="text-lg font-extrabold text-gray-900 tracking-tight leading-tight">
-                  Triangle<br />
-                  <span className="text-red-500">Local Hub</span>
+                <span className="text-xl font-extrabold text-white tracking-tight leading-tight flex items-center gap-1">
+                  <div className="w-8 h-8 rounded bg-gradient-to-tr from-blue-600 to-emerald-400 shadow-lg shadow-blue-500/20 mr-1" />
+                  Triangle<span className="text-blue-500">Hub</span>
                 </span>
               </Link>
 
               {/* Category Nav */}
-              <nav className="hidden lg:flex items-center gap-2 flex-1 justify-center">
+              <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center">
                 {CATEGORIES.map((cat) => (
                   <div key={cat.label} className="relative group">
                     <Link
                       href={cat.href}
-                      className="flex items-center gap-1 px-3 py-2 text-[15px] font-medium text-slate-700 hover:text-blue-600 transition-colors whitespace-nowrap"
+                      className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all whitespace-nowrap tracking-wide"
                     >
                       {cat.label}
                       {cat.subcategories.length > 0 && (
-                        <svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="m19 9-7 7-7-7" /></svg>
+                        <svg className="w-4 h-4 opacity-50 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="m19 9-7 7-7-7" /></svg>
                       )}
                     </Link>
-                    {/* Dropdown */}
+                    {/* Dropdown glass block */}
                     {cat.subcategories.length > 0 && (
-                      <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                        {cat.subcategories.map((sub) => (
-                          <Link key={sub.href} href={sub.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-medium transition-colors">
-                            {sub.label}
-                          </Link>
-                        ))}
+                      <div className="absolute top-10 left-0 pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 translate-y-2 group-hover:translate-y-0">
+                        <div className="glass rounded-xl shadow-2xl p-2 flex flex-col gap-1 border border-slate-700/50">
+                          {cat.subcategories.map((sub) => (
+                            <Link key={sub.href} href={sub.href} className="flex px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors">
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -106,29 +108,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </nav>
 
               {/* Right actions */}
-              <div className="flex items-center gap-4 shrink-0">
-                <a href="tel:6193799701" className="hidden xl:flex items-center gap-1.5 text-[15px] font-medium text-slate-700 hover:text-blue-600 transition-colors">
-                  <Phone size={15} />
-                  6193799701
+              <div className="flex items-center gap-5 shrink-0">
+                <a href="tel:6193799701" className="hidden xl:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
+                  <Phone size={16} className="text-blue-400" />
+                  (619) 379-9701
                 </a>
-                <Link href="/dashboard" className="hidden md:flex items-center gap-1.5 text-[15px] font-medium text-slate-700 hover:text-blue-600 transition-colors">
-                  <UserCircle size={17} />
-                  Login / Register
+                <Link href="/dashboard" className="hidden md:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
+                  <UserCircle size={18} />
+                  Login
                 </Link>
-                <Link href="/pricing" className="flex items-center gap-1.5 btn-outline px-4 py-2 text-sm whitespace-nowrap rounded-md border-slate-300">
-                  Add New Business <ArrowUpRight size={15} />
+                <Link href="/pricing" className="btn-primary flex items-center gap-1.5 px-5 py-2.5 text-sm whitespace-nowrap">
+                  Add Business <ArrowUpRight size={16} />
                 </Link>
               </div>
             </div>
           </header>
 
           {/* ── BODY ─────────────────────────────────────── */}
-          <main className="flex-1">
+          <main className="flex-1 pt-16">
             {children}
           </main>
 
           {/* ── FOOTER ───────────────────────────────────── */}
-          <footer style={{ backgroundColor: '#0F172A' }} className="text-white mt-0">
+          <footer className="glass-nav relative z-10">
             <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
               <div>
                 <div className="text-xl font-extrabold mb-3">

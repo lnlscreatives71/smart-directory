@@ -40,7 +40,7 @@ export default async function BusinessDetail({
     const services = biz.services || [];
 
     return (
-        <div className="bg-slate-50 dark:bg-slate-900 min-h-screen pb-20">
+        <div className="min-h-screen pb-20 text-white">
             {/* Header Banner */}
             <div className="h-[300px] w-full bg-slate-800 relative">
                 <img
@@ -81,14 +81,14 @@ export default async function BusinessDetail({
             <div className="container mx-auto px-4 mt-8 flex flex-col lg:flex-row gap-8">
                 {/* Main Content Area */}
                 <div className="flex-1 space-y-8">
-                    <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm">
-                        <h2 className="text-2xl font-bold mb-4">About the Business</h2>
-                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg mb-8">
+                    <div className="glass rounded-2xl p-8 shadow-sm">
+                        <h2 className="text-2xl font-bold mb-4 text-white">About the Business</h2>
+                        <p className="text-slate-300 leading-relaxed text-lg mb-8">
                             {biz.description}
                         </p>
                         
-                        <h2 className="text-2xl font-bold mb-4">Location & Directions</h2>
-                        <div className="w-full h-80 rounded-xl overflow-hidden shadow-sm relative border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
+                        <h2 className="text-2xl font-bold mb-4 text-white">Location & Directions</h2>
+                        <div className="w-full h-80 rounded-xl overflow-hidden shadow-sm relative border border-white/10 bg-slate-900/50 flex items-center justify-center">
                             {process.env.NEXT_PUBLIC_MAPS_API_KEY ? (
                                 <iframe
                                     width="100%"
@@ -110,8 +110,8 @@ export default async function BusinessDetail({
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm">
-                        <h2 className="text-2xl font-bold mb-4">Services Offered</h2>
+                    <div className="glass rounded-2xl p-8 shadow-sm">
+                        <h2 className="text-2xl font-bold mb-4 text-white">Services Offered</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {services.length === 0 ? (
                                 <p className="text-gray-500">No services listed yet.</p>
@@ -126,31 +126,31 @@ export default async function BusinessDetail({
 
                     {/* Blogs & News Feed Section */}
                     {(blogs.length > 0 || news.length > 0) && (
-                        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm mt-8">
-                            <h2 className="text-2xl font-bold mb-6">Latest Updates & News</h2>
+                        <div className="glass rounded-2xl p-8 shadow-sm mt-8">
+                            <h2 className="text-2xl font-bold mb-6 text-white">Latest Updates & News</h2>
                             <div className="grid gap-6">
                                 {news.map(item => (
-                                    <div key={`news-${item.id}`} className="border-l-4 border-blue-600 bg-blue-50/50 dark:bg-slate-700/50 p-5 rounded-r-xl shadow-sm">
+                                    <div key={`news-${item.id}`} className="border-l-4 border-blue-500 bg-blue-500/10 p-5 rounded-r-xl shadow-sm">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <FileText size={16} className="text-blue-600" />
-                                            <span className="text-sm font-bold text-blue-600 tracking-wide uppercase">News</span>
-                                            <span className="text-xs text-gray-500 ml-auto">{new Date(item.created_at).toLocaleDateString()}</span>
+                                            <FileText size={16} className="text-blue-400" />
+                                            <span className="text-sm font-bold text-blue-400 tracking-wide uppercase">News</span>
+                                            <span className="text-xs text-slate-500 ml-auto">{new Date(item.created_at).toLocaleDateString()}</span>
                                         </div>
-                                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
-                                        <p className="text-gray-700 dark:text-gray-300">{item.content}</p>
+                                        <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+                                        <p className="text-slate-300">{item.content}</p>
                                     </div>
                                 ))}
 
                                 {blogs.map(blog => (
-                                    <div key={`blog-${blog.id}`} className="border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                                    <div key={`blog-${blog.id}`} className="border border-white/10 rounded-xl overflow-hidden shadow-sm hover:border-white/20 transition bg-white/5">
                                         <div className="p-5">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <Star size={16} className="text-emerald-500" />
-                                                <span className="text-sm font-bold text-emerald-600 tracking-wide uppercase">Blog</span>
+                                                <Star size={16} className="text-emerald-400" />
+                                                <span className="text-sm font-bold text-emerald-400 tracking-wide uppercase">Blog</span>
                                             </div>
-                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{blog.title}</h3>
-                                            <p className="text-sm text-gray-500 mb-4">{new Date(blog.created_at).toLocaleDateString()}</p>
-                                            <p className="text-gray-700 dark:text-gray-300 mb-4">{blog.excerpt || blog.content.substring(0, 150) + '...'}</p>
+                                            <h3 className="text-xl font-bold text-white mb-2">{blog.title}</h3>
+                                            <p className="text-sm text-slate-500 mb-4">{new Date(blog.created_at).toLocaleDateString()}</p>
+                                            <p className="text-slate-300 mb-4">{blog.excerpt || blog.content.substring(0, 150) + '...'}</p>
                                             <button className="text-blue-600 font-bold hover:underline">Read Full Post &rarr;</button>
                                         </div>
                                     </div>
@@ -161,15 +161,15 @@ export default async function BusinessDetail({
 
                     {/* Job Postings */}
                     {jobs.length > 0 && (
-                        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm mt-8">
-                            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2"><Briefcase className="text-blue-600" /> Current Openings</h2>
+                        <div className="glass rounded-2xl p-8 shadow-sm mt-8">
+                            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white"><Briefcase className="text-blue-400" /> Current Openings</h2>
                             <div className="grid gap-4">
                                 {jobs.map(job => (
-                                    <div key={job.id} className="border border-slate-200 dark:border-slate-700 rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <div key={job.id} className="border border-white/10 rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/5">
                                         <div>
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">{job.title}</h3>
-                                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
-                                                <span className="font-semibold text-gray-700 dark:text-gray-300">{job.employment_type}</span>
+                                            <h3 className="text-lg font-bold text-white mb-1">{job.title}</h3>
+                                            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-400">
+                                                <span className="font-semibold text-slate-300">{job.employment_type}</span>
                                                 {job.location && <span>• {job.location}</span>}
                                                 {job.salary_range && <span className="text-emerald-600 font-medium">• {job.salary_range}</span>}
                                             </div>
@@ -188,22 +188,22 @@ export default async function BusinessDetail({
                 {/* Sidebar */}
                 <div className="w-full lg:w-1/3 space-y-6">
                     {/* Claim / Lead Gen Widget */}
-                    <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border-t-4 border-blue-600 shadow-lg">
-                        <h3 className="text-xl font-bold mb-4">Contact {biz.name}</h3>
+                    <div className="glass rounded-2xl p-6 border-t-4 border-blue-500 shadow-lg">
+                        <h3 className="text-xl font-bold mb-4 text-white">Contact {biz.name}</h3>
                         <form className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Name</label>
-                                <input type="text" className="w-full p-2.5 border border-gray-300 dark:border-slate-600 rounded-lg dark:bg-slate-700" placeholder="John Doe" />
+                                <label className="block text-sm font-medium mb-1 text-slate-300">Name</label>
+                                <input type="text" className="w-full p-2.5 rounded-lg glass-input" placeholder="John Doe" />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Phone</label>
-                                <input type="tel" className="w-full p-2.5 border border-gray-300 dark:border-slate-600 rounded-lg dark:bg-slate-700" placeholder="(919) 555-0123" />
+                                <label className="block text-sm font-medium mb-1 text-slate-300">Phone</label>
+                                <input type="tel" className="w-full p-2.5 rounded-lg glass-input" placeholder="(919) 555-0123" />
                             </div>
                             <button type="button" className="btn-primary w-full py-3 rounded-lg font-semibold shadow-md">
                                 Request a Quote
                             </button>
                         </form>
-                        <p className="text-xs text-center text-gray-500 mt-4">By submitting this form you agree to be contacted.</p>
+                        <p className="text-xs text-center text-slate-500 mt-4">By submitting this form you agree to be contacted.</p>
                     </div>
 
                     {/* Premium Features Gates */}
@@ -212,22 +212,23 @@ export default async function BusinessDetail({
                     )}
 
                     {flags.ai_chat_widget && (
-                        <div className="bg-slate-100 dark:bg-slate-700/50 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-600 relative overflow-hidden">
-                            <div className="flex items-center mb-4">
-                                <div className="bg-blue-600 rounded-full p-2 mr-3">
+                        <div className="glass rounded-2xl p-6 shadow-sm border border-blue-500/30 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
+                            <div className="flex items-center mb-4 relative z-10">
+                                <div className="bg-blue-600 rounded-full p-2 mr-3 shadow-lg shadow-blue-500/30">
                                     <MessageSquare size={20} className="text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold">AI Assistant</h3>
-                                    <p className="text-xs text-blue-600 dark:text-blue-400">Online & Ready to Help</p>
+                                    <h3 className="font-bold text-white">AI Assistant</h3>
+                                    <p className="text-xs text-emerald-400 font-medium tracking-wide">● Online & Ready to Help</p>
                                 </div>
                             </div>
-                            <div className="bg-white dark:bg-slate-800 p-3 rounded-lg text-sm text-gray-700 dark:text-gray-300 border border-slate-200 dark:border-slate-600 mb-3 shadow-sm inline-block rounded-tl-none">
+                            <div className="glass p-3 rounded-lg text-sm text-slate-200 mb-4 shadow-sm inline-block rounded-tl-none relative z-10 border-blue-500/20">
                                 Hi! I'm the AI assistant for {biz.name}. How can I help you today?
                             </div>
                             <div className="flex gap-2 relative z-10">
-                                <input type="text" className="w-full text-sm p-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded" placeholder="Type your message..." />
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 rounded flex items-center justify-center">
+                                <input type="text" className="w-full text-sm p-2 rounded-lg glass-input" placeholder="Type your message..." />
+                                <button className="btn-primary px-3 rounded-lg flex items-center justify-center">
                                     &rarr;
                                 </button>
                             </div>
@@ -236,19 +237,19 @@ export default async function BusinessDetail({
 
                     {/* Events Display */}
                     {events.length > 0 && (
-                        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
-                            <h3 className="text-xl font-bold mb-4">Upcoming Events</h3>
+                        <div className="glass rounded-2xl p-6 shadow-sm">
+                            <h3 className="text-xl font-bold mb-4 text-white">Upcoming Events</h3>
                             <div className="space-y-4">
                                 {events.map(evt => (
-                                    <div key={evt.id} className="flex gap-4 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
-                                        <div className="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-lg px-3 py-2 text-center min-w-[3.5rem] flex flex-col items-center justify-center shrink-0 h-14">
+                                    <div key={evt.id} className="flex gap-4 p-3 bg-white/5 rounded-lg border border-white/5">
+                                        <div className="bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg px-3 py-2 text-center min-w-[3.5rem] flex flex-col items-center justify-center shrink-0 h-14">
                                             <span className="text-xs font-bold uppercase">{new Date(evt.date).toLocaleString('default', { month: 'short' })}</span>
                                             <span className="text-lg font-black leading-none">{new Date(evt.date).getDate()}</span>
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-gray-900 dark:text-white leading-tight mb-1">{evt.title}</h4>
-                                            {evt.time && <p className="text-xs text-gray-500 font-medium mb-1"><Calendar size={12} className="inline mr-1" />{evt.time}</p>}
-                                            {evt.location && <p className="text-xs text-gray-500"><MapPin size={12} className="inline mr-1" />{evt.location}</p>}
+                                            <h4 className="font-bold text-white leading-tight mb-1">{evt.title}</h4>
+                                            {evt.time && <p className="text-xs text-slate-400 font-medium mb-1"><Calendar size={12} className="inline mr-1" />{evt.time}</p>}
+                                            {evt.location && <p className="text-xs text-slate-400"><MapPin size={12} className="inline mr-1" />{evt.location}</p>}
                                         </div>
                                     </div>
                                 ))}

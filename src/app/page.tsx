@@ -49,47 +49,56 @@ export default async function Home({
     <div className="flex flex-col min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────── */}
-      <section className="hero-bg flex flex-col items-center justify-center text-center px-4 py-32">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 drop-shadow-md tracking-tight">
-          Find Local Businesses You Can Trust
-        </h1>
-        <p className="text-white text-lg md:text-xl mb-10 max-w-3xl font-medium drop-shadow-md">
-          Search by name, category, or keyword — and support the businesses that make your community thrive.
-        </p>
+      <section className="hero-bg flex flex-col items-center justify-center text-center px-4 py-32 relative">
+        <div className="hero-glow"></div>
+        <div className="relative z-10 w-full flex flex-col items-center">
+          <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-sm font-semibold text-blue-400">
+            <Star size={14} className="fill-current" /> Premium Directory
+          </div>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-2xl tracking-tighter max-w-4xl">
+            Find Local Businesses You Can <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Trust</span>
+          </h1>
+          <p className="text-slate-300 text-lg md:text-xl mb-12 max-w-2xl font-medium">
+            Search by name, category, or keyword — and support the businesses that make your community thrive.
+          </p>
 
-        {/* Search Bar */}
-        <form className="w-full max-w-2xl flex rounded-md overflow-hidden shadow-2xl h-14">
-          <input
-            type="text"
-            name="q"
-            defaultValue={query}
-            placeholder="Search by business name or tag"
-            className="flex-1 px-6 text-gray-700 text-[15px] outline-none bg-white placeholder:text-gray-400"
-          />
-          <button type="submit" className="bg-[#e53e3e] hover:bg-red-600 px-8 text-white text-[15px] font-semibold whitespace-nowrap shrink-0 transition-colors">
-            Search
-          </button>
-        </form>
+          {/* Search Bar */}
+          <form className="w-full max-w-2xl flex rounded-2xl overflow-hidden shadow-2xl h-16 glass relative border border-slate-600/50">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+            <input
+              type="text"
+              name="q"
+              defaultValue={query}
+              placeholder="Search by business name or tag..."
+              className="flex-1 pl-14 pr-6 text-white text-lg outline-none bg-transparent placeholder:text-slate-500 w-full"
+            />
+            <button type="submit" className="bg-white hover:bg-gray-100 px-8 text-blue-900 text-[16px] font-bold whitespace-nowrap shrink-0 transition-colors">
+              Search
+            </button>
+          </form>
+        </div>
       </section>
 
       {/* ── MAIN CONTENT ──────────────────────────────── */}
-      <div className="bg-[#F1F3F8] flex-1">
+      <div className="flex-1 pb-20">
 
         {/* Search results mode */}
         {query && (
           <section className="max-w-7xl mx-auto px-4 py-10">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="section-title">Results for &ldquo;{query}&rdquo;</h2>
-                <p className="text-gray-500 text-sm mt-1">{listings.length} businesses found</p>
+                <p className="text-slate-400 text-sm mt-1">{listings.length} businesses found</p>
               </div>
-              <Link href="/" className="text-sm text-red-500 font-semibold hover:underline">Clear ×</Link>
+              <Link href="/" className="text-sm text-blue-400 font-semibold hover:text-white transition-colors">Clear ×</Link>
             </div>
             {listings.length === 0 ? (
-              <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-gray-100">
-                <Search className="mx-auto h-12 w-12 text-gray-200 mb-4" />
-                <h3 className="text-xl font-bold mb-2">No businesses found</h3>
-                <p className="text-gray-400 mb-6">Try adjusting your search or browse by category below.</p>
+              <div className="glass rounded-3xl p-16 text-center border border-slate-700/50">
+                <div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Search className="h-10 w-10 text-slate-400" />
+                </div>
+                <h3 className="text-2xl font-bold mb-3 text-white">No businesses found</h3>
+                <p className="text-slate-400 mb-6 text-lg">Try adjusting your search or browse by category below.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -118,24 +127,28 @@ export default async function Home({
             )}
 
             {/* ── Businesses by Tags (Category Tiles) ───── */}
-            <section className="max-w-7xl mx-auto px-4 py-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="section-title">Businesses by Category</h2>
+            <section className="max-w-7xl mx-auto px-4 py-16">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="section-title">Browse by Category</h2>
                 <Link href="/category/all" className="section-see-all">
-                  See All Categories <ArrowUpRight size={15} />
+                  See All <ArrowUpRight size={15} />
                 </Link>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
                 {CATEGORY_TILES.map(cat => (
                   <Link key={cat.label} href={cat.href} className="cat-tile block group">
                     <div className="relative">
+                      <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 mix-blend-overlay"></div>
                       <img
                         src={cat.img}
                         alt={cat.label}
-                        className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                        <span className="text-white font-bold text-sm uppercase tracking-wide">{cat.label}</span>
+                      <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/90 to-transparent flex items-end p-4 z-20">
+                        <span className="text-white font-extrabold text-[15px] tracking-wide relative">
+                          {cat.label}
+                          <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></div>
+                        </span>
                       </div>
                     </div>
                   </Link>
@@ -158,29 +171,38 @@ export default async function Home({
             {/* Empty state */}
             {listings.length === 0 && (
               <section className="max-w-7xl mx-auto px-4 py-20 text-center">
-                <div className="bg-white rounded-2xl p-16 shadow-sm border border-gray-100">
-                  <Search className="mx-auto h-12 w-12 text-gray-200 mb-4" />
-                  <h3 className="text-xl font-bold mb-2">No listings yet</h3>
-                  <p className="text-gray-400 mb-6 text-sm">
-                    Visit <Link href="/api/seed" className="text-red-500 font-bold underline">/api/seed</Link> to seed the database first.
+                <div className="glass rounded-3xl p-16 border border-slate-700/50">
+                  <div className="w-20 h-20 bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                     <Search className="h-10 w-10 text-slate-400" />
+                  </div>
+                  <h3 className="text-3xl font-extrabold mb-3 text-white">No listings yet</h3>
+                  <p className="text-slate-400 mb-8 text-lg max-w-md mx-auto">
+                    Visit <Link href="/api/seed" className="text-blue-400 font-bold hover:text-blue-300 transition-colors">/api/seed</Link> to seed the database first, or start adding businesses manually.
                   </p>
-                  <Link href="/dashboard/listings/new" className="inline-flex items-center gap-2 btn-red px-6 py-3 rounded-xl text-sm font-bold">
-                    Add Your First Business <ArrowUpRight size={15} />
+                  <Link href="/dashboard/listings/new" className="inline-flex items-center gap-2 btn-primary px-8 py-4 rounded-xl text-[15px]">
+                    Add Your First Business <ArrowUpRight size={18} />
                   </Link>
                 </div>
               </section>
             )}
 
             {/* ── CTA Banner ─────────────────────────────── */}
-            <section style={{ backgroundColor: '#0F172A' }} className="text-white py-16 text-center">
-              <div className="max-w-2xl mx-auto px-4">
-                <h2 className="text-3xl font-extrabold mb-4">Are you a local business owner?</h2>
-                <p className="text-slate-300 mb-8">
-                  Claim your free listing today or upgrade to Premium to get 4× more local leads.
+            <section className="relative text-white py-24 text-center overflow-hidden border-t border-slate-800/50 mt-16">
+              <div className="absolute inset-0 bg-blue-900/20"></div>
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+              <div className="relative z-10 max-w-3xl mx-auto px-4">
+                <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">Are you a local business owner?</h2>
+                <p className="text-slate-300 text-xl mb-10 max-w-2xl mx-auto">
+                  Claim your free listing today or upgrade to Premium to unlock AI Chat, direct booking, and priority ranking.
                 </p>
-                <Link href="/dashboard/listings/new" className="inline-flex items-center gap-2 btn-red px-8 py-4 rounded-xl text-base font-bold shadow-lg">
-                  Add Your Business Free <ArrowUpRight size={16} />
-                </Link>
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <Link href="/dashboard/listings/new" className="inline-flex items-center justify-center gap-2 btn-primary px-8 py-4 text-lg shadow-xl shadow-blue-500/20">
+                    List Your Business <ArrowUpRight size={18} />
+                  </Link>
+                  <Link href="/pricing" className="inline-flex items-center justify-center gap-2 btn-outline px-8 py-4 text-lg">
+                    View Premium Features
+                  </Link>
+                </div>
               </div>
             </section>
           </>
@@ -213,33 +235,33 @@ function BizCard({ biz, showFeatured = false }: { biz: Listing; showFeatured?: b
       </div>
 
       {/* Body */}
-      <div className="p-4 flex flex-col flex-1">
-        <Link href={`/biz/${biz.slug}`} className="font-bold text-[15px] text-gray-900 hover:text-red-500 transition-colors leading-snug mb-1">
+      <div className="p-5 flex flex-col flex-1 relative z-10">
+        <Link href={`/biz/${biz.slug}`} className="font-extrabold text-[17px] text-white hover:text-blue-400 transition-colors leading-snug mb-1">
           {biz.name}
         </Link>
-        <div className="flex items-center gap-1 text-sm text-gray-500 mb-3">
-          <MapPin size={13} className="text-gray-400 shrink-0" />
+        <div className="flex items-center gap-1.5 text-sm text-slate-400 mb-4 font-medium">
+          <MapPin size={14} className="text-blue-500 shrink-0" />
           {biz.location_city}, {biz.location_state}
-          <span className="ml-auto flex items-center gap-0.5 text-amber-500 font-semibold text-xs">
+          <span className="ml-auto flex items-center gap-1 text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded font-bold text-xs">
             <Star size={11} fill="currentColor" stroke="none" />{biz.rating}
           </span>
         </div>
 
         {/* Category badges */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <div className="flex flex-wrap gap-2 mb-5">
           <span className="badge-category">{biz.category}</span>
         </div>
 
         {/* Action icons */}
-        <div className="mt-auto flex items-center gap-1 pt-3 border-t border-gray-100">
+        <div className="mt-auto flex items-center gap-2 pt-4 border-t border-white/5">
           <Link href={`/biz/${biz.slug}`} title="View listing">
-            <span className="action-icon"><ExternalLink size={15} /></span>
+            <span className="action-icon"><ExternalLink size={16} /></span>
           </Link>
           <button title="Copy link" onClick={() => { if (typeof window !== 'undefined') navigator.clipboard.writeText(window.location.origin + '/biz/' + biz.slug); }}>
-            <span className="action-icon"><Copy size={15} /></span>
+            <span className="action-icon"><Copy size={16} /></span>
           </button>
           <button title="Save" className="ml-auto">
-            <span className="action-icon"><Heart size={15} /></span>
+            <span className="action-icon hover:text-pink-500 hover:bg-pink-500/10"><Heart size={16} /></span>
           </button>
         </div>
       </div>
