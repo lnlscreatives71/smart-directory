@@ -6,6 +6,7 @@ import { siteConfig } from '@/config/site';
 import { verifyLicense } from '@/lib/license';
 import { getSiteSettings } from '@/lib/settings';
 import { Providers } from '@/components/Providers';
+import { Analytics } from "@vercel/analytics/next"
 
 export async function generateMetadata() {
   const settings = await getSiteSettings();
@@ -194,6 +195,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </footer>
         </div>
       </Providers>
+      <Analytics />
       </body>
     </html>
   );
