@@ -161,9 +161,45 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                         </div>
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">Category <span className="text-red-500">*</span></label>
-                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
-                                placeholder="e.g. Restaurants, Med Spas"
-                                value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} />
+                            <select 
+                                required 
+                                className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none bg-white dark:bg-slate-950 appearance-none"
+                                value={formData.category} 
+                                onChange={e => setFormData({ ...formData, category: e.target.value })}
+                            >
+                                <option value="" disabled>Select a category...</option>
+                                <optgroup label="Dining">
+                                    <option value="Restaurants">Restaurants</option>
+                                    <option value="Cafés & Brunch">Cafés & Brunch</option>
+                                    <option value="Pizza">Pizza</option>
+                                    <option value="Sushi">Sushi</option>
+                                    <option value="Bakeries">Bakeries</option>
+                                </optgroup>
+                                <optgroup label="Services">
+                                    <option value="HVAC">HVAC</option>
+                                    <option value="Plumbing">Plumbing</option>
+                                    <option value="Real Estate">Real Estate</option>
+                                    <option value="Law Firms">Law Firms</option>
+                                    <option value="Professional Services">Professional Services</option>
+                                    <option value="Home Services">Home Services</option>
+                                </optgroup>
+                                <optgroup label="Retail">
+                                    <option value="Clothing">Clothing</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Home Goods">Home Goods</option>
+                                </optgroup>
+                                <optgroup label="Health & Wellness">
+                                    <option value="Gyms">Gyms</option>
+                                    <option value="Yoga Studios">Yoga Studios</option>
+                                    <option value="Massage Therapy">Massage Therapy</option>
+                                    <option value="Med Spas">Med Spas</option>
+                                    <option value="Health">Health</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option value="Education">Education</option>
+                                    <option value="Pet Services">Pet Services</option>
+                                </optgroup>
+                            </select>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
