@@ -83,9 +83,31 @@ export default async function BusinessDetail({
                 <div className="flex-1 space-y-8">
                     <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm">
                         <h2 className="text-2xl font-bold mb-4">About the Business</h2>
-                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg mb-8">
                             {biz.description}
                         </p>
+                        
+                        <h2 className="text-2xl font-bold mb-4">Location & Directions</h2>
+                        <div className="w-full h-80 rounded-xl overflow-hidden shadow-sm relative border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
+                            {process.env.NEXT_PUBLIC_MAPS_API_KEY ? (
+                                <iframe
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0 }}
+                                    loading="lazy"
+                                    allowFullScreen
+                                    src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&q=${encodeURIComponent(biz.name + ' ' + biz.location_city + ', ' + biz.location_state)}`}>
+                                </iframe>
+                            ) : (
+                                <div className="text-center p-8 space-y-3">
+                                    <MapPin className="mx-auto w-10 h-10 text-slate-300 dark:text-slate-600" />
+                                    <p className="text-sm font-bold text-slate-500 dark:text-slate-400">Map View Available</p>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 max-w-sm">
+                                        (Add NEXT_PUBLIC_MAPS_API_KEY to .env.local to activate the interactive Google Map targeting {biz.location_city}, {biz.location_state}.)
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm">

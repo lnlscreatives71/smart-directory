@@ -95,9 +95,27 @@ export default function PricingClient({
                         ))}
                     </div>
 
-                    <Link href="/dashboard/listings/new?plan=premium" className="w-full sm:w-auto px-8 py-3 bg-[#e53e3e] hover:bg-red-600 text-white font-bold rounded shadow-md transition-colors text-sm uppercase tracking-wide">
+                    <button 
+                        onClick={async () => {
+                            try {
+                                const res = await fetch('/api/checkout', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ plan: 'premium', billing })
+                                });
+                                const data = await res.json();
+                                if (data.url) {
+                                    window.location.href = data.url;
+                                } else {
+                                    alert('Checkout failed: ' + data.error);
+                                }
+                            } catch (err) {
+                                alert('An error occurred during checkout.');
+                            }
+                        }}
+                        className="w-full sm:w-auto px-8 py-3 bg-[#e53e3e] hover:bg-red-600 text-white font-bold rounded shadow-md transition-colors text-sm uppercase tracking-wide">
                         Upgrade Now
-                    </Link>
+                    </button>
                 </div>
 
             </div>
