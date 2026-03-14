@@ -72,10 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               {/* Logo */}
               <Link href="/" className="flex items-center shrink-0">
-                <span className="text-xl font-extrabold text-white tracking-tight leading-tight flex items-center gap-1">
-                  <div className="w-8 h-8 rounded bg-gradient-to-tr from-blue-600 to-emerald-400 shadow-lg shadow-blue-500/20 mr-1" />
-                  Triangle<span className="text-blue-500">Hub</span>
-                </span>
+                <img src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" className="h-[46px] w-auto drop-shadow-lg" />
               </Link>
 
               {/* Category Nav */}
@@ -133,9 +130,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <footer className="glass-nav relative z-10">
             <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
               <div>
-                <div className="text-xl font-extrabold mb-3">
-                  Triangle <span className="text-red-400">Local Hub</span>
-                </div>
+                <Link href="/">
+                  <img src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" className="h-[46px] w-auto mb-4 drop-shadow-md" />
+                </Link>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Discover and support local businesses in Raleigh, Durham, and Cary, NC.
                 </p>
