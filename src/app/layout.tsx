@@ -8,6 +8,8 @@ import { getSiteSettings } from '@/lib/settings';
 import { Providers } from '@/components/Providers';
 import { Analytics } from "@vercel/analytics/next"
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata() {
   const settings = await getSiteSettings();
   return {

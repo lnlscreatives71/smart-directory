@@ -1,5 +1,6 @@
 export async function verifyLicense() {
-  const key = process.env.LICENSE_KEY;
+  const rawKey = process.env.LICENSE_KEY || process.env.NEXT_PUBLIC_LICENSE_KEY;
+  const key = rawKey?.trim();
   
   // 1. Check if a key even exists
   if (!key) {
@@ -8,7 +9,7 @@ export async function verifyLicense() {
 
   // 2. Format validation (e.g., expecting a White-Label key starting with WL-)
   if (!key.startsWith('WL-')) {
-    return { valid: false, reason: "LICENSE ERROR: Invalid license key format. Key must be a valid White-Label issuance." };
+    return { valid: false, reason: `LICENSE ERROR: Invalid license key format. Key must be a valid White-Label issuance. (Received: ${key.substring(0, 3)}...)` };
   }
 
   // 3. Centralized Agency Verification (Placeholder)
