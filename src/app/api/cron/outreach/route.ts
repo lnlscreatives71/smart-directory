@@ -1,12 +1,7 @@
 import { sql } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
-import {
-    email1_notification,
-    email2_upsell,
-    email3_finalization,
-    email4_finalReminder,
-} from '@/lib/email-templates';
+import { getEmailSet, assignVariant, ABVariant } from '@/lib/email-templates';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,7 +24,7 @@ export async function POST(request: Request) {
 
         let emailsSent = 0;
 
-        // ── EMAIL 1: New unclaimed listings (no email sent yet) ───────────────
+        // ── EMAIL 1: New unclaimed listings — assign A/B variant ──────────────
         const email1Queue = await sql`
             SELECT c.id, c.listing_id, l.name, l.contact_name, l.contact_email, l.claimed
             FROM outreach_campaigns c
@@ -40,22 +35,27 @@ export async function POST(request: Request) {
         `;
 
         for (const c of email1Queue) {
+            const variant = assignVariant();
+            const emails = getEmailSet(variant);
+            const subject = typeof emails.subjects.email1 === 'function'
+                ? emails.subjects.email1(c.name as string)
+                : emails.subjects.email1;
             await sendEmail({
                 to: c.contact_email as string,
-                subject: `${c.name} is now live on The Triangle Hub!`,
-                html: email1_notification(c.name as string, c.contact_name as string | null, c.listing_id as number),
+                subject,
+                html: emails.email1(c.name as string, c.contact_name as string | null, c.listing_id as number),
             });
             await sql`
                 UPDATE outreach_campaigns
-                SET status = 'email_1_sent', email_1_sent_at = NOW()
+                SET status = 'email_1_sent', email_1_sent_at = NOW(), ab_variant = ${variant}
                 WHERE id = ${c.id}
             `;
             emailsSent++;
         }
 
-        // ── EMAIL 2: Premium upsell (~3 days after email 1, to unclaimed) ────
+        // ── EMAIL 2: Premium upsell — use persisted variant ───────────────────
         const email2Queue = await sql`
-            SELECT c.id, c.listing_id, l.name, l.contact_name, l.contact_email
+            SELECT c.id, c.listing_id, l.name, l.contact_name, l.contact_email, c.ab_variant
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_1_sent'
@@ -65,10 +65,15 @@ export async function POST(request: Request) {
         `;
 
         for (const c of email2Queue) {
+            const variant = (c.ab_variant as ABVariant) || 'A';
+            const emails = getEmailSet(variant);
+            const subject = typeof emails.subjects.email2 === 'function'
+                ? emails.subjects.email2(c.name as string)
+                : emails.subjects.email2;
             await sendEmail({
                 to: c.contact_email as string,
-                subject: `Upgrade ${c.name} and get 4x more leads`,
-                html: email2_upsell(c.name as string, c.contact_name as string | null),
+                subject,
+                html: emails.email2(c.name as string, c.contact_name as string | null),
             });
             await sql`
                 UPDATE outreach_campaigns
@@ -78,9 +83,9 @@ export async function POST(request: Request) {
             emailsSent++;
         }
 
-        // ── EMAIL 3: Finalization notice (~7 days after email 1, still unclaimed) ─
+        // ── EMAIL 3: Finalization notice — use persisted variant ──────────────
         const email3Queue = await sql`
-            SELECT c.id, c.listing_id, l.name, l.contact_name, l.contact_email
+            SELECT c.id, c.listing_id, l.name, l.contact_name, l.contact_email, c.ab_variant
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_2_sent'
@@ -91,10 +96,15 @@ export async function POST(request: Request) {
         `;
 
         for (const c of email3Queue) {
+            const variant = (c.ab_variant as ABVariant) || 'A';
+            const emails = getEmailSet(variant);
+            const subject = typeof emails.subjects.email3 === 'function'
+                ? emails.subjects.email3(c.name as string)
+                : emails.subjects.email3;
             await sendEmail({
                 to: c.contact_email as string,
-                subject: `Action needed: Confirm your ${c.name} listing`,
-                html: email3_finalization(c.name as string, c.contact_name as string | null, c.listing_id as number),
+                subject,
+                html: emails.email3(c.name as string, c.contact_name as string | null, c.listing_id as number),
             });
             await sql`
                 UPDATE outreach_campaigns
@@ -104,9 +114,9 @@ export async function POST(request: Request) {
             emailsSent++;
         }
 
-        // ── EMAIL 4: Final reminder (~10 days, last call) ─────────────────────
+        // ── EMAIL 4: Final reminder — use persisted variant ───────────────────
         const email4Queue = await sql`
-            SELECT c.id, c.listing_id, l.name, l.contact_name, l.contact_email
+            SELECT c.id, c.listing_id, l.name, l.contact_name, l.contact_email, c.ab_variant
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_3_sent'
@@ -117,10 +127,15 @@ export async function POST(request: Request) {
         `;
 
         for (const c of email4Queue) {
+            const variant = (c.ab_variant as ABVariant) || 'A';
+            const emails = getEmailSet(variant);
+            const subject = typeof emails.subjects.email4 === 'function'
+                ? (emails.subjects.email4 as (n: string) => string)(c.name as string)
+                : emails.subjects.email4;
             await sendEmail({
                 to: c.contact_email as string,
-                subject: `Last chance: Don't miss your spot on The Triangle Hub`,
-                html: email4_finalReminder(c.name as string, c.contact_name as string | null, c.listing_id as number),
+                subject,
+                html: emails.email4(c.name as string, c.contact_name as string | null, c.listing_id as number),
             });
             await sql`
                 UPDATE outreach_campaigns
