@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Link from 'next/link';
 import { Phone, UserCircle, ArrowUpRight } from 'lucide-react';
+import { siteConfig } from '@/config/site';
+import { verifyLicense } from '@/lib/license';
 
 export const metadata: Metadata = {
-  title: 'Triangle Local Hub | Raleigh, Durham & Cary Business Directory',
-  description: 'The premier local business directory for the Triangle region (Raleigh, Durham, Cary, NC). Discover trusted local services and businesses.',
+  title: siteConfig.seo.title,
+  description: siteConfig.seo.description,
 };
 
 const CATEGORIES = [
@@ -60,7 +62,26 @@ const CATEGORIES = [
   },
 ];
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const license = await verifyLicense();
+
+  if (!license.valid) {
+    return (
+      <html lang="en">
+        <body className="bg-slate-950 flex flex-col items-center justify-center min-h-screen text-white p-4">
+          <div className="glass p-10 rounded-2xl max-w-lg text-center border border-red-500/20 shadow-2xl shadow-red-500/10">
+            <h1 className="text-3xl font-bold text-red-500 mb-4 bg-red-500/10 py-3 rounded-lg border border-red-500/20">License Invalid</h1>
+            <p className="text-slate-300 font-medium text-lg mb-6 leading-relaxed">{license.reason}</p>
+            <p className="text-sm text-slate-500 mb-4 bg-slate-900/50 p-4 rounded-xl">
+              This white-label instance of the directory software is currently locked. To activate it, you must configure a valid <strong className="text-slate-300">LICENSE_KEY</strong> inside your environment variables.
+            </p>
+            <p className="text-xs text-slate-600">Please contact the master agency to purchase or renew a license.</p>
+          </div>
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en">
       <body>
@@ -106,9 +127,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               {/* Right actions */}
               <div className="flex items-center gap-5 shrink-0">
-                <a href="tel:6193799701" className="hidden xl:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
+                <a href={`tel:${siteConfig.contact.phoneRaw}`} className="hidden xl:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
                   <Phone size={16} className="text-blue-400" />
-                  (619) 379-9701
+                  {siteConfig.contact.phone}
                 </a>
                 <Link href="/dashboard" className="hidden md:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
                   <UserCircle size={18} />
@@ -131,17 +152,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
               <div>
                 <Link href="/">
-                  <img src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" className="h-[46px] w-auto mb-4 drop-shadow-md" />
+                  <img src="/triangle-hub-logo-dark.png" alt={siteConfig.name} className="h-[46px] w-auto mb-4 drop-shadow-md" />
                 </Link>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  Discover and support local businesses in Raleigh, Durham, and Cary, NC.
+                  {siteConfig.description}
                 </p>
               </div>
               <div>
                 <h4 className="font-bold text-sm uppercase tracking-wider text-slate-400 mb-4">Contact & Support</h4>
                 <ul className="space-y-2 text-sm text-slate-300">
-                  <li>📞 (919) 555-0100</li>
-                  <li>📍 Raleigh, NC 27601</li>
+                  <li>📞 {siteConfig.contact.phone}</li>
+                  <li>📍 {siteConfig.contact.address}</li>
                   <li><Link href="/support" className="hover:text-white transition">Support Center</Link></li>
                 </ul>
               </div>
@@ -156,7 +177,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </div>
             <div className="border-t border-slate-800 py-5 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 max-w-7xl mx-auto px-6">
-              <span>&copy; {new Date().getFullYear()} Triangle Local Hub. All rights reserved.</span>
+              <span>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</span>
               <div className="flex items-center gap-4 mt-2 md:mt-0">
                 <Link href="/terms" className="hover:text-white transition">Terms of Service</Link>
                 <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
