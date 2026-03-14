@@ -12,7 +12,16 @@ const EMPTY_PLAN: Omit<Plan, 'id'> = {
     limits: { images: 1, categories: 1 },
     active: true,
     is_default: false,
+    features: [],
 };
+
+export const ALL_FEATURES = [
+    'Address', 'Phone', 'Website', 'Profile Image', 'Cover Image',
+    'Email Address', 'Business Description', 'Teams', 'Social Media',
+    'Business Hour Configurations', 'Additional Images', 'Extra Links',
+    'Blogs', 'Events', 'Jobs', 'News Feeds', 'Google Map Configuration',
+    'Site Reviews', 'Google Reviews', 'Video Embed', 'Google Place Images'
+];
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
     return (
@@ -123,6 +132,32 @@ function PlanModal({
                                 className="w-4 h-4 rounded text-primary-600 focus:ring-primary-400" />
                             <span className="text-sm font-medium text-gray-700">Set as Default</span>
                         </label>
+                    </div>
+
+                    <div className="pt-4 border-t border-gray-100">
+                        <label className="block text-sm font-semibold text-gray-700 mb-3">Included Features</label>
+                        <div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto px-1">
+                            {ALL_FEATURES.map(feat => {
+                                const included = (form.features || []).includes(feat);
+                                return (
+                                    <label key={feat} className="flex items-center gap-2 cursor-pointer group">
+                                        <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${included ? 'bg-primary-600 border-primary-600 text-white' : 'border-gray-300 bg-white group-hover:border-primary-400'}`}>
+                                            {included && <Check size={12} strokeWidth={3} />}
+                                        </div>
+                                        <span className="text-sm text-gray-700 group-hover:text-gray-900 truncate">{feat}</span>
+                                        <input 
+                                            type="checkbox" 
+                                            className="hidden" 
+                                            checked={included} 
+                                            onChange={() => {
+                                                const cur = form.features || [];
+                                                set('features', included ? cur.filter(f => f !== feat) : [...cur, feat]);
+                                            }}
+                                        />
+                                    </label>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 

@@ -8,7 +8,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         const { id: idStr } = await params;
         const id = parseInt(idStr);
         const body = await request.json();
-        const { name, monthly_price, annual_price, description, limits, active, is_default } = body;
+        const { name, monthly_price, annual_price, description, limits, active, is_default, features } = body;
 
         // Handle toggle-only update (just active field)
         if (Object.keys(body).length === 1 && 'active' in body) {
@@ -24,7 +24,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
                 description = ${description ?? ''},
                 limits = ${JSON.stringify(limits ?? {})},
                 active = ${active ?? true},
-                is_default = ${is_default ?? false}
+                is_default = ${is_default ?? false},
+                features = ${JSON.stringify(features ?? [])}
             WHERE id = ${id}
         `;
 

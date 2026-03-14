@@ -11,6 +11,7 @@ export interface Plan {
     };
     active: boolean;
     is_default: boolean;
+    features?: string[];
 }
 
 export interface FeatureFlags {

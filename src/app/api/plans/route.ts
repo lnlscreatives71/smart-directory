@@ -9,6 +9,7 @@ async function ensureColumns() {
         await sql`ALTER TABLE plans ADD COLUMN IF NOT EXISTS annual_price DECIMAL(10,2) DEFAULT 0`;
         await sql`ALTER TABLE plans ADD COLUMN IF NOT EXISTS active BOOLEAN DEFAULT TRUE`;
         await sql`ALTER TABLE plans ADD COLUMN IF NOT EXISTS is_default BOOLEAN DEFAULT FALSE`;
+        await sql`ALTER TABLE plans ADD COLUMN IF NOT EXISTS features JSONB DEFAULT '[]'::jsonb`;
     } catch { /* columns likely already exist */ }
 }
 
@@ -27,14 +28,14 @@ export async function POST(request: Request) {
     try {
         await ensureColumns();
         const body = await request.json();
-        const { name, monthly_price, annual_price, description, limits, active, is_default } = body;
+        const { name, monthly_price, annual_price, description, limits, active, is_default, features } = body;
 
         if (!name || monthly_price === undefined) {
             return NextResponse.json({ success: false, error: 'name and monthly_price are required' }, { status: 400 });
         }
 
         const inserted = await sql`
-            INSERT INTO plans (name, monthly_price, annual_price, description, limits, active, is_default)
+            INSERT INTO plans (name, monthly_price, annual_price, description, limits, active, is_default, features)
             VALUES (
                 ${name},
                 ${monthly_price},
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
                 ${description ?? ''},
                 ${JSON.stringify(limits ?? { images: 1, categories: 1 })},
                 ${active ?? true},
-                ${is_default ?? false}
+                ${is_default ?? false},
+                ${JSON.stringify(features ?? [])}
             )
             RETURNING *
         `;
