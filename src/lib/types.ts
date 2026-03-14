@@ -57,10 +57,13 @@ export interface Listing {
 export interface OutreachCampaign {
     id: number;
     listing_id: number;
-    status: 'pending' | 'email_1_sent' | 'email_2_sent' | 'email_3_sent' | 'completed';
+    status: 'pending' | 'email_1_sent' | 'email_2_sent' | 'email_3_sent' | 'email_4_sent' | 'completed';
+    pipeline_stage: 'prospect' | 'contacted' | 'engaged' | 'claimed' | 'upgraded' | 'lost';
+    ab_variant: 'A' | 'B' | null;
     email_1_sent_at: Date | null;
     email_2_sent_at: Date | null;
     email_3_sent_at: Date | null;
+    email_4_sent_at: Date | null;
     created_at: Date;
     updated_at: Date;
 
@@ -68,6 +71,14 @@ export interface OutreachCampaign {
     listing_name?: string;
     listing_email?: string;
     claimed?: boolean;
+}
+
+export interface ContactNote {
+    id: number;
+    campaign_id: number;
+    note_type: 'manual' | 'call' | 'email' | 'system';
+    content: string;
+    created_at: Date;
 }
 
 export interface Event {
