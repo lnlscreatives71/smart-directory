@@ -55,7 +55,7 @@ export default function BookingsAdminPage() {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={5} className="py-16 text-center">
-                                        <Loader2 size={20} className="animate-spin text-blue-400 mx-auto" />
+                                        <Loader2 size={20} className="animate-spin text-primary-400 mx-auto" />
                                     </td>
                                 </tr>
                             ) : bookings.length === 0 ? (
@@ -69,7 +69,7 @@ export default function BookingsAdminPage() {
                                 <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition">
                                     <td className="px-6 py-4">
                                         <p className="font-bold text-gray-900 dark:text-white">{b.customer_name}</p>
-                                        <p className="text-xs text-blue-600">{b.customer_email}</p>
+                                        <p className="text-xs text-primary-600">{b.customer_email}</p>
                                     </td>
                                     <td className="px-6 py-4 font-semibold">{b.listing_name}</td>
                                     <td className="px-6 py-4">

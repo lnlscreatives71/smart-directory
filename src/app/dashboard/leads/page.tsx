@@ -67,7 +67,7 @@ export default function CRMLayoutPage() {
                     <button
                         onClick={() => forceSync(true)}
                         disabled={syncing}
-                        className="bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg font-medium shadow-sm transition-colors flex items-center disabled:opacity-50"
+                        className="bg-primary-600 hover:bg-primary-700 text-white py-2.5 px-4 rounded-lg font-medium shadow-sm transition-colors flex items-center disabled:opacity-50"
                         title="Bypasses the 5-7 day waiting period for Follow Ups"
                     >
                         <Send className="mr-2 h-4 w-4" />
@@ -84,17 +84,17 @@ export default function CRMLayoutPage() {
                     </div>
                     <div className="text-2xl font-bold">{campaigns.filter(c => c.status === 'pending').length}</div>
                 </div>
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm border-b-4 border-b-blue-500">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm border-b-4 border-b-primary-500">
                     <div className="flex items-center text-slate-500 mb-2 font-medium text-sm">
-                        <Mail className="w-4 h-4 mr-2 text-blue-500" /> Active Sequences
+                        <Mail className="w-4 h-4 mr-2 text-primary-500" /> Active Sequences
                     </div>
                     <div className="text-2xl font-bold">{campaigns.filter(c => c.status === 'email_1_sent' || c.status === 'email_2_sent').length}</div>
                 </div>
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm border-b-4 border-b-emerald-500">
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm border-b-4 border-b-secondary-500">
                     <div className="flex items-center text-slate-500 mb-2 font-medium text-sm">
-                        <CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Profiles Claimed
+                        <CheckCircle2 className="w-4 h-4 mr-2 text-secondary-500" /> Profiles Claimed
                     </div>
-                    <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{campaigns.filter(c => c.claimed).length}</div>
+                    <div className="text-2xl font-bold text-secondary-600 dark:text-secondary-400">{campaigns.filter(c => c.claimed).length}</div>
                 </div>
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm border-b-4 border-b-slate-400">
                     <div className="flex items-center text-slate-500 mb-2 font-medium text-sm">
@@ -137,7 +137,7 @@ export default function CRMLayoutPage() {
                                         <td className="px-6 py-4">
                                             <div className="font-semibold text-slate-900 dark:text-slate-100">{camp.listing_name}</div>
                                             {camp.claimed ? (
-                                                <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold ml-0">CLAIMED</span>
+                                                <span className="text-[10px] bg-secondary-100 text-secondary-700 px-2 py-0.5 rounded-full font-bold ml-0">CLAIMED</span>
                                             ) : (
                                                 <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full ml-0">UNCLAIMED</span>
                                             )}
@@ -145,7 +145,7 @@ export default function CRMLayoutPage() {
                                         <td className="px-6 py-4 text-slate-500">{camp.listing_email || <span className="opacity-50">None</span>}</td>
                                         <td className="px-6 py-4">
                                             {camp.status === 'pending' && <span className="px-2.5 py-1 rounded bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-500 font-medium text-xs">Waiting in Queue</span>}
-                                            {camp.status === 'email_1_sent' && <span className="px-2.5 py-1 rounded bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-500 font-medium text-xs">Email 1 (Verify)</span>}
+                                            {camp.status === 'email_1_sent' && <span className="px-2.5 py-1 rounded bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-500 font-medium text-xs">Email 1 (Verify)</span>}
                                             {camp.status === 'email_2_sent' && <span className="px-2.5 py-1 rounded bg-purple-50 text-purple-600 dark:bg-purple-900/30 dark:text-purple-500 font-medium text-xs">Email 2 (Upgrade)</span>}
                                             {camp.status === 'completed' && <span className="px-2.5 py-1 rounded bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 font-medium text-xs">Sequence Complete</span>}
                                         </td>

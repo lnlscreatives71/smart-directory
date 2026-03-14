@@ -64,11 +64,11 @@ export default async function Home({
 
         <div className="hero-glow z-0"></div>
         <div className="relative z-10 w-full flex flex-col items-center">
-          <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-sm font-semibold text-blue-400">
+          <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-sm font-semibold text-primary-400">
             <Star size={14} className="fill-current" /> Premium Directory
           </div>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-2xl tracking-tighter max-w-4xl">
-            {siteConfig.hero.headlineParts[0]} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">{siteConfig.hero.headlineParts[1]}</span>
+            {siteConfig.hero.headlineParts[0]} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">{siteConfig.hero.headlineParts[1]}</span>
           </h1>
           <p className="text-slate-300 text-lg md:text-xl mb-12 max-w-2xl font-medium">
             {siteConfig.hero.subhead}
@@ -84,7 +84,7 @@ export default async function Home({
               placeholder="Search by business name or tag..."
               className="flex-1 pl-14 pr-6 text-white text-lg outline-none bg-transparent placeholder:text-slate-500 w-full"
             />
-            <button type="submit" className="bg-white hover:bg-gray-100 px-8 text-blue-900 text-[16px] font-bold whitespace-nowrap shrink-0 transition-colors">
+            <button type="submit" className="bg-white hover:bg-gray-100 px-8 text-primary-900 text-[16px] font-bold whitespace-nowrap shrink-0 transition-colors">
               Search
             </button>
           </form>
@@ -102,7 +102,7 @@ export default async function Home({
                 <h2 className="section-title">Results for &ldquo;{query}&rdquo;</h2>
                 <p className="text-slate-400 text-sm mt-1">{listings.length} businesses found</p>
               </div>
-              <Link href="/" className="text-sm text-blue-400 font-semibold hover:text-white transition-colors">Clear ×</Link>
+              <Link href="/" className="text-sm text-primary-400 font-semibold hover:text-white transition-colors">Clear ×</Link>
             </div>
             {listings.length === 0 ? (
               <div className="glass rounded-3xl p-16 text-center border border-slate-700/50">
@@ -150,7 +150,7 @@ export default async function Home({
                 {CATEGORY_TILES.map(cat => (
                   <Link key={cat.label} href={cat.href} className="cat-tile block group">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 mix-blend-overlay"></div>
+                      <div className="absolute inset-0 bg-primary-600/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 mix-blend-overlay"></div>
                       <img
                         src={cat.img}
                         alt={cat.label}
@@ -159,7 +159,7 @@ export default async function Home({
                       <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/90 to-transparent flex items-end p-4 z-20">
                         <span className="text-white font-extrabold text-[15px] tracking-wide relative">
                           {cat.label}
-                          <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300"></div>
+                          <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-500 group-hover:w-full transition-all duration-300"></div>
                         </span>
                       </div>
                     </div>
@@ -189,7 +189,7 @@ export default async function Home({
                   </div>
                   <h3 className="text-3xl font-extrabold mb-3 text-white">No listings yet</h3>
                   <p className="text-slate-400 mb-8 text-lg max-w-md mx-auto">
-                    Visit <Link href="/api/seed" className="text-blue-400 font-bold hover:text-blue-300 transition-colors">/api/seed</Link> to seed the database first, or start adding businesses manually.
+                    Visit <Link href="/api/seed" className="text-primary-400 font-bold hover:text-primary-300 transition-colors">/api/seed</Link> to seed the database first, or start adding businesses manually.
                   </p>
                   <Link href="/dashboard/listings/new" className="inline-flex items-center gap-2 btn-primary px-8 py-4 rounded-xl text-[15px]">
                     Add Your First Business <ArrowUpRight size={18} />
@@ -200,7 +200,7 @@ export default async function Home({
 
             {/* ── CTA Banner ─────────────────────────────── */}
             <section className="relative text-white py-24 text-center overflow-hidden border-t border-slate-800/50 mt-16">
-              <div className="absolute inset-0 bg-blue-900/30"></div>
+              <div className="absolute inset-0 bg-primary-900/30"></div>
               <div className="absolute inset-0 bg-[url('/trianglehubcityimage.png')] bg-cover bg-center opacity-20 mix-blend-screen"></div>
               <div className="relative z-10 max-w-3xl mx-auto px-4">
                 <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">Are you a local business owner?</h2>
@@ -208,7 +208,7 @@ export default async function Home({
                   Claim your free listing today or upgrade to Premium to unlock AI Chat, direct booking, and priority ranking.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Link href="/dashboard/listings/new" className="inline-flex items-center justify-center gap-2 btn-primary px-8 py-4 text-lg shadow-xl shadow-blue-500/20">
+                  <Link href="/dashboard/listings/new" className="inline-flex items-center justify-center gap-2 btn-primary px-8 py-4 text-lg shadow-xl shadow-primary-500/20">
                     List Your Business <ArrowUpRight size={18} />
                   </Link>
                   <Link href="/pricing" className="inline-flex items-center justify-center gap-2 btn-outline px-8 py-4 text-lg">

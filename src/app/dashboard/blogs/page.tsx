@@ -56,7 +56,7 @@ export default function BlogsAdminPage() {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={4} className="py-16 text-center">
-                                        <Loader2 size={20} className="animate-spin text-blue-400 mx-auto" />
+                                        <Loader2 size={20} className="animate-spin text-primary-400 mx-auto" />
                                     </td>
                                 </tr>
                             ) : blogs.length === 0 ? (
@@ -69,9 +69,9 @@ export default function BlogsAdminPage() {
                             ) : blogs.map(blog => (
                                 <tr key={blog.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition">
                                     <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">{blog.title}</td>
-                                    <td className="px-6 py-4 text-blue-600 dark:text-blue-400 font-medium">{blog.listing_name}</td>
+                                    <td className="px-6 py-4 text-primary-600 dark:text-primary-400 font-medium">{blog.listing_name}</td>
                                     <td className="px-6 py-4">
-                                        <span className={`px-2 py-1 text-xs font-bold rounded-full ${blog.published ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'}`}>{blog.published ? 'Live' : 'Draft'}</span>
+                                        <span className={`px-2 py-1 text-xs font-bold rounded-full ${blog.published ? 'bg-secondary-100 text-secondary-700' : 'bg-gray-100 text-gray-600'}`}>{blog.published ? 'Live' : 'Draft'}</span>
                                     </td>
                                     <td className="px-6 py-4 text-right text-gray-500 text-xs">{new Date(blog.created_at).toLocaleDateString()}</td>
                                 </tr>

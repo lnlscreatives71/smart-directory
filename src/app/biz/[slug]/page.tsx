@@ -53,7 +53,7 @@ export default async function BusinessDetail({
                     <div className="container mx-auto px-4 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
                         <div className="text-white">
                             <div className="flex items-center gap-3 mb-2">
-                                <span className="bg-blue-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                <span className="bg-primary-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                                     {biz.category}
                                 </span>
                                 {biz.featured && (
@@ -130,10 +130,10 @@ export default async function BusinessDetail({
                             <h2 className="text-2xl font-bold mb-6 text-white">Latest Updates & News</h2>
                             <div className="grid gap-6">
                                 {news.map(item => (
-                                    <div key={`news-${item.id}`} className="border-l-4 border-blue-500 bg-blue-500/10 p-5 rounded-r-xl shadow-sm">
+                                    <div key={`news-${item.id}`} className="border-l-4 border-primary-500 bg-primary-500/10 p-5 rounded-r-xl shadow-sm">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <FileText size={16} className="text-blue-400" />
-                                            <span className="text-sm font-bold text-blue-400 tracking-wide uppercase">News</span>
+                                            <FileText size={16} className="text-primary-400" />
+                                            <span className="text-sm font-bold text-primary-400 tracking-wide uppercase">News</span>
                                             <span className="text-xs text-slate-500 ml-auto">{new Date(item.created_at).toLocaleDateString()}</span>
                                         </div>
                                         <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
@@ -145,13 +145,13 @@ export default async function BusinessDetail({
                                     <div key={`blog-${blog.id}`} className="border border-white/10 rounded-xl overflow-hidden shadow-sm hover:border-white/20 transition bg-white/5">
                                         <div className="p-5">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <Star size={16} className="text-emerald-400" />
-                                                <span className="text-sm font-bold text-emerald-400 tracking-wide uppercase">Blog</span>
+                                                <Star size={16} className="text-secondary-400" />
+                                                <span className="text-sm font-bold text-secondary-400 tracking-wide uppercase">Blog</span>
                                             </div>
                                             <h3 className="text-xl font-bold text-white mb-2">{blog.title}</h3>
                                             <p className="text-sm text-slate-500 mb-4">{new Date(blog.created_at).toLocaleDateString()}</p>
                                             <p className="text-slate-300 mb-4">{blog.excerpt || blog.content.substring(0, 150) + '...'}</p>
-                                            <button className="text-blue-600 font-bold hover:underline">Read Full Post &rarr;</button>
+                                            <button className="text-primary-600 font-bold hover:underline">Read Full Post &rarr;</button>
                                         </div>
                                     </div>
                                 ))}
@@ -162,7 +162,7 @@ export default async function BusinessDetail({
                     {/* Job Postings */}
                     {jobs.length > 0 && (
                         <div className="glass rounded-2xl p-8 shadow-sm mt-8">
-                            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white"><Briefcase className="text-blue-400" /> Current Openings</h2>
+                            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white"><Briefcase className="text-primary-400" /> Current Openings</h2>
                             <div className="grid gap-4">
                                 {jobs.map(job => (
                                     <div key={job.id} className="border border-white/10 rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/5">
@@ -171,11 +171,11 @@ export default async function BusinessDetail({
                                             <div className="flex flex-wrap items-center gap-3 text-sm text-slate-400">
                                                 <span className="font-semibold text-slate-300">{job.employment_type}</span>
                                                 {job.location && <span>• {job.location}</span>}
-                                                {job.salary_range && <span className="text-emerald-600 font-medium">• {job.salary_range}</span>}
+                                                {job.salary_range && <span className="text-secondary-600 font-medium">• {job.salary_range}</span>}
                                             </div>
                                             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">{job.description}</p>
                                         </div>
-                                        <button className="shrink-0 bg-blue-50 text-blue-700 font-bold px-6 py-2.5 rounded-lg hover:bg-blue-100 transition">
+                                        <button className="shrink-0 bg-primary-50 text-primary-700 font-bold px-6 py-2.5 rounded-lg hover:bg-primary-100 transition">
                                             Apply Now &rarr;
                                         </button>
                                     </div>
@@ -188,7 +188,7 @@ export default async function BusinessDetail({
                 {/* Sidebar */}
                 <div className="w-full lg:w-1/3 space-y-6">
                     {/* Claim / Lead Gen Widget */}
-                    <div className="glass rounded-2xl p-6 border-t-4 border-blue-500 shadow-lg">
+                    <div className="glass rounded-2xl p-6 border-t-4 border-primary-500 shadow-lg">
                         <h3 className="text-xl font-bold mb-4 text-white">Contact {biz.name}</h3>
                         <form className="space-y-4">
                             <div>
@@ -212,18 +212,18 @@ export default async function BusinessDetail({
                     )}
 
                     {flags.ai_chat_widget && (
-                        <div className="glass rounded-2xl p-6 shadow-sm border border-blue-500/30 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
+                        <div className="glass rounded-2xl p-6 shadow-sm border border-primary-500/30 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-full blur-2xl"></div>
                             <div className="flex items-center mb-4 relative z-10">
-                                <div className="bg-blue-600 rounded-full p-2 mr-3 shadow-lg shadow-blue-500/30">
+                                <div className="bg-primary-600 rounded-full p-2 mr-3 shadow-lg shadow-primary-500/30">
                                     <MessageSquare size={20} className="text-white" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-white">AI Assistant</h3>
-                                    <p className="text-xs text-emerald-400 font-medium tracking-wide">● Online & Ready to Help</p>
+                                    <p className="text-xs text-secondary-400 font-medium tracking-wide">● Online & Ready to Help</p>
                                 </div>
                             </div>
-                            <div className="glass p-3 rounded-lg text-sm text-slate-200 mb-4 shadow-sm inline-block rounded-tl-none relative z-10 border-blue-500/20">
+                            <div className="glass p-3 rounded-lg text-sm text-slate-200 mb-4 shadow-sm inline-block rounded-tl-none relative z-10 border-primary-500/20">
                                 Hi! I'm the AI assistant for {biz.name}. How can I help you today?
                             </div>
                             <div className="flex gap-2 relative z-10">
@@ -242,7 +242,7 @@ export default async function BusinessDetail({
                             <div className="space-y-4">
                                 {events.map(evt => (
                                     <div key={evt.id} className="flex gap-4 p-3 bg-white/5 rounded-lg border border-white/5">
-                                        <div className="bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg px-3 py-2 text-center min-w-[3.5rem] flex flex-col items-center justify-center shrink-0 h-14">
+                                        <div className="bg-primary-500/20 text-primary-400 border border-primary-500/30 rounded-lg px-3 py-2 text-center min-w-[3.5rem] flex flex-col items-center justify-center shrink-0 h-14">
                                             <span className="text-xs font-bold uppercase">{new Date(evt.date).toLocaleString('default', { month: 'short' })}</span>
                                             <span className="text-lg font-black leading-none">{new Date(evt.date).getDate()}</span>
                                         </div>

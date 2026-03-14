@@ -58,38 +58,38 @@ export default function NewEventPage() {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-semibold mb-1">Select Premium Business *</label>
-                        <select required className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.listing_id} onChange={e => setForm({ ...form, listing_id: e.target.value })}>
+                        <select required className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.listing_id} onChange={e => setForm({ ...form, listing_id: e.target.value })}>
                             <option value="">-- Choose Business --</option>
                             {listings.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
                         </select>
                     </div>
                     <div>
                         <label className="block text-sm font-semibold mb-1">Event Title *</label>
-                        <input required type="text" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+                        <input required type="text" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-semibold mb-1">Date *</label>
-                            <input required type="date" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} />
+                            <input required type="date" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold mb-1">Time</label>
-                            <input type="text" placeholder="e.g. 7:00 PM - 9:00 PM" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.time} onChange={e => setForm({ ...form, time: e.target.value })} />
+                            <input type="text" placeholder="e.g. 7:00 PM - 9:00 PM" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.time} onChange={e => setForm({ ...form, time: e.target.value })} />
                         </div>
                     </div>
                     <div>
                         <label className="block text-sm font-semibold mb-1">Location / Venue</label>
-                        <input type="text" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} />
+                        <input type="text" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} />
                     </div>
                     <div>
                         <label className="block text-sm font-semibold mb-1">Description</label>
-                        <textarea rows={4} className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
+                        <textarea rows={4} className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
                     </div>
                 </div>
 
                 <div className="mt-8 flex gap-4">
                     <button type="button" onClick={() => router.back()} className="px-6 py-2 border rounded-lg text-gray-600 hover:bg-gray-50 flex-1 font-semibold">Cancel</button>
-                    <button type="submit" disabled={isLoading} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex-1 disabled:opacity-50 font-bold">
+                    <button type="submit" disabled={isLoading} className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg flex-1 disabled:opacity-50 font-bold">
                         {isLoading ? 'Saving...' : 'Create Event'}
                     </button>
                 </div>

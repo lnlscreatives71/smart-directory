@@ -50,7 +50,7 @@ export default function SupportPage() {
                 <textarea rows={5} className="w-full p-3 rounded-xl glass-input" placeholder="How can we help you today?"></textarea>
               </div>
 
-              <button type="button" className="btn-primary w-full py-4 rounded-xl text-lg shadow-lg shadow-blue-500/25">
+              <button type="button" className="btn-primary w-full py-4 rounded-xl text-lg shadow-lg shadow-primary-500/25">
                 Submit Message
               </button>
             </form>
@@ -62,26 +62,26 @@ export default function SupportPage() {
               <h2 className="text-xl font-bold mb-6 text-white">Contact Information</h2>
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="bg-slate-800 p-3 rounded-xl mr-4 text-blue-400">
+                  <div className="bg-slate-800 p-3 rounded-xl mr-4 text-primary-400">
                     <Mail size={24} />
                   </div>
                   <div>
                     <p className="font-semibold text-white">Email</p>
-                    <a href="mailto:support@trianglelocalhub.com" className="text-slate-400 hover:text-blue-400 transition-colors">support@trianglelocalhub.com</a>
+                    <a href="mailto:support@trianglelocalhub.com" className="text-slate-400 hover:text-primary-400 transition-colors">support@trianglelocalhub.com</a>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-slate-800 p-3 rounded-xl mr-4 text-blue-400">
+                  <div className="bg-slate-800 p-3 rounded-xl mr-4 text-primary-400">
                     <Phone size={24} />
                   </div>
                   <div>
                     <p className="font-semibold text-white">Phone</p>
-                    <a href="tel:9195550100" className="text-slate-400 hover:text-blue-400 transition-colors">(919) 555-0100</a>
+                    <a href="tel:9195550100" className="text-slate-400 hover:text-primary-400 transition-colors">(919) 555-0100</a>
                     <p className="text-xs text-slate-500 mt-1">Mon-Fri, 9am - 5pm EST</p>
                   </div>
                 </div>
                 <div className="flex items-start">
-                  <div className="bg-slate-800 p-3 rounded-xl mr-4 text-blue-400">
+                  <div className="bg-slate-800 p-3 rounded-xl mr-4 text-primary-400">
                     <MapPin size={24} />
                   </div>
                   <div>

@@ -20,7 +20,7 @@ type TabKey = 'all' | 'premium' | 'free' | 'claim' | 'new';
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
     return (
         <button onClick={() => onChange(!checked)}
-            className={`relative w-11 h-6 rounded-full transition-colors focus:outline-none ${checked ? 'bg-blue-600' : 'bg-gray-200'}`}>
+            className={`relative w-11 h-6 rounded-full transition-colors focus:outline-none ${checked ? 'bg-primary-600' : 'bg-gray-200'}`}>
             <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${checked ? 'translate-x-6' : 'translate-x-1'}`} />
         </button>
     );
@@ -28,8 +28,8 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 
 const PLAN_BADGE: Record<string, string> = {
     pro: 'bg-purple-100 text-purple-700',
-    premium: 'bg-blue-100 text-blue-700',
-    free: 'bg-emerald-100 text-emerald-700',
+    premium: 'bg-primary-100 text-primary-700',
+    free: 'bg-secondary-100 text-secondary-700',
 };
 
 export default function BusinessesPage() {
@@ -128,7 +128,7 @@ export default function BusinessesPage() {
 
             {/* Toast */}
             {toast && (
-                <div className={`flex items-center gap-3 p-4 rounded-xl text-sm font-medium ${toast.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                <div className={`flex items-center gap-3 p-4 rounded-xl text-sm font-medium ${toast.type === 'success' ? 'bg-secondary-50 text-secondary-700 border border-secondary-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
                     {toast.type === 'success' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
                     {toast.msg}
                 </div>
@@ -141,7 +141,7 @@ export default function BusinessesPage() {
                 <div className="flex border-b border-gray-100 dark:border-slate-800 overflow-x-auto">
                     {TABS.map(t => (
                         <button key={t.key} onClick={() => setTab(t.key)}
-                            className={`px-5 py-4 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors ${tab === t.key ? 'text-blue-600 border-blue-600 bg-blue-50/40 dark:bg-blue-900/10' : 'text-gray-500 border-transparent hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            className={`px-5 py-4 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors ${tab === t.key ? 'text-primary-600 border-primary-600 bg-primary-50/40 dark:bg-primary-900/10' : 'text-gray-500 border-transparent hover:text-gray-700 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
                             {t.label}
                         </button>
                     ))}
@@ -153,7 +153,7 @@ export default function BusinessesPage() {
                         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input value={q} onChange={e => setQ(e.target.value)}
                             placeholder="Search by name..."
-                            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 dark:bg-slate-950 dark:border-slate-700 dark:text-white" />
+                            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-400 dark:bg-slate-950 dark:border-slate-700 dark:text-white" />
                     </div>
                     <div className="ml-auto flex items-center gap-2">
                         <Link href="/dashboard/import"
@@ -181,12 +181,12 @@ export default function BusinessesPage() {
                         <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
                             {isLoading ? (
                                 <tr><td colSpan={8} className="py-16 text-center">
-                                    <Loader2 size={20} className="animate-spin text-blue-400 mx-auto" />
+                                    <Loader2 size={20} className="animate-spin text-primary-400 mx-auto" />
                                 </td></tr>
                             ) : filtered.length === 0 ? (
                                 <tr><td colSpan={8} className="py-16 text-center text-gray-400 text-sm">
                                     No businesses in this tab.{' '}
-                                    {tab !== 'all' && <button onClick={() => setTab('all')} className="text-blue-500 font-semibold hover:underline">View all</button>}
+                                    {tab !== 'all' && <button onClick={() => setTab('all')} className="text-primary-500 font-semibold hover:underline">View all</button>}
                                 </td></tr>
                             ) : filtered.map(l => (
                                 <tr key={l.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition-colors group">
@@ -203,13 +203,13 @@ export default function BusinessesPage() {
                                     </td>
                                     {/* Status */}
                                     <td className="px-6 py-4">
-                                        <span className={`text-xs font-semibold ${l.featured ? 'text-emerald-600' : 'text-gray-400'}`}>
+                                        <span className={`text-xs font-semibold ${l.featured ? 'text-secondary-600' : 'text-gray-400'}`}>
                                             {l.featured ? 'active' : 'inactive'}
                                         </span>
                                     </td>
                                     {/* Reason */}
                                     <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center gap-1 text-xs font-medium ${l.claimed ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                        <span className={`inline-flex items-center gap-1 text-xs font-medium ${l.claimed ? 'text-secondary-600' : 'text-amber-600'}`}>
                                             {l.claimed ? <><CheckCircle2 size={12} /> Claimed</> : <><XCircle size={12} /> Unclaimed</>}
                                         </span>
                                     </td>
@@ -237,11 +237,11 @@ export default function BusinessesPage() {
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex justify-end items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <Link href={`/biz/${l.slug}`} target="_blank"
-                                                className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="View">
+                                                className="p-1.5 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition" title="View">
                                                 <Eye size={15} />
                                             </Link>
                                             <Link href={`/dashboard/listings/${l.id}`}
-                                                className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit">
+                                                className="p-1.5 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition" title="Edit">
                                                 <Edit size={15} />
                                             </Link>
                                             <button onClick={() => setDeleteConfirm(l)}

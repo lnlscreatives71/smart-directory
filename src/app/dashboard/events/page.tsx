@@ -59,7 +59,7 @@ export default function EventsAdminPage() {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={5} className="py-16 text-center">
-                                        <Loader2 size={20} className="animate-spin text-blue-400 mx-auto" />
+                                        <Loader2 size={20} className="animate-spin text-primary-400 mx-auto" />
                                     </td>
                                 </tr>
                             ) : events.length === 0 ? (
@@ -72,7 +72,7 @@ export default function EventsAdminPage() {
                             ) : events.map(evt => (
                                 <tr key={evt.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition">
                                     <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">{evt.title}</td>
-                                    <td className="px-6 py-4 text-blue-600 dark:text-blue-400 font-medium">{evt.listing_name}</td>
+                                    <td className="px-6 py-4 text-primary-600 dark:text-primary-400 font-medium">{evt.listing_name}</td>
                                     <td className="px-6 py-4">
                                         <span className="flex items-center gap-1.5"><Calendar size={14} className="text-gray-400"/> {new Date(evt.date).toLocaleDateString()} at {evt.time || 'TBD'}</span>
                                     </td>

@@ -7,7 +7,7 @@ export default function PrivacyPage() {
     <div className="min-h-screen pb-20 text-white bg-[#0B0F19]">
       {/* Header */}
       <section className="bg-slate-900 border-b border-white/10 py-12 px-4 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-full bg-emerald-500/5 blur-[100px] pointer-events-none"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-full bg-secondary-500/5 blur-[100px] pointer-events-none"></div>
         <div className="max-w-4xl mx-auto relative z-10">
           <Link href="/" className="inline-flex items-center text-sm font-medium text-slate-400 hover:text-white mb-6 transition-colors">
             <ArrowLeft className="mr-2" size={16} /> Back to Home
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
             <p className="text-slate-300 leading-relaxed mb-4">
               We collect information that you manually provide to us, as well as information automatically generated as you use our Services:
             </p>
-            <ul className="list-disc pl-5 text-slate-300 space-y-2 marker:text-emerald-500">
+            <ul className="list-disc pl-5 text-slate-300 space-y-2 marker:text-secondary-500">
               <li><strong>Personal Data:</strong> Name, email address, phone number when you register or contact a business.</li>
               <li><strong>Business Data:</strong> Information you provide about your business if you claim or create a listing.</li>
               <li><strong>Usage Data:</strong> IP addresses, browser type, pages visited, and interaction data via cookies and analytics tools.</li>
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
             <p className="text-slate-300 leading-relaxed mb-4">
               We use the collected information for various purposes:
             </p>
-            <ul className="list-disc pl-5 text-slate-300 space-y-2 marker:text-emerald-500">
+            <ul className="list-disc pl-5 text-slate-300 space-y-2 marker:text-secondary-500">
               <li>To provide, maintain, and improve our Services.</li>
               <li>To connect consumers with local businesses (e.g., forwarding inquiries).</li>
               <li>To process transactions for premium business listings via Stripe.</li>
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
 
           <div className="pt-6 border-t border-white/10">
             <p className="text-slate-400">
-              If you have any questions about this Privacy Policy, please contact us at <a href="mailto:privacy@trianglelocalhub.com" className="text-blue-400 hover:text-blue-300 transition-colors">privacy@trianglelocalhub.com</a>.
+              If you have any questions about this Privacy Policy, please contact us at <a href="mailto:privacy@trianglelocalhub.com" className="text-primary-400 hover:text-primary-300 transition-colors">privacy@trianglelocalhub.com</a>.
             </p>
           </div>
         </div>

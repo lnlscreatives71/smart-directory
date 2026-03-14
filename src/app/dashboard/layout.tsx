@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Sidebar */}
             <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transform transition-transform duration-200 ease-in-out ${mobileMenuOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'} md:translate-x-0 md:static md:flex flex-col h-screen`}>
                 <div className="h-16 flex items-center justify-between px-6 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                    <Link href="/dashboard" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400">
+                    <Link href="/dashboard" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-primary-400">
                         SmartDir Admin
                     </Link>
                     <button className="md:hidden text-slate-400 hover:text-slate-600" onClick={() => setMobileMenuOpen(false)}>
@@ -47,11 +47,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                     key={item.name}
                                     href={item.href}
                                     className={`flex items-center px-3 py-2.5 rounded-lg font-medium transition-colors ${isActive
-                                            ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400'
+                                            ? 'bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
                                             : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
                                         }`}
                                 >
-                                    <Icon size={18} className={`mr-3 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}`} /> {item.name}
+                                    <Icon size={18} className={`mr-3 ${isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'}`} /> {item.name}
                                 </Link>
                             );
                         })}
@@ -60,7 +60,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
                 <div className="p-4 border-t border-slate-100 dark:border-slate-800 shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-emerald-400 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-primary-600 to-secondary-400 flex items-center justify-center text-white font-bold text-sm shadow-sm">
                             A
                         </div>
                         <div className="flex-1 min-w-0">
@@ -85,7 +85,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             <input
                                 type="text"
                                 placeholder="Search everywhere..."
-                                className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-950 border-transparent focus:bg-white focus:border-blue-500 dark:focus:border-blue-500 rounded-lg text-sm transition-all outline-none ring-1 ring-slate-200 dark:ring-slate-800 focus:ring-blue-500"
+                                className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-950 border-transparent focus:bg-white focus:border-primary-500 dark:focus:border-primary-500 rounded-lg text-sm transition-all outline-none ring-1 ring-slate-200 dark:ring-slate-800 focus:ring-primary-500"
                             />
                         </div>
                     </div>
@@ -96,9 +96,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             <Bell size={20} />
                         </button>
                         <div className="h-5 w-px bg-slate-200 dark:bg-slate-700"></div>
-                        <Link href="/" target="_blank" className="flex items-center text-sm font-medium text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors group">
+                        <Link href="/" target="_blank" className="flex items-center text-sm font-medium text-slate-600 hover:text-primary-600 dark:text-slate-400 dark:hover:text-primary-400 transition-colors group">
                             <span className="hidden sm:inline">View Site</span>
-                            <ExternalLink size={16} className="ml-1 sm:ml-2 text-slate-400 group-hover:text-blue-600" />
+                            <ExternalLink size={16} className="ml-1 sm:ml-2 text-slate-400 group-hover:text-primary-600" />
                         </Link>
                     </div>
                 </header>

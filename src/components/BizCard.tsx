@@ -27,11 +27,11 @@ export default function BizCard({ biz, showFeatured = false }: { biz: Listing; s
 
       {/* Body */}
       <div className="p-5 flex flex-col flex-1 relative z-10">
-        <Link href={`/biz/${biz.slug}`} className="font-extrabold text-[17px] text-white hover:text-blue-400 transition-colors leading-snug mb-1">
+        <Link href={`/biz/${biz.slug}`} className="font-extrabold text-[17px] text-white hover:text-primary-400 transition-colors leading-snug mb-1">
           {biz.name}
         </Link>
         <div className="flex items-center gap-1.5 text-sm text-slate-400 mb-4 font-medium">
-          <MapPin size={14} className="text-blue-500 shrink-0" />
+          <MapPin size={14} className="text-primary-500 shrink-0" />
           {biz.location_city}, {biz.location_state}
           <span className="ml-auto flex items-center gap-1 text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded font-bold text-xs">
             <Star size={11} fill="currentColor" stroke="none" />{biz.rating}

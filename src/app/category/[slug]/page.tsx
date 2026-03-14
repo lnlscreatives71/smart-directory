@@ -52,7 +52,7 @@ export default async function CategoryPage({
                         <div className="space-y-2.5">
                             {['Raleigh', 'Durham', 'Cary', 'Chapel Hill'].map(city => (
                                 <label key={city} className="flex items-center gap-2.5 text-sm text-slate-300 cursor-pointer font-medium">
-                                    <input type="checkbox" className="rounded text-blue-500 focus:ring-blue-400 w-4 h-4 bg-slate-800 border-slate-600" />
+                                    <input type="checkbox" className="rounded text-primary-500 focus:ring-primary-400 w-4 h-4 bg-slate-800 border-slate-600" />
                                     {city}
                                 </label>
                             ))}
@@ -64,7 +64,7 @@ export default async function CategoryPage({
                         <div className="space-y-2.5">
                             {[['4.5+', '4.5'], ['4.0+', '4.0'], ['3.5+', '3.5']].map(([label, val]) => (
                                 <label key={val} className="flex items-center gap-2.5 text-sm text-slate-300 cursor-pointer font-medium">
-                                    <input type="checkbox" className="rounded text-blue-500 focus:ring-blue-400 w-4 h-4 bg-slate-800 border-slate-600" />
+                                    <input type="checkbox" className="rounded text-primary-500 focus:ring-primary-400 w-4 h-4 bg-slate-800 border-slate-600" />
                                     <span className="flex items-center gap-1">
                                         <Star size={13} className="text-amber-400 fill-amber-400" /> {label}
                                     </span>
@@ -78,7 +78,7 @@ export default async function CategoryPage({
                         <div className="space-y-2.5">
                             {['Featured', 'Premium', 'Free'].map(plan => (
                                 <label key={plan} className="flex items-center gap-2.5 text-sm text-slate-300 cursor-pointer font-medium">
-                                    <input type="checkbox" className="rounded text-blue-500 focus:ring-blue-400 w-4 h-4 bg-slate-800 border-slate-600" />
+                                    <input type="checkbox" className="rounded text-primary-500 focus:ring-primary-400 w-4 h-4 bg-slate-800 border-slate-600" />
                                     {plan}
                                 </label>
                             ))}
@@ -92,7 +92,7 @@ export default async function CategoryPage({
                         <p className="text-sm text-slate-400 font-medium">
                             Showing <span className="font-bold text-white">{listings.length}</span> results for <span className="font-bold text-white">{titleCaseCategory}</span>
                         </p>
-                        <Link href={`/dashboard/listings/new`} className="flex items-center gap-1 text-sm font-semibold text-blue-400 hover:text-white transition-colors">
+                        <Link href={`/dashboard/listings/new`} className="flex items-center gap-1 text-sm font-semibold text-primary-400 hover:text-white transition-colors">
                             Add Yours <ArrowUpRight size={13} />
                         </Link>
                     </div>

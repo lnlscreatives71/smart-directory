@@ -70,16 +70,16 @@ function ClaimContent() {
     if (status === 'claimed') {
         return (
             <div className="text-center p-8">
-                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-20 h-20 bg-secondary-100 text-secondary-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle2 className="w-10 h-10" />
                 </div>
                 <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">Profile Verified!</h1>
                 <p className="text-slate-500 mb-8 font-medium">You have successfully claimed <b>{bizName}</b>. Your profile will now show an Official Verified Badge to users.</p>
 
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 p-6 rounded-2xl text-left mb-8">
-                    <h3 className="font-bold text-blue-900 dark:text-blue-100 text-lg mb-2">Ready to level up?</h3>
-                    <p className="text-sm text-blue-800 dark:text-blue-200 mb-5">Premium listings receive up to 4x more inbound leads and unlock our built-in AI Chatbot widget directly on your profile.</p>
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition text-center shadow-blue-500/20">Upgrade to Premium</button>
+                <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800/50 p-6 rounded-2xl text-left mb-8">
+                    <h3 className="font-bold text-primary-900 dark:text-primary-100 text-lg mb-2">Ready to level up?</h3>
+                    <p className="text-sm text-primary-800 dark:text-primary-200 mb-5">Premium listings receive up to 4x more inbound leads and unlock our built-in AI Chatbot widget directly on your profile.</p>
+                    <button className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition text-center shadow-primary-500/20">Upgrade to Premium</button>
                 </div>
 
                 {slug && (
@@ -93,7 +93,7 @@ function ClaimContent() {
 
     return (
         <div className="text-center p-8">
-            <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <div className="w-20 h-20 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                 <ShieldCheck className="w-10 h-10" />
             </div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">Claim Your Business</h1>
@@ -101,13 +101,13 @@ function ClaimContent() {
 
             <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl text-left mb-8 space-y-4">
                 <p className="flex items-center text-slate-700 dark:text-slate-300 font-medium">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-500 mr-3 shrink-0" /> Control & Edit Profile Info
+                    <CheckCircle2 className="w-6 h-6 text-secondary-500 mr-3 shrink-0" /> Control & Edit Profile Info
                 </p>
                 <p className="flex items-center text-slate-700 dark:text-slate-300 font-medium">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-500 mr-3 shrink-0" /> Receive User Messages/Leads
+                    <CheckCircle2 className="w-6 h-6 text-secondary-500 mr-3 shrink-0" /> Receive User Messages/Leads
                 </p>
                 <p className="flex items-center text-slate-700 dark:text-slate-300 font-medium">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-500 mr-3 shrink-0" /> Official Verified Checkmark
+                    <CheckCircle2 className="w-6 h-6 text-secondary-500 mr-3 shrink-0" /> Official Verified Checkmark
                 </p>
             </div>
 

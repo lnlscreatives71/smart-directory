@@ -128,7 +128,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               {/* Right actions */}
               <div className="flex items-center gap-5 shrink-0">
                 <a href={`tel:${siteConfig.contact.phoneRaw}`} className="hidden xl:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
-                  <Phone size={16} className="text-blue-400" />
+                  <Phone size={16} className="text-primary-400" />
                   {siteConfig.contact.phone}
                 </a>
                 <Link href="/dashboard" className="hidden md:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">

@@ -18,7 +18,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
     return (
         <button
             onClick={() => onChange(!checked)}
-            className={`relative w-12 h-6 rounded-full transition-colors focus:outline-none ${checked ? 'bg-blue-600' : 'bg-gray-200'}`}
+            className={`relative w-12 h-6 rounded-full transition-colors focus:outline-none ${checked ? 'bg-primary-600' : 'bg-gray-200'}`}
         >
             <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${checked ? 'translate-x-7' : 'translate-x-1'}`} />
         </button>
@@ -74,7 +74,7 @@ function PlanModal({
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Plan Name *</label>
                         <input value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g. Community Listing"
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -82,20 +82,20 @@ function PlanModal({
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Monthly Price ($)</label>
                             <input type="number" min="0" step="0.01" value={form.monthly_price}
                                 onChange={e => set('monthly_price', parseFloat(e.target.value) || 0)}
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Annual Price ($)</label>
                             <input type="number" min="0" step="0.01" value={form.annual_price}
                                 onChange={e => set('annual_price', parseFloat(e.target.value) || 0)}
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                         </div>
                     </div>
 
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
                         <textarea value={form.description} onChange={e => set('description', e.target.value)} rows={2} placeholder="Describe what this plan includes..."
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-500 resize-none" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -103,13 +103,13 @@ function PlanModal({
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Max Images</label>
                             <input type="number" min="1" value={form.limits?.images ?? 1}
                                 onChange={e => set('limits', { ...form.limits, images: parseInt(e.target.value) || 1 })}
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Max Categories</label>
                             <input type="number" min="1" value={form.limits?.categories ?? 1}
                                 onChange={e => set('limits', { ...form.limits, categories: parseInt(e.target.value) || 1 })}
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500" />
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                         </div>
                     </div>
 
@@ -120,7 +120,7 @@ function PlanModal({
                         </label>
                         <label className="flex items-center gap-2.5 cursor-pointer">
                             <input type="checkbox" checked={form.is_default} onChange={e => set('is_default', e.target.checked)}
-                                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-400" />
+                                className="w-4 h-4 rounded text-primary-600 focus:ring-primary-400" />
                             <span className="text-sm font-medium text-gray-700">Set as Default</span>
                         </label>
                     </div>
@@ -213,7 +213,7 @@ export default function PlansPage() {
 
             {/* Toast */}
             {toast && (
-                <div className={`flex items-center gap-3 p-4 rounded-xl text-sm font-medium ${toast.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                <div className={`flex items-center gap-3 p-4 rounded-xl text-sm font-medium ${toast.type === 'success' ? 'bg-secondary-50 text-secondary-700 border border-secondary-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
                     {toast.type === 'success' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
                     {toast.msg}
                 </div>
@@ -244,7 +244,7 @@ export default function PlansPage() {
                     <div className="overflow-x-auto">
                         {loading ? (
                             <div className="flex items-center justify-center py-16">
-                                <Loader2 size={24} className="animate-spin text-blue-500" />
+                                <Loader2 size={24} className="animate-spin text-primary-500" />
                             </div>
                         ) : (
                             <table className="w-full text-left text-sm">
@@ -297,7 +297,7 @@ export default function PlansPage() {
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 <button onClick={() => setModal({ open: true, plan })}
-                                                    className="text-gray-400 hover:text-blue-600 transition p-1.5 rounded-lg hover:bg-blue-50">
+                                                    className="text-gray-400 hover:text-primary-600 transition p-1.5 rounded-lg hover:bg-primary-50">
                                                     <Pencil size={15} />
                                                 </button>
                                             </td>
@@ -331,7 +331,7 @@ export default function PlansPage() {
                         {plans.map(plan => (
                             <div key={plan.id} className="flex items-center justify-between p-5 rounded-xl border border-gray-100 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800/40 transition">
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-2.5 h-2.5 rounded-full ${plan.active ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                                    <div className={`w-2.5 h-2.5 rounded-full ${plan.active ? 'bg-secondary-500' : 'bg-gray-300'}`} />
                                     <div>
                                         <p className="font-semibold text-gray-900 dark:text-white text-sm">{plan.name}</p>
                                         <p className="text-xs text-gray-400">{plan.limits?.images ?? 1} images · {plan.limits?.categories ?? 1} categories</p>
@@ -343,7 +343,7 @@ export default function PlansPage() {
                                         <p className="text-xs text-gray-400">{fmt(plan.annual_price ?? 0)}/yr</p>
                                     </div>
                                     <button onClick={() => setModal({ open: true, plan })}
-                                        className="flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition">
+                                        className="flex items-center gap-1 text-xs font-semibold text-primary-600 hover:text-primary-800 transition">
                                         Edit <ChevronRight size={12} />
                                     </button>
                                 </div>

@@ -57,7 +57,7 @@ export default function JobsAdminPage() {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={5} className="py-16 text-center">
-                                        <Loader2 size={20} className="animate-spin text-blue-400 mx-auto" />
+                                        <Loader2 size={20} className="animate-spin text-primary-400 mx-auto" />
                                     </td>
                                 </tr>
                             ) : jobs.length === 0 ? (
@@ -70,10 +70,10 @@ export default function JobsAdminPage() {
                             ) : jobs.map(job => (
                                 <tr key={job.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition">
                                     <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">{job.title}</td>
-                                    <td className="px-6 py-4 text-blue-600 dark:text-blue-400 font-medium">{job.listing_name}</td>
+                                    <td className="px-6 py-4 text-primary-600 dark:text-primary-400 font-medium">{job.listing_name}</td>
                                     <td className="px-6 py-4 font-medium">{job.employment_type}</td>
                                     <td className="px-6 py-4 text-center">
-                                        <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full uppercase ${job.active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-500'}`}>
+                                        <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full uppercase ${job.active ? 'bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-400' : 'bg-gray-100 text-gray-500'}`}>
                                             {job.active ? 'Active' : 'Closed'}
                                         </span>
                                     </td>

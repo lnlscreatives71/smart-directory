@@ -47,7 +47,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 }
 function TextInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
     return <input type="text" value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
-        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />;
+        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" />;
 }
 function ColorInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
     return (
@@ -57,14 +57,14 @@ function ColorInput({ value, onChange }: { value: string; onChange: (v: string) 
                     className="w-10 h-10 rounded-lg border border-gray-200 cursor-pointer p-0.5" />
             </div>
             <input type="text" value={value} onChange={e => onChange(e.target.value)}
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono text-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm font-mono text-gray-700 outline-none focus:ring-2 focus:ring-primary-500" />
         </div>
     );
 }
 function SelectInput({ value, onChange, options }: { value: string | number; onChange: (v: string) => void; options: (string | number)[] }) {
     return (
         <select value={value} onChange={e => onChange(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-primary-500 bg-white">
             {options.map(o => <option key={o} value={o}>{o}</option>)}
         </select>
     );
@@ -80,7 +80,7 @@ function ImageField({ label, hint, value, onChange }: { label: string; hint?: st
                 )}
                 <div className="flex gap-2">
                     <input type="text" value={value} onChange={e => onChange(e.target.value)} placeholder="Image URL..."
-                        className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-blue-500" />
+                        className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-primary-500" />
                     <label className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium cursor-pointer transition border border-gray-200">
                         <Upload size={14} /> Upload
                         <input type="file" accept="image/*" className="hidden" onChange={e => {
@@ -99,8 +99,8 @@ function SectionCard({ title, subtitle, icon: Icon, children }: { title: string;
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-50 flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                    <Icon size={18} className="text-blue-600" />
+                <div className="w-9 h-9 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+                    <Icon size={18} className="text-primary-600" />
                 </div>
                 <div>
                     <h3 className="font-bold text-gray-800 text-sm">{title}</h3>
@@ -132,8 +132,8 @@ function MenuItemRow({ item, onUpdate, onDelete, depth = 0, parentId }: {
                 <input value={item.label} onChange={e => onUpdate(item.id, { label: e.target.value })}
                     className="flex-1 font-semibold text-sm text-gray-800 border-0 outline-none bg-transparent" placeholder="Menu label" />
                 <input value={item.href} onChange={e => onUpdate(item.id, { href: e.target.value })}
-                    className="w-52 text-xs text-gray-500 font-mono border border-gray-200 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-blue-400 bg-white" placeholder="/category/..." />
-                {depth === 0 && <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">Top Level</span>}
+                    className="w-52 text-xs text-gray-500 font-mono border border-gray-200 rounded px-2 py-1 outline-none focus:ring-1 focus:ring-primary-400 bg-white" placeholder="/category/..." />
+                {depth === 0 && <span className="text-xs bg-primary-50 text-primary-600 px-2 py-0.5 rounded-full font-medium">Top Level</span>}
                 {depth === 1 && <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">sub item</span>}
                 <button onClick={() => onDelete(item.id, parentId)} className="text-gray-300 hover:text-red-400 transition ml-1">
                     <Trash2 size={14} />
@@ -266,7 +266,7 @@ export default function SettingsPage() {
 
     if (loading) return (
         <div className="flex items-center justify-center h-64">
-            <Loader2 size={28} className="animate-spin text-blue-500" />
+            <Loader2 size={28} className="animate-spin text-primary-500" />
         </div>
     );
 
@@ -287,7 +287,7 @@ export default function SettingsPage() {
                         <Eye size={14} /> Preview Site
                     </a>
                     <button onClick={save} disabled={saving}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-sm transition shadow-md shadow-blue-600/20 disabled:opacity-60">
+                        className="flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-semibold text-sm transition shadow-md shadow-primary-600/20 disabled:opacity-60">
                         {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
                         {saving ? 'Saving...' : 'Save Changes'}
                     </button>
@@ -296,7 +296,7 @@ export default function SettingsPage() {
 
             {/* Toast */}
             {toast && (
-                <div className={`flex items-center gap-3 p-4 rounded-xl text-sm font-medium animate-fade-in ${toast.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                <div className={`flex items-center gap-3 p-4 rounded-xl text-sm font-medium animate-fade-in ${toast.type === 'success' ? 'bg-secondary-50 text-secondary-700 border border-secondary-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
                     {toast.type === 'success' ? <CheckCircle2 size={16} /> : <AlertTriangle size={16} />}
                     {toast.msg}
                 </div>
@@ -309,7 +309,7 @@ export default function SettingsPage() {
                         const Icon = t.icon;
                         return (
                             <button key={t.id} onClick={() => setTab(t.id)}
-                                className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${tab === t.id ? 'text-blue-600 border-blue-600 bg-blue-50/50 dark:bg-blue-900/10' : 'text-gray-500 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                                className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors border-b-2 ${tab === t.id ? 'text-primary-600 border-primary-600 bg-primary-50/50 dark:bg-primary-900/10' : 'text-gray-500 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
                                 <Icon size={15} /> {t.label}
                             </button>
                         );
@@ -383,7 +383,7 @@ export default function SettingsPage() {
                                 </Field>
                                 <Field label="Display Map">
                                     <label className="flex items-center gap-3 cursor-pointer">
-                                        <div className={`relative w-11 h-6 rounded-full transition-colors ${hero.display_map ? 'bg-blue-600' : 'bg-gray-200'}`}
+                                        <div className={`relative w-11 h-6 rounded-full transition-colors ${hero.display_map ? 'bg-primary-600' : 'bg-gray-200'}`}
                                             onClick={() => setHero(p => ({ ...p, display_map: !p.display_map }))}>
                                             <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${hero.display_map ? 'translate-x-6' : 'translate-x-1'}`} />
                                         </div>
@@ -476,7 +476,7 @@ export default function SettingsPage() {
                                     <p className="text-xs text-gray-400 mt-0.5">Add, reorder, and nest your navigation items</p>
                                 </div>
                                 <button onClick={addTopLevel}
-                                    className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition">
+                                    className="flex items-center gap-1.5 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-semibold transition">
                                     <Plus size={14} /> Add Top-Level Item
                                 </button>
                             </div>
@@ -493,7 +493,7 @@ export default function SettingsPage() {
                                                 onDelete={deleteMenuItem}
                                             />
                                             <button onClick={() => addSubItem(item.id)}
-                                                className="ml-8 flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 font-medium transition">
+                                                className="ml-8 flex items-center gap-1 text-xs text-primary-500 hover:text-primary-700 font-medium transition">
                                                 <Plus size={12} /> Add sub item to &quot;{item.label}&quot;
                                             </button>
                                         </div>
@@ -513,7 +513,7 @@ export default function SettingsPage() {
                                             <div className="w-8 h-8 rounded bg-gray-200 text-[10px] flex items-center justify-center font-bold text-gray-500">LOGO</div>
                                             <div className="flex items-center gap-1 ml-3">
                                                 {menu.items.map(item => (
-                                                    <div key={item.id} className="px-3 py-1.5 text-xs font-semibold text-gray-700 hover:text-blue-600 cursor-pointer flex items-center gap-1 rounded hover:bg-blue-50 transition">
+                                                    <div key={item.id} className="px-3 py-1.5 text-xs font-semibold text-gray-700 hover:text-primary-600 cursor-pointer flex items-center gap-1 rounded hover:bg-primary-50 transition">
                                                         {item.label}
                                                         {item.children && item.children.length > 0 && <ChevronDown size={10} />}
                                                     </div>

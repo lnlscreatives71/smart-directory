@@ -55,28 +55,28 @@ export default function NewNewsPage() {
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-semibold mb-1">Select Premium Business *</label>
-                        <select required className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.listing_id} onChange={e => setForm({ ...form, listing_id: e.target.value })}>
+                        <select required className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.listing_id} onChange={e => setForm({ ...form, listing_id: e.target.value })}>
                             <option value="">-- Choose Business --</option>
                             {listings.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
                         </select>
                     </div>
                     <div>
                         <label className="block text-sm font-semibold mb-1">Headline *</label>
-                        <input required type="text" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+                        <input required type="text" className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
                     </div>
                     <div>
                         <label className="block text-sm font-semibold mb-1">Content Post *</label>
-                        <textarea required rows={8} className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="Write full text here..." value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
+                        <textarea required rows={8} className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" placeholder="Write full text here..." value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} />
                     </div>
                     <div>
                         <label className="block text-sm font-semibold mb-1">Optional Feature Image URL</label>
-                        <input type="url" placeholder="https://..." className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} />
+                        <input type="url" placeholder="https://..." className="w-full p-2.5 border rounded-lg outline-none focus:ring-2 focus:ring-primary-500" value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} />
                     </div>
                 </div>
 
                 <div className="mt-8 flex gap-4">
                     <button type="button" onClick={() => router.back()} className="px-6 py-2 border rounded-lg text-gray-600 hover:bg-gray-50 flex-1 font-semibold">Cancel</button>
-                    <button type="submit" disabled={isLoading} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex-1 disabled:opacity-50 font-bold">
+                    <button type="submit" disabled={isLoading} className="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg flex-1 disabled:opacity-50 font-bold">
                         {isLoading ? 'Saving...' : 'Publish Update'}
                     </button>
                 </div>

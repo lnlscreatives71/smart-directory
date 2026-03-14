@@ -54,7 +54,7 @@ export default function NewsAdminPage() {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={3} className="py-16 text-center">
-                                        <Loader2 size={20} className="animate-spin text-blue-400 mx-auto" />
+                                        <Loader2 size={20} className="animate-spin text-primary-400 mx-auto" />
                                     </td>
                                 </tr>
                             ) : news.length === 0 ? (
@@ -67,7 +67,7 @@ export default function NewsAdminPage() {
                             ) : news.map(item => (
                                 <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition">
                                     <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white max-w-[300px] truncate">{item.title}</td>
-                                    <td className="px-6 py-4 text-blue-600 dark:text-blue-400 font-medium">{item.listing_name}</td>
+                                    <td className="px-6 py-4 text-primary-600 dark:text-primary-400 font-medium">{item.listing_name}</td>
                                     <td className="px-6 py-4 text-right text-gray-500 text-xs">{new Date(item.created_at).toLocaleDateString()}</td>
                                 </tr>
                             ))}

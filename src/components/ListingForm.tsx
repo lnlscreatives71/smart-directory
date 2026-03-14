@@ -131,7 +131,7 @@ export default function ListingForm({ initialData = null }: { initialData?: List
         <div className="relative">
             {/* Toast Notification */}
             {toast.show && (
-                <div className={`fixed top-4 right-4 z-50 flex items-center p-4 pr-6 rounded-lg shadow-lg border animate-in slide-in-from-top-2 fade-in ${toast.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/50 dark:border-emerald-900 dark:text-emerald-400' : 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400'}`}>
+                <div className={`fixed top-4 right-4 z-50 flex items-center p-4 pr-6 rounded-lg shadow-lg border animate-in slide-in-from-top-2 fade-in ${toast.type === 'success' ? 'bg-secondary-50 border-secondary-200 text-secondary-800 dark:bg-secondary-950/50 dark:border-secondary-900 dark:text-secondary-400' : 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400'}`}>
                     {toast.type === 'success' ? <CheckCircle2 className="w-5 h-5 mr-3" /> : <AlertCircle className="w-5 h-5 mr-3" />}
                     <p className="font-medium text-sm">{toast.message}</p>
                 </div>
@@ -144,48 +144,48 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">Business Name <span className="text-red-500">*</span></label>
-                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
                                 value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">Contact Email <span className="text-slate-500 text-xs">(for CRM Outreach)</span></label>
-                            <input type="email" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                            <input type="email" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
                                 placeholder="owner@business.com"
                                 value={formData.contact_email} onChange={e => setFormData({ ...formData, contact_email: e.target.value })} />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">URL Slug <span className="text-red-500">*</span></label>
-                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
                                 value={formData.slug} onChange={e => setFormData({ ...formData, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })} />
                             <p className="text-xs text-slate-500 mt-1.5">Used in the URL: /biz/<b>{formData.slug || 'your-slug'}</b></p>
                         </div>
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">Category <span className="text-red-500">*</span></label>
-                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                            <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
                                 placeholder="e.g. Restaurants, Med Spas"
                                 value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-semibold mb-1.5">City <span className="text-red-500">*</span></label>
-                                <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                                <input required type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
                                     value={formData.location_city} onChange={e => setFormData({ ...formData, location_city: e.target.value })} />
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold mb-1.5">State</label>
-                                <input type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none"
+                                <input type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
                                     value={formData.location_state} onChange={e => setFormData({ ...formData, location_state: e.target.value })} />
                             </div>
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-semibold mb-1.5">Description <span className="text-red-500">*</span></label>
-                            <textarea required rows={4} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none resize-y"
+                            <textarea required rows={4} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none resize-y"
                                 value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
                         </div>
                         
                         {formData.feature_flags.extra_images && (
-                            <div className="md:col-span-2 border border-blue-500/20 bg-blue-50/50 dark:bg-blue-900/10 p-5 rounded-xl border-dashed">
-                                <label className="block text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2">
+                            <div className="md:col-span-2 border border-primary-500/20 bg-primary-50/50 dark:bg-primary-900/10 p-5 rounded-xl border-dashed">
+                                <label className="block text-sm font-semibold text-primary-800 dark:text-primary-300 mb-2">
                                     Premium High-Res Storefront Photo
                                 </label>
                                 <div className="flex items-center gap-4">
@@ -201,10 +201,10 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                                                 setPreviewUrl(URL.createObjectURL(e.target.files[0]));
                                             }
                                         }}
-                                        className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition"
+                                        className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary-600 file:text-white hover:file:bg-primary-700 transition"
                                     />
                                 </div>
-                                <p className="text-xs text-blue-600/70 dark:text-blue-400/70 mt-3 font-medium">Uploaded image will override the automatic Google Maps photo fetch.</p>
+                                <p className="text-xs text-primary-600/70 dark:text-primary-400/70 mt-3 font-medium">Uploaded image will override the automatic Google Maps photo fetch.</p>
                             </div>
                         )}
                         
@@ -217,7 +217,7 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">Services (comma separated keywords)</label>
-                            <textarea rows={3} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none resize-y placeholder:text-slate-400"
+                            <textarea rows={3} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none resize-y placeholder:text-slate-400"
                                 placeholder="e.g. WiFi, Free Parking, Real Estate Consulting"
                                 value={formData.services} onChange={e => setFormData({ ...formData, services: e.target.value })} />
                             <p className="text-xs text-slate-500 mt-2">These act as filter parameters on the public directory.</p>
@@ -225,7 +225,7 @@ export default function ListingForm({ initialData = null }: { initialData?: List
 
                         <div className="space-y-4 pt-2">
                             <label className="flex items-center space-x-3 p-4 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                                <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
                                     checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} />
                                 <div>
                                     <p className="font-semibold text-sm">Featured Profile</p>
@@ -233,7 +233,7 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                                 </div>
                             </label>
                             <label className="flex items-center space-x-3 p-4 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-                                <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                <input type="checkbox" className="w-5 h-5 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
                                     checked={formData.claimed} onChange={e => setFormData({ ...formData, claimed: e.target.checked })} />
                                 <div>
                                     <p className="font-semibold text-sm">Owner Claimed</p>
@@ -245,14 +245,14 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                 </section>
 
                 {/* Section 3: Plan & Features */}
-                <section className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm border-t-4 border-t-emerald-500">
+                <section className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm border-t-4 border-t-secondary-500">
                     <SectionHeading title="Plan & Feature Flags" subtitle="Control monetization tier and explicit UI gating for this business." />
 
                     <div className="mb-8">
                         <label className="block text-sm font-semibold mb-2">Assigned Subscription Plan <span className="text-red-500">*</span></label>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <select
-                                className="w-full sm:w-1/3 p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-emerald-500/50 outline-none font-medium"
+                                className="w-full sm:w-1/3 p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-secondary-500/50 outline-none font-medium"
                                 value={formData.plan_id}
                                 onChange={e => setFormData({ ...formData, plan_id: Number(e.target.value) })}
                             >
@@ -260,9 +260,9 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                             </select>
 
                             {selectedPlan && (
-                                <div className="flex-1 flex items-center p-3 bg-emerald-50 border border-emerald-100 dark:bg-emerald-950/20 dark:border-emerald-900/50 rounded-lg">
-                                    <span className="font-bold text-lg text-emerald-700 dark:text-emerald-400 mr-3">${selectedPlan.monthly_price}/mo</span>
-                                    <span className="text-sm text-emerald-800 dark:text-emerald-200/70 leading-tight">{selectedPlan.description}</span>
+                                <div className="flex-1 flex items-center p-3 bg-secondary-50 border border-secondary-100 dark:bg-secondary-950/20 dark:border-secondary-900/50 rounded-lg">
+                                    <span className="font-bold text-lg text-secondary-700 dark:text-secondary-400 mr-3">${selectedPlan.monthly_price}/mo</span>
+                                    <span className="text-sm text-secondary-800 dark:text-secondary-200/70 leading-tight">{selectedPlan.description}</span>
                                 </div>
                             )}
                         </div>
@@ -273,10 +273,10 @@ export default function ListingForm({ initialData = null }: { initialData?: List
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {Object.keys(formData.feature_flags).map(flagKey => (
-                            <label key={flagKey} className={`flex items-start space-x-3 p-4 border rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition ${formData.feature_flags[flagKey] ? 'border-emerald-500/50 bg-emerald-50/30' : 'border-slate-200 dark:border-slate-800'}`}>
+                            <label key={flagKey} className={`flex items-start space-x-3 p-4 border rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition ${formData.feature_flags[flagKey] ? 'border-secondary-500/50 bg-secondary-50/30' : 'border-slate-200 dark:border-slate-800'}`}>
                                 <input
                                     type="checkbox"
-                                    className="mt-0.5 w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 dark:border-slate-600 dark:bg-slate-800"
+                                    className="mt-0.5 w-5 h-5 rounded border-slate-300 text-secondary-600 focus:ring-secondary-500 dark:border-slate-600 dark:bg-slate-800"
                                     checked={!!formData.feature_flags[flagKey]}
                                     onChange={e => {
                                         setFormData({
@@ -310,7 +310,7 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                         <button type="button" onClick={() => router.back()} className="px-6 py-2.5 rounded-lg font-medium border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition w-full sm:w-auto">
                             Cancel
                         </button>
-                        <button type="submit" disabled={loading} className="px-8 py-2.5 rounded-lg font-bold bg-blue-600 hover:bg-blue-700 text-white shadow hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-full sm:w-auto">
+                        <button type="submit" disabled={loading} className="px-8 py-2.5 rounded-lg font-bold bg-primary-600 hover:bg-primary-700 text-white shadow hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-full sm:w-auto">
                             {loading ? (
                                 <span className="flex items-center"><svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...</span>
                             ) : (

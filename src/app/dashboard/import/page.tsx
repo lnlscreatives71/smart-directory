@@ -179,7 +179,7 @@ export default function ImportPage() {
                     return (
                         <div key={s} className="flex items-center gap-2">
                             {i > 0 && <ChevronRight size={16} className="text-slate-300 dark:text-slate-600" />}
-                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${isActive ? 'bg-blue-600 text-white' : isPast ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors ${isActive ? 'bg-primary-600 text-white' : isPast ? 'bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
                                 {isPast && !isActive ? <CheckCircle2 size={13} /> : <span className="w-4 h-4 text-xs flex items-center justify-center font-bold">{i + 1}</span>}
                                 <span className="hidden sm:inline">{labels[i]}</span>
                             </div>
@@ -199,18 +199,18 @@ export default function ImportPage() {
                         onClick={() => fileInputRef.current?.click()}
                         className={`relative cursor-pointer rounded-2xl border-2 border-dashed transition-all flex flex-col items-center justify-center py-20 px-8 text-center select-none
                             ${dragging
-                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 scale-[1.01]'
-                                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 scale-[1.01]'
+                                : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-primary-400 hover:bg-slate-50 dark:hover:bg-slate-800/60'
                             }`}
                     >
-                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-colors ${dragging ? 'bg-blue-100 dark:bg-blue-900/40' : 'bg-slate-100 dark:bg-slate-800'}`}>
-                            <Upload size={28} className={dragging ? 'text-blue-600' : 'text-slate-400'} />
+                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-colors ${dragging ? 'bg-primary-100 dark:bg-primary-900/40' : 'bg-slate-100 dark:bg-slate-800'}`}>
+                            <Upload size={28} className={dragging ? 'text-primary-600' : 'text-slate-400'} />
                         </div>
                         <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
                             {dragging ? 'Drop your CSV here!' : 'Drag & drop your CSV file'}
                         </h3>
                         <p className="text-slate-400 text-sm mb-4">or click to browse files</p>
-                        <span className="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition">
+                        <span className="inline-block bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition">
                             Choose File
                         </span>
                         <input
@@ -232,7 +232,7 @@ export default function ImportPage() {
                     {/* Column Guide */}
                     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
                         <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
-                            <FileSpreadsheet size={18} className="text-blue-500" />
+                            <FileSpreadsheet size={18} className="text-primary-500" />
                             Expected CSV Columns
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -240,7 +240,7 @@ export default function ImportPage() {
                                 const isRequired = REQUIRED_COLUMNS.includes(col);
                                 return (
                                     <div key={col} className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 px-4 py-2.5 rounded-lg">
-                                        <code className="text-blue-600 dark:text-blue-400 font-mono text-sm flex-1">{col}</code>
+                                        <code className="text-primary-600 dark:text-primary-400 font-mono text-sm flex-1">{col}</code>
                                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${isRequired ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}`}>
                                             {isRequired ? 'Required' : 'Optional'}
                                         </span>
@@ -316,14 +316,14 @@ export default function ImportPage() {
                                                 </td>
                                                 <td className="px-4 py-3">
                                                     {row.category
-                                                        ? <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs font-medium">{row.category}</span>
+                                                        ? <span className="bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded text-xs font-medium">{row.category}</span>
                                                         : <em className="text-red-400">missing</em>}
                                                 </td>
                                                 <td className="px-4 py-3 text-slate-500">{row.location_city || '—'}</td>
                                                 <td className="px-4 py-3 text-slate-500">{row.location_state || 'NC'}</td>
                                                 <td className="px-4 py-3">
                                                     {row.contact_email
-                                                        ? <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400"><Mail size={12} />{row.contact_email}</span>
+                                                        ? <span className="flex items-center gap-1 text-secondary-600 dark:text-secondary-400"><Mail size={12} />{row.contact_email}</span>
                                                         : <span className="text-slate-300 dark:text-slate-600 text-xs">No email</span>}
                                                 </td>
                                                 <td className="px-4 py-3 text-slate-500">{row.rating || '4.0'}</td>
@@ -341,10 +341,10 @@ export default function ImportPage() {
                     </div>
 
                     {/* CTA */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-blue-600 to-blue-700 p-5 rounded-2xl text-white shadow-lg shadow-blue-700/20">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-primary-600 to-primary-700 p-5 rounded-2xl text-white shadow-lg shadow-primary-700/20">
                         <div>
                             <p className="font-semibold text-lg">Ready to import {rows.length} businesses?</p>
-                            <p className="text-blue-200 text-sm mt-0.5">
+                            <p className="text-primary-200 text-sm mt-0.5">
                                 {withEmailCount > 0 ? `${withEmailCount} will be enrolled in email outreach automatically.` : 'Add contact_email column to enroll businesses in outreach.'}
                             </p>
                         </div>
@@ -355,7 +355,7 @@ export default function ImportPage() {
                             <button
                                 onClick={handleImport}
                                 disabled={loading || rows.length === 0}
-                                className="flex items-center px-6 py-2.5 bg-white text-blue-700 hover:bg-blue-50 rounded-lg text-sm font-bold transition shadow-md disabled:opacity-60"
+                                className="flex items-center px-6 py-2.5 bg-white text-primary-700 hover:bg-primary-50 rounded-lg text-sm font-bold transition shadow-md disabled:opacity-60"
                             >
                                 {loading ? <Loader2 size={16} className="mr-2 animate-spin" /> : <Upload size={16} className="mr-2" />}
                                 {loading ? 'Importing...' : 'Confirm Import'}
@@ -369,7 +369,7 @@ export default function ImportPage() {
             {step === 'result' && result && (
                 <div className="space-y-6">
                     {/* Hero result */}
-                    <div className={`rounded-2xl p-8 text-white flex flex-col sm:flex-row items-start sm:items-center gap-6 shadow-xl ${result.success ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 shadow-emerald-700/20' : 'bg-gradient-to-r from-red-600 to-red-500 shadow-red-700/20'}`}>
+                    <div className={`rounded-2xl p-8 text-white flex flex-col sm:flex-row items-start sm:items-center gap-6 shadow-xl ${result.success ? 'bg-gradient-to-r from-secondary-600 to-secondary-500 shadow-secondary-700/20' : 'bg-gradient-to-r from-red-600 to-red-500 shadow-red-700/20'}`}>
                         <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${result.success ? 'bg-white/20' : 'bg-white/20'}`}>
                             {result.success ? <CheckCircle2 size={32} /> : <XCircle size={32} />}
                         </div>
@@ -387,7 +387,7 @@ export default function ImportPage() {
                     {result.listings.length > 0 && (
                         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
                             <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                                <CheckCircle2 size={16} className="text-emerald-500" />
+                                <CheckCircle2 size={16} className="text-secondary-500" />
                                 <h3 className="font-semibold text-slate-800 dark:text-slate-100">Successfully Imported</h3>
                             </div>
                             <div className="overflow-x-auto">
@@ -404,11 +404,11 @@ export default function ImportPage() {
                                             <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                                                 <td className="px-6 py-3 font-medium text-slate-800 dark:text-slate-200">{l.name}</td>
                                                 <td className="px-6 py-3">
-                                                    <a href={`/biz/${l.slug}`} target="_blank" rel="noreferrer" className="font-mono text-blue-600 dark:text-blue-400 hover:underline text-xs">/biz/{l.slug}</a>
+                                                    <a href={`/biz/${l.slug}`} target="_blank" rel="noreferrer" className="font-mono text-primary-600 dark:text-primary-400 hover:underline text-xs">/biz/{l.slug}</a>
                                                 </td>
                                                 <td className="px-6 py-3">
                                                     {l.hadEmail
-                                                        ? <span className="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-medium px-2.5 py-1 rounded-full"><Mail size={11} /> Enrolled</span>
+                                                        ? <span className="inline-flex items-center gap-1 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-400 text-xs font-medium px-2.5 py-1 rounded-full"><Mail size={11} /> Enrolled</span>
                                                         : <span className="text-slate-300 dark:text-slate-600 text-xs">No email — skipped</span>
                                                     }
                                                 </td>
@@ -435,7 +435,7 @@ export default function ImportPage() {
                     )}
 
                     <div className="flex gap-3">
-                        <button onClick={reset} className="flex items-center px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition shadow-md">
+                        <button onClick={reset} className="flex items-center px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium text-sm transition shadow-md">
                             <Upload size={15} className="mr-2" /> Import Another File
                         </button>
                         <a href="/dashboard/leads" className="flex items-center px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg font-medium text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition">
