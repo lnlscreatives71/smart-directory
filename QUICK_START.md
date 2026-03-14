@@ -37,6 +37,7 @@ The platform relies on a PostgreSQL database. If you are setting up for the exac
    ```bash
    npx tsx --env-file=.env.local scripts/migrate.ts
    npx tsx --env-file=.env.local scripts/migrate_v2.ts
+   npx tsx --env-file=.env.local scripts/migrate_v6_listing_contact_info.ts
    ```
 
 3. **Seed Premium Feature Data:**
@@ -56,7 +57,11 @@ The platform relies on a PostgreSQL database. If you are setting up for the exac
 
 ### Admin Dashboard (The Backend)
 * Accessible via `http://localhost:3000/dashboard`
+* **Login Credentials (Default Admin):**
+    * **Email:** `admin@trianglelocalhub.com`
+    * **Password:** `admin123`
 * **Listings (`/dashboard/listings`)**: Your primary CRM for all directory businesses.
+* **Bulk Import (`/dashboard/import`)**: Drag and drop CSVs to load 100s of listings at once.
 * **Premium Assets**: Manage `Events`, `Blogs`, `News`, `Jobs`, and `Bookings` directly from the sidebar. 
 
 ---

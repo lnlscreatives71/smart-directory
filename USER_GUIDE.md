@@ -20,12 +20,28 @@ Admins can manually input any business into the directory.
 2. Click the specific **"Add Business"** button in the top right.
 3. **Core Details**: Enter the Business Name, URL Slug (critical for routing), and a descriptive paragraph.
 4. **Geography**: Enter the required City (e.g., *Raleigh*) and State (e.g., *NC*).
-5. **Subscription Tier**: Under *Plan & Feature Flags*, select the baseline tier for this business (Free, Premium, or Pro).
-6. **Save**: Click **Create Listing**. The listing instantly goes live.
+5. **Contact Person**: Enter the **Contact Name**, **Phone Number**, **Website**, and **Email**.
+6. **Subscription Tier**: Under *Plan & Feature Flags*, select the baseline tier for this business (Free, Premium, or Pro).
+7. **Save**: Click **Create Listing**. The listing instantly goes live.
 
 ---
 
-## 2. Changing Business Locations
+## 2. Bulk Business Import (CSV)
+
+If you have a large list of businesses, you can import them all at once via a CSV file.
+
+1. Go to **Dashboard > Import Businesses** (`/dashboard/import`).
+2. **Download Template**: Click the **"Sample CSV"** button to download the correct format.
+3. **Draft Your Data**: Ensure your spreadsheet has headers for `name`, `category`, `description`, `location_city`, `contact_name`, `contact_email`, `phone`, and `website`. 
+    * *Note:* Only **name** is strictly required. If **category** is missing, it defaults to "Other".
+4. **Upload**: Drag and drop your `.csv` file into the upload zone.
+5. **Review**: Check the preview table for any missing data. 
+6. **Confirm**: Click **Confirm Import**.
+7. **CRM Auto-Enroll**: Any business imported with a `contact_email` is automatically dropped into the automated outreach funnel.
+
+---
+
+## 3. Changing Business Locations
 
 Geographic routing heavily influences directory SEO. A business’s location determines which searches it surfaces on.
 

@@ -37,7 +37,7 @@ Build a comprehensive, region-specific business directory (initially targeting t
 The relational schema heavily revolves around the central `listings` table.
 
 * **Plans:** Defines the 3 tiers (`id`, `name`, `monthly_price`, `limits`).
-* **Listings:** The core entity (`name`, `slug`, `category`, `location_city`, `rating`, `feature_flags`, `plan_id`).
+* **Listings:** The core entity (`name`, `slug`, `category`, `location_city`, `rating`, `feature_flags`, `plan_id`, `contact_name`, `phone`, `website`).
 * **Events & Blogs:** Premium content arrays referencing a `listing_id`.
 * **Jobs & News:** Additional marketing and career boards referencing a `listing_id`.
 * **Bookings & Leads:** Interactive conversion points referencing a `listing_id` but created by consumers.
@@ -68,8 +68,15 @@ The `/dashboard/` nexus is gate-kept for platform owners to administer the SaaS.
 ### 4.1 Listings CRM (`/dashboard/listings`)
 *   **Req 1:** Admins must be able to view all profiles, filter by plan tier, or filter by "Claim Request".
 *   **Req 2:** Admins must be able to edit **Component Rendering Overrides**. This explicitly overrides a plan's generic features on a per-listing basis (e.g., toggling the Booking Calendar on for a Free user manually).
+*   **Req 3:** **Strict Categories:** Form inputs must use predefined categories to prevent data fragmentation and duplicate tags.
 
-### 4.2 Automated Outreach CRM (`/dashboard/leads`)
+### 4.2 Bulk Data Ingestion (`/dashboard/import`)
+*   **Req 1:** The platform must support **CSV Bulk Import**.
+*   **Req 2:** Importer must map columns for `name`, `category`, `description`, `location_city`, `contact_name`, `contact_email`, `phone`, and `website`.
+*   **Req 3:** Missing categories in the CSV must default to "Other" to prevent import failures.
+*   **Req 4:** Imported businesses with an email address must be automatically enrolled in the **Outreach Campaign** funnel.
+
+### 4.3 Automated Outreach CRM (`/dashboard/leads`)
 *   **Req 1:** When a business is "Seeded," it starts as "un-claimed." 
 *   **Req 2:** The system must execute a 3-step drip email campaign (via cron scheduler or manual trigger). 
 *   **Req 3:** The funnel stages are: `pending` -> `email_1_sent` -> `email_2_sent` -> `email_3_sent` -> `completed`. The goal is to drive the owner to `/biz/claim`.
