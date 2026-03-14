@@ -44,7 +44,7 @@ export default async function BusinessDetail({
             {/* Header Banner */}
             <div className="h-[300px] w-full bg-slate-800 relative">
                 <img
-                    src={`https://images.unsplash.com/photo-${biz.id % 2 === 0 ? '1497366216548-37526070297c' : '1517248135467-4c7edcad34c4'}?auto=format&fit=crop&q=80&w=1200`}
+                    src={biz.image_url || `https://images.unsplash.com/photo-${biz.id % 2 === 0 ? '1497366216548-37526070297c' : '1517248135467-4c7edcad34c4'}?auto=format&fit=crop&q=80&w=1200`}
                     alt={biz.name}
                     className="w-full h-full object-cover opacity-60"
                 />

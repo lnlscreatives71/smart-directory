@@ -13,7 +13,7 @@ export default function BizCard({ biz, showFeatured = false }: { biz: Listing; s
       <div className="relative">
         <Link href={`/biz/${biz.slug}`}>
           <img
-            src={`https://images.unsplash.com/photo-${biz.id % 3 === 0 ? '1497366216548-37526070297c' : biz.id % 3 === 1 ? '1517248135467-4c7edcad34c4' : '1560750588-73207b1ef5b9'}?auto=format&fit=crop&q=80&w=500`}
+            src={biz.image_url || `https://images.unsplash.com/photo-${biz.id % 3 === 0 ? '1497366216548-37526070297c' : biz.id % 3 === 1 ? '1517248135467-4c7edcad34c4' : '1560750588-73207b1ef5b9'}?auto=format&fit=crop&q=80&w=500`}
             alt={biz.name}
             className="biz-card-img hover:opacity-95 transition-opacity"
           />

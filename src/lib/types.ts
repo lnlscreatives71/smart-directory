@@ -40,6 +40,7 @@ export interface Listing {
     claimed: boolean;
     plan_id: number;
     feature_flags: FeatureFlags;
+    image_url?: string;
     created_at: Date;
     updated_at: Date;
 

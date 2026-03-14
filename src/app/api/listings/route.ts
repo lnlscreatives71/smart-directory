@@ -40,14 +40,31 @@ export async function POST(request: Request) {
             name, slug, category, description, location_city, location_state, location_region,
             lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed
         } = body;
+        let { image_url } = body;
+
+        // Auto-fetch Google Maps photo if none is provided
+        if (!image_url && process.env.NEXT_PUBLIC_MAPS_API_KEY) {
+            try {
+                const query = encodeURIComponent(`${name} ${location_city} ${location_state}`);
+                const res = await fetch(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?fields=photos&input=${query}&inputtype=textquery&key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}`);
+                const placeData = await res.json();
+                
+                if (placeData.candidates && placeData.candidates.length > 0 && placeData.candidates[0].photos && placeData.candidates[0].photos.length > 0) {
+                    const photoRef = placeData.candidates[0].photos[0].photo_reference;
+                    image_url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}`;
+                }
+            } catch (googleErr) {
+                console.error('Failed to fetch Google Maps photo:', googleErr);
+            }
+        }
 
         const result = await sql`
       INSERT INTO listings (
         name, slug, category, description, location_city, location_state, location_region,
-        lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed
+        lat, lng, services, rating, featured, plan_id, feature_flags, contact_email, claimed, image_url
       ) VALUES (
         ${name}, ${slug}, ${category}, ${description}, ${location_city}, ${location_state}, ${location_region},
-        ${lat || null}, ${lng || null}, ${JSON.stringify(services || [])}, ${rating || 0}, ${featured || false}, ${plan_id}, ${JSON.stringify(feature_flags || {})}, ${contact_email || null}, ${claimed || false}
+        ${lat || null}, ${lng || null}, ${JSON.stringify(services || [])}, ${rating || 0}, ${featured || false}, ${plan_id}, ${JSON.stringify(feature_flags || {})}, ${contact_email || null}, ${claimed || false}, ${image_url || null}
       ) RETURNING *
     `;
 

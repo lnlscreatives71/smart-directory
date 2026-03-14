@@ -12,6 +12,9 @@ export default function ListingForm({ initialData = null }: { initialData?: List
     // Toast State
     const [toast, setToast] = useState<{ show: boolean, type: 'success' | 'error', message: string }>({ show: false, type: 'success', message: '' });
 
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.image_url || null);
+
     const [formData, setFormData] = useState({
         name: initialData?.name || '',
         contact_email: initialData?.contact_email || '',
@@ -56,8 +59,33 @@ export default function ListingForm({ initialData = null }: { initialData?: List
             return;
         }
 
+        let image_url = initialData?.image_url;
+
+        // Auto-upload image to Vercel Blob if a file was selected
+        if (imageFile && formData.feature_flags.extra_images) {
+            try {
+                const res = await fetch(`/api/upload?filename=${encodeURIComponent(imageFile.name)}`, {
+                    method: 'POST',
+                    body: imageFile,
+                });
+                if (res.ok) {
+                    const blob = await res.json();
+                    image_url = blob.url;
+                } else {
+                    showToast('error', 'Failed to upload image. Please try again.');
+                    setLoading(false);
+                    return;
+                }
+            } catch (error) {
+                showToast('error', 'Network error while uploading image.');
+                setLoading(false);
+                return;
+            }
+        }
+
         const payload = {
             ...formData,
+            image_url,
             services: formData.services.split(',').map(s => s.trim()).filter(Boolean),
         };
 
@@ -154,6 +182,32 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                             <textarea required rows={4} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-blue-500/50 outline-none resize-y"
                                 value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
                         </div>
+                        
+                        {formData.feature_flags.extra_images && (
+                            <div className="md:col-span-2 border border-blue-500/20 bg-blue-50/50 dark:bg-blue-900/10 p-5 rounded-xl border-dashed">
+                                <label className="block text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2">
+                                    Premium High-Res Storefront Photo
+                                </label>
+                                <div className="flex items-center gap-4">
+                                    {previewUrl && (
+                                        <img src={previewUrl} alt="Preview" className="w-24 h-24 object-cover rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm" />
+                                    )}
+                                    <input 
+                                        type="file" 
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                setImageFile(e.target.files[0]);
+                                                setPreviewUrl(URL.createObjectURL(e.target.files[0]));
+                                            }
+                                        }}
+                                        className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition"
+                                    />
+                                </div>
+                                <p className="text-xs text-blue-600/70 dark:text-blue-400/70 mt-3 font-medium">Uploaded image will override the automatic Google Maps photo fetch.</p>
+                            </div>
+                        )}
+                        
                     </div>
                 </section>
 
