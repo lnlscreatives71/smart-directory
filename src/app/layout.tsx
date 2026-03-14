@@ -88,7 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <UserCircle size={16} />
                   Admin
                 </Link>
-                <Link href="/dashboard/listings/new" className="flex items-center gap-1.5 btn-outline px-4 py-2 text-sm whitespace-nowrap">
+                <Link href="/pricing" className="flex items-center gap-1.5 btn-outline px-4 py-2 text-sm whitespace-nowrap">
                   Add New Business <ArrowUpRight size={15} />
                 </Link>
               </div>
@@ -124,7 +124,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ul className="space-y-2 text-sm text-slate-300">
                   <li><Link href="/category/dining" className="hover:text-white transition">Dining</Link></li>
                   <li><Link href="/category/services" className="hover:text-white transition">Services</Link></li>
-                  <li><Link href="/dashboard/listings/new" className="hover:text-white transition">List Your Business</Link></li>
+                  <li><Link href="/pricing" className="hover:text-white transition">List Your Business</Link></li>
                   <li><Link href="/dashboard" className="hover:text-white transition">Admin Dashboard</Link></li>
                 </ul>
               </div>
