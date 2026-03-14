@@ -39,12 +39,12 @@ export default async function Home({
   const regular = listings.filter(b => !b.featured);
 
   const CATEGORY_TILES = [
-    { label: 'Dining', href: '/category/dining', img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80&auto=format&fit=crop' },
-    { label: 'Services', href: '/category/services', img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80&auto=format&fit=crop' },
-    { label: 'Retail', href: '/category/retail', img: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&q=80&auto=format&fit=crop' },
-    { label: 'Med Spa', href: '/category/med-spa', img: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b9?w=400&q=80&auto=format&fit=crop' },
-    { label: 'Real Estate', href: '/category/real-estate', img: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=400&q=80&auto=format&fit=crop' },
-    { label: 'Health & Fitness', href: '/category/health', img: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80&auto=format&fit=crop' },
+    { label: 'Dining', href: '/category/dining', img: '/raliegh-coffe-shop.jpg' },
+    { label: 'Services', href: '/category/services', img: '/raleighcityscape.jpg' },
+    { label: 'Retail', href: '/category/retail', img: '/city-park.jpg' },
+    { label: 'Med Spa', href: '/category/med-spa', img: '/med-spa.jpeg' },
+    { label: 'Real Estate', href: '/category/real-estate', img: '/raleigh-capital-nc.jpg' },
+    { label: 'Health & Fitness', href: '/category/health', img: '/sunset-nc.jpg' },
   ];
 
   return (
