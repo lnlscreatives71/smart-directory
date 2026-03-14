@@ -50,8 +50,18 @@ export default async function Home({
     <div className="flex flex-col min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────── */}
-      <section className="hero-bg flex flex-col items-center justify-center text-center px-4 py-32 relative">
-        <div className="hero-glow"></div>
+      <section className="hero-bg flex flex-col items-center justify-center text-center px-4 py-32 relative overflow-hidden">
+        {/* Top Hero Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/trianglehubcityimage.png" 
+            alt="Triangle Regional Skyline" 
+            className="w-full h-full object-cover opacity-25 mix-blend-screen"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/50 via-transparent to-[#0B0F19]"></div>
+        </div>
+
+        <div className="hero-glow z-0"></div>
         <div className="relative z-10 w-full flex flex-col items-center">
           <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-sm font-semibold text-blue-400">
             <Star size={14} className="fill-current" /> Premium Directory
@@ -189,8 +199,8 @@ export default async function Home({
 
             {/* ── CTA Banner ─────────────────────────────── */}
             <section className="relative text-white py-24 text-center overflow-hidden border-t border-slate-800/50 mt-16">
-              <div className="absolute inset-0 bg-blue-900/20"></div>
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+              <div className="absolute inset-0 bg-blue-900/30"></div>
+              <div className="absolute inset-0 bg-[url('/trianglehubcityimage.png')] bg-cover bg-center opacity-20 mix-blend-screen"></div>
               <div className="relative z-10 max-w-3xl mx-auto px-4">
                 <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">Are you a local business owner?</h2>
                 <p className="text-slate-300 text-xl mb-10 max-w-2xl mx-auto">
