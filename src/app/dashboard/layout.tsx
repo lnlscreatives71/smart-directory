@@ -15,6 +15,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         { name: 'Import Businesses', href: '/dashboard/import', icon: Upload },
         { name: 'Plans', href: '/dashboard/plans', icon: CreditCard },
         { name: 'Leads & CRM', href: '/dashboard/leads', icon: Users },
+        { name: 'Events', href: '/dashboard/events', icon: Bell },
+        { name: 'Blogs', href: '/dashboard/blogs', icon: LayoutDashboard },
         { name: 'Branding & Settings', href: '/dashboard/settings', icon: Settings },
     ];
 

@@ -1,5 +1,5 @@
 import { sql } from '@/lib/db';
-import { Listing } from '@/lib/types';
+import { Listing, Event, Blog } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import { Star, MapPin, CheckCircle, ExternalLink, Calendar, MessageSquare, Tag } from 'lucide-react';
 import Link from 'next/link';
@@ -11,8 +11,15 @@ export default async function BusinessDetail({
 }) {
     const { slug } = await params;
     let listings: Listing[] = [];
+    let events: Event[] = [];
+    let blogs: Blog[] = [];
+    
     try {
         listings = (await sql`SELECT * FROM listings WHERE slug = ${slug} LIMIT 1`) as Listing[];
+        if (listings.length > 0) {
+            events = (await sql`SELECT * FROM events WHERE listing_id = ${listings[0].id} ORDER BY date DESC LIMIT 3`) as Event[];
+            blogs = (await sql`SELECT * FROM blogs WHERE listing_id = ${listings[0].id} AND published = true ORDER BY created_at DESC LIMIT 3`) as Blog[];
+        }
     } catch (err) {
         console.error(err);
         return <div>Database Error. Seed first.</div>;
@@ -78,7 +85,9 @@ export default async function BusinessDetail({
                     <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm">
                         <h2 className="text-2xl font-bold mb-4">Services Offered</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {services.map((srv: string, i: number) => (
+                            {services.length === 0 ? (
+                                <p className="text-gray-500">No services listed yet.</p>
+                            ) : services.map((srv: string, i: number) => (
                                 <div key={i} className="flex items-start">
                                     <CheckCircle size={20} className="text-green-500 mr-2 shrink-0 mt-0.5" />
                                     <span className="text-gray-700 dark:text-gray-300">{srv}</span>
@@ -86,6 +95,25 @@ export default async function BusinessDetail({
                             ))}
                         </div>
                     </div>
+
+                    {/* Blogs Section */}
+                    {blogs.length > 0 && (
+                        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 border border-gray-200 dark:border-slate-700 shadow-sm mt-8">
+                            <h2 className="text-2xl font-bold mb-6">Latest News & Updates</h2>
+                            <div className="grid gap-6">
+                                {blogs.map(blog => (
+                                    <div key={blog.id} className="border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                                        <div className="p-5">
+                                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{blog.title}</h3>
+                                            <p className="text-sm text-gray-500 mb-4">{new Date(blog.created_at).toLocaleDateString()}</p>
+                                            <p className="text-gray-700 dark:text-gray-300 mb-4">{blog.excerpt || blog.content.substring(0, 150) + '...'}</p>
+                                            <button className="text-blue-600 font-bold hover:underline">Read Full Post &rarr;</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Sidebar */}
@@ -139,6 +167,28 @@ export default async function BusinessDetail({
                                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 rounded flex items-center justify-center">
                                     &rarr;
                                 </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Events Display */}
+                    {events.length > 0 && (
+                        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-gray-200 dark:border-slate-700 shadow-sm">
+                            <h3 className="text-xl font-bold mb-4">Upcoming Events</h3>
+                            <div className="space-y-4">
+                                {events.map(evt => (
+                                    <div key={evt.id} className="flex gap-4 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
+                                        <div className="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 rounded-lg px-3 py-2 text-center min-w-[3.5rem] flex flex-col items-center justify-center shrink-0 h-14">
+                                            <span className="text-xs font-bold uppercase">{new Date(evt.date).toLocaleString('default', { month: 'short' })}</span>
+                                            <span className="text-lg font-black leading-none">{new Date(evt.date).getDate()}</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-gray-900 dark:text-white leading-tight mb-1">{evt.title}</h4>
+                                            {evt.time && <p className="text-xs text-gray-500 font-medium mb-1"><Calendar size={12} className="inline mr-1" />{evt.time}</p>}
+                                            {evt.location && <p className="text-xs text-gray-500"><MapPin size={12} className="inline mr-1" />{evt.location}</p>}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     )}

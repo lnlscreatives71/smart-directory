@@ -64,3 +64,71 @@ export interface OutreachCampaign {
     listing_email?: string;
     claimed?: boolean;
 }
+
+export interface Event {
+    id: number;
+    listing_id: number;
+    title: string;
+    description: string;
+    date: Date;
+    time: string;
+    location: string;
+    created_at: Date;
+    updated_at: Date;
+}
+
+export interface Blog {
+    id: number;
+    listing_id: number;
+    title: string;
+    excerpt: string;
+    content: string;
+    image_url: string;
+    published: boolean;
+    created_at: Date;
+    updated_at: Date;
+    listing_name?: string;
+}
+
+export interface News {
+    id: number;
+    listing_id: number;
+    title: string;
+    content: string;
+    image_url?: string;
+    created_at: Date;
+    updated_at: Date;
+    listing_name?: string;
+}
+
+export interface Job {
+    id: number;
+    listing_id: number;
+    title: string;
+    description: string;
+    employment_type: string;
+    location?: string;
+    salary_range?: string;
+    application_url?: string;
+    active: boolean;
+    created_at: Date;
+    updated_at: Date;
+    listing_name?: string;
+}
+
+export interface Booking {
+    id: number;
+    listing_id: number;
+    customer_name: string;
+    customer_email: string;
+    customer_phone?: string;
+    service_requested?: string;
+    booking_date: Date;
+    booking_time: string;
+    status: string;
+    notes?: string;
+    created_at: Date;
+    updated_at: Date;
+    listing_name?: string;
+}
+

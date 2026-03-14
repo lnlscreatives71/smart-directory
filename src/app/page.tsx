@@ -49,39 +49,27 @@ export default async function Home({
     <div className="flex flex-col min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────── */}
-      <section className="hero-bg flex flex-col items-center justify-center text-center px-4 py-20">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3 drop-shadow-lg leading-tight">
+      <section className="hero-bg flex flex-col items-center justify-center text-center px-4 py-32">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 drop-shadow-md tracking-tight">
           Find Local Businesses You Can Trust
         </h1>
-        <p className="text-white/80 text-lg mb-8 max-w-xl">
+        <p className="text-white text-lg md:text-xl mb-10 max-w-3xl font-medium drop-shadow-md">
           Search by name, category, or keyword — and support the businesses that make your community thrive.
         </p>
 
         {/* Search Bar */}
-        <form className="w-full max-w-2xl flex rounded-xl overflow-hidden shadow-2xl">
-          <div className="relative flex-1 bg-white">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              name="q"
-              defaultValue={query}
-              placeholder="Search by business name or category..."
-              className="w-full py-4 pl-11 pr-4 text-gray-800 text-base outline-none bg-white"
-            />
-          </div>
-          <button type="submit" className="btn-red px-8 py-4 text-base font-bold whitespace-nowrap shrink-0">
+        <form className="w-full max-w-2xl flex rounded-md overflow-hidden shadow-2xl h-14">
+          <input
+            type="text"
+            name="q"
+            defaultValue={query}
+            placeholder="Search by business name or tag"
+            className="flex-1 px-6 text-gray-700 text-[15px] outline-none bg-white placeholder:text-gray-400"
+          />
+          <button type="submit" className="bg-[#e53e3e] hover:bg-red-600 px-8 text-white text-[15px] font-semibold whitespace-nowrap shrink-0 transition-colors">
             Search
           </button>
         </form>
-
-        {/* Popular tags */}
-        <div className="flex flex-wrap justify-center gap-2 mt-6">
-          {['Restaurants', 'Med Spa', 'Real Estate', 'HVAC', 'Plumbing', 'Pet Services'].map(tag => (
-            <Link key={tag} href={`/?q=${tag}`} className="bg-white/20 hover:bg-white/30 text-white text-sm px-4 py-1.5 rounded-full font-medium backdrop-blur-sm transition">
-              {tag}
-            </Link>
-          ))}
-        </div>
       </section>
 
       {/* ── MAIN CONTENT ──────────────────────────────── */}

@@ -30,12 +30,32 @@ const CATEGORIES = [
     ],
   },
   {
-    label: 'More', href: '/category/all',
+    label: 'Retail', href: '/category/retail',
     subcategories: [
-      { label: 'Pet Services', href: '/category/pet-services' },
-      { label: 'Retail', href: '/category/retail' },
-      { label: 'Health & Fitness', href: '/category/health' },
-      { label: 'Beauty & Grooming', href: '/category/beauty' },
+      { label: 'Clothing', href: '/category/clothing' },
+      { label: 'Electronics', href: '/category/electronics' },
+      { label: 'Home Goods', href: '/category/home-goods' },
+    ],
+  },
+  {
+    label: 'Health & Wellness', href: '/category/health',
+    subcategories: [
+      { label: 'Gyms', href: '/category/gyms' },
+      { label: 'Yoga Studios', href: '/category/yoga' },
+      { label: 'Massage Therapy', href: '/category/massage' },
+    ],
+  },
+  {
+    label: 'Blogs', href: '/blogs',
+    subcategories: [],
+  },
+  {
+    label: 'More', href: '#',
+    subcategories: [
+      { label: 'Pricing', href: '/pricing' },
+      { label: 'Events', href: '/events' },
+      { label: 'Jobs', href: '/jobs' },
+      { label: 'News', href: '/news' },
     ],
   },
 ];
@@ -59,36 +79,43 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Link>
 
               {/* Category Nav */}
-              <nav className="hidden md:flex items-center gap-1 flex-1 justify-center">
+              <nav className="hidden lg:flex items-center gap-2 flex-1 justify-center">
                 {CATEGORIES.map((cat) => (
                   <div key={cat.label} className="relative group">
-                    <button className="flex items-center gap-1 px-4 py-2 text-sm font-semibold text-gray-700 hover:text-red-500 rounded-lg transition-colors whitespace-nowrap group-hover:text-red-500">
+                    <Link
+                      href={cat.href}
+                      className="flex items-center gap-1 px-3 py-2 text-[15px] font-medium text-slate-700 hover:text-blue-600 transition-colors whitespace-nowrap"
+                    >
                       {cat.label}
-                      <svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="m19 9-7 7-7-7" /></svg>
-                    </button>
+                      {cat.subcategories.length > 0 && (
+                        <svg className="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="m19 9-7 7-7-7" /></svg>
+                      )}
+                    </Link>
                     {/* Dropdown */}
-                    <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                      {cat.subcategories.map((sub) => (
-                        <Link key={sub.href} href={sub.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-500 font-medium transition-colors">
-                          {sub.label}
-                        </Link>
-                      ))}
-                    </div>
+                    {cat.subcategories.length > 0 && (
+                      <div className="absolute top-full left-0 mt-1 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+                        {cat.subcategories.map((sub) => (
+                          <Link key={sub.href} href={sub.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 font-medium transition-colors">
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </nav>
 
               {/* Right actions */}
-              <div className="flex items-center gap-3 shrink-0">
-                <a href="tel:9195550100" className="hidden lg:flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-red-500 transition-colors">
+              <div className="flex items-center gap-4 shrink-0">
+                <a href="tel:6193799701" className="hidden xl:flex items-center gap-1.5 text-[15px] font-medium text-slate-700 hover:text-blue-600 transition-colors">
                   <Phone size={15} />
-                  (919) 555-0100
+                  6193799701
                 </a>
-                <Link href="/dashboard" className="hidden md:flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-red-500 transition-colors">
-                  <UserCircle size={16} />
-                  Admin
+                <Link href="/dashboard" className="hidden md:flex items-center gap-1.5 text-[15px] font-medium text-slate-700 hover:text-blue-600 transition-colors">
+                  <UserCircle size={17} />
+                  Login / Register
                 </Link>
-                <Link href="/pricing" className="flex items-center gap-1.5 btn-outline px-4 py-2 text-sm whitespace-nowrap">
+                <Link href="/pricing" className="flex items-center gap-1.5 btn-outline px-4 py-2 text-sm whitespace-nowrap rounded-md border-slate-300">
                   Add New Business <ArrowUpRight size={15} />
                 </Link>
               </div>
