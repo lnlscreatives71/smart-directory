@@ -58,9 +58,9 @@ export default async function Home({
           <img 
             src="/trianglehubcityimage.png" 
             alt={settings.hero.bannerTitle} 
-            className="w-full h-full object-cover opacity-40 mix-blend-lighten"
+            className="w-full h-full object-cover object-bottom opacity-60 mix-blend-lighten"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/30 via-transparent to-[#0B0F19]/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/10 via-transparent to-[#0B0F19]/80"></div>
         </div>
 
         <div className="hero-glow z-0"></div>
@@ -201,8 +201,12 @@ export default async function Home({
 
             {/* ── CTA Banner ─────────────────────────────── */}
             <section className="relative text-white py-24 text-center overflow-hidden border-t border-slate-800/50 mt-16">
-              <div className="absolute inset-0 bg-primary-900/30"></div>
-              <div className="absolute inset-0 bg-[url('/trianglehubcityimage.png')] bg-cover bg-center opacity-20 mix-blend-screen"></div>
+              <img 
+                src="/trianglehubcityimage.png" 
+                alt="Cityscape"
+                className="absolute inset-0 w-full h-full object-cover object-bottom opacity-50 mix-blend-lighten z-0"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19]/90 to-[#0B0F19]/30 z-0"></div>
               <div className="relative z-10 max-w-3xl mx-auto px-4">
                 <h2 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">Are you a local business owner?</h2>
                 <p className="text-slate-300 text-xl mb-10 max-w-2xl mx-auto">
