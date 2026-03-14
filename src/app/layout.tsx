@@ -4,11 +4,15 @@ import Link from 'next/link';
 import { Phone, UserCircle, ArrowUpRight } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 import { verifyLicense } from '@/lib/license';
+import { getSiteSettings } from '@/lib/settings';
 
-export const metadata: Metadata = {
-  title: siteConfig.seo.title,
-  description: siteConfig.seo.description,
-};
+export async function generateMetadata() {
+  const settings = await getSiteSettings();
+  return {
+    title: settings.seo?.title || settings.name,
+    description: settings.seo?.description || settings.description,
+  };
+}
 
 const CATEGORIES = [
   {
@@ -64,6 +68,7 @@ const CATEGORIES = [
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const license = await verifyLicense();
+  const settings = await getSiteSettings();
 
   if (!license.valid) {
     return (
@@ -127,9 +132,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
               {/* Right actions */}
               <div className="flex items-center gap-5 shrink-0">
-                <a href={`tel:${siteConfig.contact.phoneRaw}`} className="hidden xl:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
+                <a href={`tel:${settings.contact.phoneRaw}`} className="hidden xl:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
                   <Phone size={16} className="text-primary-400" />
-                  {siteConfig.contact.phone}
+                  {settings.contact.phone}
                 </a>
                 <Link href="/dashboard" className="hidden md:flex items-center gap-2 text-[14px] font-bold text-slate-300 hover:text-white transition-colors">
                   <UserCircle size={18} />
@@ -152,17 +157,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
               <div>
                 <Link href="/">
-                  <img src="/triangle-hub-logo-dark.png" alt={siteConfig.name} className="h-[46px] w-auto mb-4 drop-shadow-md" />
+                  <img src="/triangle-hub-logo-dark.png" alt={settings.name} className="h-[46px] w-auto mb-4 drop-shadow-md" />
                 </Link>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  {siteConfig.description}
+                  {settings.description}
                 </p>
               </div>
               <div>
                 <h4 className="font-bold text-sm uppercase tracking-wider text-slate-400 mb-4">Contact & Support</h4>
                 <ul className="space-y-2 text-sm text-slate-300">
-                  <li>📞 {siteConfig.contact.phone}</li>
-                  <li>📍 {siteConfig.contact.address}</li>
+                  <li>📞 {settings.contact.phone}</li>
+                  <li>📍 {settings.contact.address}</li>
                   <li><Link href="/support" className="hover:text-white transition">Support Center</Link></li>
                 </ul>
               </div>
@@ -177,7 +182,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </div>
             <div className="border-t border-slate-800 py-5 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 max-w-7xl mx-auto px-6">
-              <span>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</span>
+              <span>&copy; {new Date().getFullYear()} {settings.name}. All rights reserved.</span>
               <div className="flex items-center gap-4 mt-2 md:mt-0">
                 <Link href="/terms" className="hover:text-white transition">Terms of Service</Link>
                 <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>

@@ -3,13 +3,14 @@ import { Listing } from '@/lib/types';
 import Link from 'next/link';
 import { Search, ExternalLink, Copy, Heart, Star, MapPin, ArrowUpRight } from 'lucide-react';
 import BizCard from '@/components/BizCard';
-import { siteConfig } from '@/config/site';
+import { getSiteSettings } from '@/lib/settings';
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: { q?: string };
 }) {
+  const settings = await getSiteSettings();
   const query = searchParams.q || '';
 
   let listings: Listing[] = [];
@@ -56,7 +57,7 @@ export default async function Home({
         <div className="absolute inset-0 z-0">
           <img 
             src="/trianglehubcityimage.png" 
-            alt={siteConfig.hero.bannerTitle} 
+            alt={settings.hero.bannerTitle} 
             className="w-full h-full object-cover opacity-25 mix-blend-screen"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/50 via-transparent to-[#0B0F19]"></div>
@@ -68,10 +69,10 @@ export default async function Home({
             <Star size={14} className="fill-current" /> Premium Directory
           </div>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-2xl tracking-tighter max-w-4xl">
-            {siteConfig.hero.headlineParts[0]} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">{siteConfig.hero.headlineParts[1]}</span>
+            {settings.hero.headlineParts[0]} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-400">{settings.hero.headlineParts[1]}</span>
           </h1>
           <p className="text-slate-300 text-lg md:text-xl mb-12 max-w-2xl font-medium">
-            {siteConfig.hero.subhead}
+            {settings.hero.subhead}
           </p>
 
           {/* Search Bar */}
@@ -172,7 +173,7 @@ export default async function Home({
             {regular.length > 0 && (
               <section className="max-w-7xl mx-auto px-4 py-6 pb-14">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="section-title">Local Businesses in {siteConfig.locations.primaryRegion}</h2>
+                  <h2 className="section-title">Local Businesses in {settings.locations.primaryRegion}</h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                   {regular.slice(0, 8).map(biz => <BizCard key={biz.id} biz={biz} />)}
