@@ -1,78 +1,99 @@
-# Smart Directory AI - User Instruction Guide
+# Detailed User Guide - Smart Directory
 
-Welcome to the Smart Directory administrator guide! This document explains exactly how to operate the software, manage your directory listings, and run the automated outreach CRM.
+This comprehensive guide is meant for platform administrators to understand the core workflows and day-to-day operations of managing the Smart Directory platform.
 
----
-
-## 1. Local Development Setup
-If you are running the app on your own computer:
-1. Open your terminal in the project folder (`smart-directory-nc`).
-2. Run `npm run dev`.
-3. Open your browser to `http://localhost:3000`.
-
-*Note: Make sure your `.env.local` file contains your valid `DATABASE_URL` pointing to your Neon Postgres database.*
+## Table of Contents
+1. [Adding a Business Account](#1-adding-a-business-account)
+2. [Changing Business Locations](#2-changing-business-locations)
+3. [Updating Features (Free vs Paid)](#3-updating-features-[free-vs-paid])
+4. [Claiming a Free Listing](#4-claiming-a-free-listing)
+5. [Running the Automated Email Outreach Campaign](#5-running-the-automated-email-outreach-campaign)
+6. [Managing Premium Assets (News, Jobs, Bookings, Events)](#6-managing-premium-assets)
 
 ---
 
-## 2. Navigating the Admin Dashboard
-The Admin Dashboard is the central nervous system of your business. It is securely located at `http://localhost:3000/dashboard`.
-*(In a production setup, this route will be protected by a login screen).*
+## 1. Adding a Business Account
 
-### Overview Page
-The main dashboard gives you a high-level view of your Directory's health:
-- **Total Listings**: How many businesses are in your database.
-- **Leads Generated**: How many users have filled out contact forms.
-- **Premium MRR**: Estimated Monthly Recurring Revenue based on what Plans your listings are assigned to.
+Admins can manually input any business into the directory.
 
----
-
-## 3. Managing Listings
-To view all businesses, navigate to **Dashboard -> Listings**.
-
-### Adding a New Business Prospect
-1. Click the **"+ Create Listing"** button.
-2. Fill out the **Business Info** (Name, URL Slug, Category, City, Description). 
-   - *Crucial:* Ensure you enter a valid **Contact Email**. Without this, the CRM cannot send an outreach email to the owner!
-3. Assign a **Plan** (Free, Premium, or Pro).
-4. **Feature Flags:** Toggle on specific premium UI features (like `highlight_on_home`) if you want to bypass the Plan restrictions and give them a feature for free.
-5. Click **Create Listing**.
-   - *Behind the scenes, this automatically inserts the business into the `outreach_campaigns` CRM queue so they can receive their Verification Email.*
-
-### Editing a Business
-Click the **"Edit"** pencil icon next to any listing in the Matrix to open their profile. You can manually change they status to **"Claimed"** here if an owner calls you on the phone instead of using the automated email links.
+1. Go to **Dashboard > Listings** (`/dashboard/listings`).
+2. Click the specific **"Add Business"** button in the top right.
+3. **Core Details**: Enter the Business Name, URL Slug (critical for routing), and a descriptive paragraph.
+4. **Geography**: Enter the required City (e.g., *Raleigh*) and State (e.g., *NC*).
+5. **Subscription Tier**: Under *Plan & Feature Flags*, select the baseline tier for this business (Free, Premium, or Pro).
+6. **Save**: Click **Create Listing**. The listing instantly goes live.
 
 ---
 
-## 4. The CRM & Automated Outreach Engine
-Your directory includes a proprietary Automated CRM located at **Dashboard -> Leads & CRM**.
+## 2. Changing Business Locations
 
-### How the Pipeline Works
-When you add a new business to the directory (with an email address), they enter the pipeline as **Pending Verification**. The system is designed to send them a sequence of 3 emails over a 1-week period to get them to verify their info and upgrade to a paid plan.
+Geographic routing heavily influences directory SEO. A business’s location determines which searches it surfaces on.
 
-### Running the Campaign Engine
-Because you don't have a background-server running 24/7 yet, you control when the emails send!
-1. Go to the **Leads & CRM** page.
-2. You will see a list of every business and what stage of the funnel they are in.
-3. Click the **"Standard Sync"** button.
-   - The app will securely scan your database.
-   - Anyone who is "Pending" will be sent **Email 1** (Verification Link).
-   - Anyone who has "Claimed" their profile but hasn't received an upsell will be sent **Email 2** (Premium Pitch).
-   - Anyone who ignored Email 1 for 5 days will receive **Email 3** (Final Follow-up).
-4. *Testing Override:* If you don't want to wait 5 days to test Email 3, click the **"Force Push Queue"** button. This ignores the time delay and forces the next email in the sequence.
-
-*Emails currently simulate sending via your local Terminal window so you can read the HTML safely. When you go live, you will replace lines 2-5 in `src/lib/email.ts` with your actual Resend or Sendgrid API keys.*
+**To change a business location:**
+1. Navigate to **Dashboard > Listings**.
+2. Locate the target business via the Search bar or table, and click the **Edit** (Pencil) icon.
+3. In the *"Business Info"* form block, modify the **City** and **State** input fields. 
+4. The directory relies on exact string-matching for city filters (e.g., *Cary*, *Durham*, *Raleigh*). Ensure consistency for searches to group appropriately. 
+5. Click **Save Changes**. Changes reflect on the card dynamically.
 
 ---
 
-## 5. Monetization & Plans
-Navigate to **Dashboard -> Plans**.
-This shows your active pricing tiers. The `listings` database connects directly to these plans.
+## 3. Updating Features (Free vs Paid)
 
-If you edit the price of the "Premium" plan here, everywhere a Premium business is displayed on the public site or inside the Admin dashboard will instantly update to calculate the new MRR.
+The platform employs a fine-grained monetization strategy using **Feature Flags**. You can explicitly turn on or off premium features for a specific business, regardless of their subscription plan tier.
 
-## 6. Going Live
-When you are ready to launch to the public:
-1. Create a free account at **Vercel.com**.
-2. Connect your GitHub account and import the standard `smart-directory` repository.
-3. Before hitting Deploy, click "Environment Variables" and paste in your `DATABASE_URL` from Neon.
-4. Vercel will instantly compile your Next.js application and provide you with a live, blazing fast `https` URL!
+**To grant or restrict premium features:**
+1. Open the specific business via **Dashboard > Listings > Edit**.
+2. Scroll down to the **"Component Rendering Overrides"** section at the bottom.
+3. You will see several functional checkboxes:
+   * **Highlight On Home**: Bumps the business to the Top/Featured tier of cards.
+   * **Priority Ranking**: Weights the search index.
+   * **AI Chat Widget**: Turns on the conversational lead-gen bot on their profile.
+   * **Booking Calendar**: Implements the automatic customer appointment UI.
+   * **Extra Images**: Unlocks media bounds.
+4. Toggle these on or off as a "comp" or a downgrade, and click **Save Changes**. 
+
+**To update global feature descriptions:**
+1. Edit the frontend component at `src/app/pricing/page.tsx` directly to change the marketing descriptions of `FREE_FEATURES` versus `PREMIUM_FEATURES`.
+
+---
+
+## 4. Claiming a Free Listing
+
+Often, administrators will bulk-scrape and upload 1,000s of "Unclaimed" Free business listings into the database. Owners must then "Claim" them to verify ownership and edit info.
+
+**The Workflow:**
+1. The business owner visits the directory, sees their profile, and clicks **"Claim This Listing"** (or hits the `/biz/claim` portal).
+2. They submit their Name, Corporate Email, and verification proof.
+3. **Admin Verification:** The admin logs into the Dashboard, goes to **Listings**, and filters by the **"Claim Request"** tab.
+4. If valid, the admin edits the specific business profile.
+5. In the **"Services & Validation"** section, the admin checks the **"Owner Claimed"** checkbox.
+6. The listing now receives a visible, verified blue checkmark on the public frontend.
+
+---
+
+## 5. Running the Automated Email Outreach Campaign
+
+The platform operates an internal CRM ("Leads & CRM") to automatically convert scraped free listings into paying PREMIUM subscribers.
+
+**The Pipeline Lifecycle:**
+1. Whenever a business is added to the system (or seeded), an entry is automatically created in the `outreach_campaigns` SQL table with a status of `pending`.
+2. The core task runner (`/api/cron/outreach/route.ts`) acts as the email engine.
+3. When the CRON runs (or when an admin triggers it manually via Dashboard):
+   * **Email 1** (Verification): Sent to `pending` businesses asking them to verify their info and offering a free "Premium" trial preview. Status updates to `email_1_sent`.
+   * **Email 2** (Upsell): Sent 1 week later if they haven't upgraded. Focuses on premium features (AI Chat, Bookings, Events). Status updates to `email_2_sent`.
+   * **Email 3** (Final Offer): Sent 1 week after Email 2. Offers a temporary discount if they upgrade today. Status updates to `completed`.
+   
+**To view and manage the campaign:**
+* Visit **Dashboard > Leads & CRM**. The table displays exactly which step of the funnel each un-claimed business is in.
+
+---
+
+## 6. Managing Premium Assets
+
+As part of the Premium tier offering, your subscribed businesses can publish exclusive dynamic content to their pages.
+
+* **Jobs**: Found in `/dashboard/jobs`. Add full-time or remote hiring postings.
+* **Events**: Found in `/dashboard/events`. Calendar-blocked open houses or webinars.
+* **News/Press**: Found in `/dashboard/news`. Official announcements that inject into a visual feed.
+* **Bookings**: Found in `/dashboard/bookings`. Global overview of all appointment requests generated from the public-facing `<BookingWidget />`. 
