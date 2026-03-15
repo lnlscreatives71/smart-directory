@@ -1,5 +1,14 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { withAuth } from "next-auth/middleware";
+import { NextRequest, NextResponse } from "next/server";
+
+// Inject LICENSE_KEY into request headers so layout can read it at runtime (Vercel).
+function injectLicenseHeader(request: NextRequest) {
+  const requestHeaders = new Headers(request.headers);
+  const key =
+    process.env.LICENSE_KEY ?? process.env.NEXT_PUBLIC_LICENSE_KEY ?? "";
+  requestHeaders.set("x-license-key", key);
+  return requestHeaders;
+}
 
 /**
  * Multi-tenant Middleware
@@ -8,84 +17,88 @@ import type { NextRequest } from 'next/server';
  * 1. Custom domain routing (directory.theircompany.com → their directory)
  * 2. Subdomain routing (slug.trianglehub.online → agency directory)
  * 3. Tenant isolation (inject agency_id into all queries)
+ * 4. Auth protection for /dashboard routes
  */
 
 export async function middleware(request: NextRequest) {
     const { hostname, pathname } = request.nextUrl;
+    const requestHeaders = injectLicenseHeader(request);
     
-    // Skip API routes and static files
-    if (pathname.startsWith('/api') || pathname.includes('.')) {
+    // Skip API routes and static files (except API auth check)
+    const isApiRoute = pathname.startsWith('/api');
+    const isStaticFile = pathname.includes('.') || pathname.startsWith('/_next/static');
+    
+    if (isStaticFile) {
         return NextResponse.next();
     }
-
-    // Get agency from custom domain or subdomain
-    let agencySlug: string | null = null;
-    let agencyDomain: string | null = null;
-
-    // Check for custom domain (e.g., directory.theircompany.com)
-    const customDomain = hostname;
     
-    // Check for subdomain (e.g., agency.trianglehub.online)
-    const hostParts = hostname.split('.');
-    if (hostParts.length >= 3) {
-        // Has subdomain
-        const potentialSlug = hostParts[0];
-        if (potentialSlug !== 'www' && potentialSlug !== 'app') {
-            agencySlug = potentialSlug;
+    // Dashboard auth protection
+    const isDashboard = pathname.startsWith('/dashboard');
+    if (isDashboard) {
+        const authResponse = withAuth({
+            pages: { signIn: "/login" },
+        })(request);
+        if (authResponse.status === 307 || authResponse.status === 302) {
+            return authResponse;
         }
     }
+    
+    // Multi-tenant routing for custom domains
+    if (!isApiRoute && !isStaticFile) {
+        // Get agency from custom domain or subdomain
+        let agencySlug: string | null = null;
+        let agencyDomain: string | null = null;
 
-    // Fetch agency info and set headers
-    if (agencySlug || customDomain) {
-        try {
-            // Fetch agency from database via API (in production, use edge-compatible DB)
-            const agencyUrl = new URL('/api/agencies', request.url);
-            if (agencySlug) {
-                agencyUrl.searchParams.set('slug', agencySlug);
-            } else if (customDomain) {
-                agencyUrl.searchParams.set('domain', customDomain);
+        // Check for custom domain
+        const customDomain = hostname;
+        
+        // Check for subdomain (e.g., agency.trianglehub.online)
+        const hostParts = hostname.split('.');
+        if (hostParts.length >= 3) {
+            const potentialSlug = hostParts[0];
+            if (potentialSlug !== 'www' && potentialSlug !== 'app') {
+                agencySlug = potentialSlug;
             }
+        }
 
-            const agencyRes = await fetch(agencyUrl.toString());
-            if (agencyRes.ok) {
-                const agencyData = await agencyRes.json();
-                if (agencyData.data && (!Array.isArray(agencyData.data) || agencyData.data.length > 0)) {
-                    const agency = Array.isArray(agencyData.data) ? agencyData.data[0] : agencyData.data;
-                    
-                    // Set headers with agency info for downstream use
-                    const response = NextResponse.next();
-                    response.headers.set('x-agency-id', agency.id.toString());
-                    response.headers.set('x-agency-slug', agency.slug);
-                    response.headers.set('x-agency-name', agency.name);
-                    response.headers.set('x-agency-primary-color', agency.primary_color || '#3b82f6');
-                    response.headers.set('x-agency-secondary-color', agency.secondary_color || '#10b981');
-                    response.headers.set('x-agency-logo', agency.logo_url || '');
-                    response.headers.set('x-tenant-mode', 'true');
-                    
-                    return response;
+        // Fetch agency info and set headers
+        if (agencySlug || (customDomain && !customDomain.includes('vercel.app'))) {
+            try {
+                const agencyUrl = new URL('/api/agencies', request.url);
+                if (agencySlug) {
+                    agencyUrl.searchParams.set('slug', agencySlug);
+                } else if (customDomain) {
+                    agencyUrl.searchParams.set('domain', customDomain);
                 }
+
+                const agencyRes = await fetch(agencyUrl.toString());
+                if (agencyRes.ok) {
+                    const agencyData = await agencyRes.json();
+                    if (agencyData.data && (!Array.isArray(agencyData.data) || agencyData.data.length > 0)) {
+                        const agency = Array.isArray(agencyData.data) ? agencyData.data[0] : agencyData.data;
+                        
+                        requestHeaders.set('x-agency-id', agency.id.toString());
+                        requestHeaders.set('x-agency-slug', agency.slug);
+                        requestHeaders.set('x-agency-name', agency.name);
+                        requestHeaders.set('x-agency-primary-color', agency.primary_color || '#3b82f6');
+                        requestHeaders.set('x-agency-secondary-color', agency.secondary_color || '#10b981');
+                        requestHeaders.set('x-agency-logo', agency.logo_url || '');
+                        requestHeaders.set('x-tenant-mode', 'true');
+                    }
+                }
+            } catch (error) {
+                console.error('Middleware agency lookup error:', error);
             }
-        } catch (error) {
-            console.error('Middleware agency lookup error:', error);
-            // Continue without tenant mode on error
         }
     }
 
-    // Default: master directory
-    const response = NextResponse.next();
-    response.headers.set('x-tenant-mode', 'false');
-    return response;
+    return NextResponse.next({
+        request: { headers: requestHeaders },
+    });
 }
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except:
-         * - api (API routes)
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         */
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
     ],
 };
