@@ -68,11 +68,11 @@ export async function POST(req: NextRequest) {
             )
             ON CONFLICT (listing_id, day_of_week) 
             DO UPDATE SET
-                open_time = ${open_time || business_schedules.open_time},
-                close_time = ${close_time || business_schedules.close_time},
-                is_open = ${is_open !== undefined ? is_open : business_schedules.is_open},
-                break_start = ${break_start || business_schedules.break_start},
-                break_end = ${break_end || business_schedules.break_end},
+                open_time = COALESCE(${open_time}, business_schedules.open_time),
+                close_time = COALESCE(${close_time}, business_schedules.close_time),
+                is_open = COALESCE(${is_open}, business_schedules.is_open),
+                break_start = COALESCE(${break_start}, business_schedules.break_start),
+                break_end = COALESCE(${break_end}, business_schedules.break_end),
                 updated_at = NOW()
             RETURNING *
         `;
