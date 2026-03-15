@@ -1,10 +1,26 @@
+import { headers } from "next/headers";
+
+/** Get the license key from env or request (Vercel: use NEXT_PUBLIC_LICENSE_KEY so it's inlined at build). */
+export async function getLicenseKey(): Promise<string | undefined> {
+  const h = await headers();
+  const fromHeader = h.get("x-license-key")?.trim();
+  const key =
+    process.env.NEXT_PUBLIC_LICENSE_KEY?.trim() ||
+    fromHeader ||
+    process.env.LICENSE_KEY?.trim();
+  return key || undefined;
+}
+
 export async function verifyLicense() {
-  const rawKey = process.env.LICENSE_KEY || process.env.NEXT_PUBLIC_LICENSE_KEY;
-  const key = rawKey?.trim();
-  
+  const key = await getLicenseKey();
+
   // 1. Check if a key even exists
   if (!key) {
-    return { valid: false, reason: "CRITICAL: No license key provided in environment variables. Please add LICENSE_KEY." };
+    return {
+      valid: false,
+      reason:
+        "CRITICAL: No license key provided. On Vercel, add NEXT_PUBLIC_LICENSE_KEY (and redeploy) so the key is available at build time.",
+    };
   }
 
   // 2. Format validation (e.g., expecting a White-Label key starting with WL-)

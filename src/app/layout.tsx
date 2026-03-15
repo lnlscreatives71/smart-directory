@@ -6,7 +6,8 @@ import { siteConfig } from '@/config/site';
 import { verifyLicense } from '@/lib/license';
 import { getSiteSettings } from '@/lib/settings';
 import { Providers } from '@/components/Providers';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const dynamic = 'force-dynamic';
 
@@ -82,7 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <h1 className="text-3xl font-bold text-red-500 mb-4 bg-red-500/10 py-3 rounded-lg border border-red-500/20">License Invalid</h1>
             <p className="text-slate-300 font-medium text-lg mb-6 leading-relaxed">{license.reason}</p>
             <p className="text-sm text-slate-500 mb-4 bg-slate-900/50 p-4 rounded-xl">
-              This white-label instance of the directory software is currently locked. To activate it, you must configure a valid <strong className="text-slate-300">LICENSE_KEY</strong> inside your environment variables.
+              Configure <strong className="text-slate-300">NEXT_PUBLIC_LICENSE_KEY</strong> in Vercel (Project → Settings → Environment Variables), then redeploy so the key is available at build time.
             </p>
             <p className="text-xs text-slate-600">Please contact the master agency to purchase or renew a license.</p>
           </div>
@@ -198,6 +199,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </div>
       </Providers>
       <Analytics />
+      <SpeedInsights />
       </body>
     </html>
   );
