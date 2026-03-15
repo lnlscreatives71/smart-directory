@@ -54,6 +54,8 @@ export async function POST(req: NextRequest) {
         }
 
         // Upsert schedule
+        const existingSchedule = await sql`SELECT open_time, close_time, is_open, break_start, break_end FROM business_schedules WHERE listing_id = ${parseInt(listing_id)} AND day_of_week = ${parseInt(day_of_week)}`;
+        
         const schedule = await sql`
             INSERT INTO business_schedules (
                 listing_id, day_of_week, open_time, close_time, is_open, break_start, break_end
@@ -66,13 +68,13 @@ export async function POST(req: NextRequest) {
                 ${break_start || null},
                 ${break_end || null}
             )
-            ON CONFLICT (listing_id, day_of_week) 
+            ON CONFLICT (listing_id, day_of_week)
             DO UPDATE SET
-                open_time = COALESCE(${open_time}, business_schedules.open_time),
-                close_time = COALESCE(${close_time}, business_schedules.close_time),
-                is_open = COALESCE(${is_open}, business_schedules.is_open),
-                break_start = COALESCE(${break_start}, business_schedules.break_start),
-                break_end = COALESCE(${break_end}, business_schedules.break_end),
+                open_time = ${open_time !== undefined ? open_time : (existingSchedule[0]?.open_time || '09:00')},
+                close_time = ${close_time !== undefined ? close_time : (existingSchedule[0]?.close_time || '17:00')},
+                is_open = ${is_open !== undefined ? is_open : (existingSchedule[0]?.is_open ?? true)},
+                break_start = ${break_start !== undefined ? break_start : (existingSchedule[0]?.break_start || null)},
+                break_end = ${break_end !== undefined ? break_end : (existingSchedule[0]?.break_end || null)},
                 updated_at = NOW()
             RETURNING *
         `;

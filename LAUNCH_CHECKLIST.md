@@ -17,8 +17,7 @@
 5. **Cost:** ~$0.01 per 1000 tokens (pennies per conversation)
 
 ```
-✅ OPENAI_API_KEY = sk-proj-...
-```
+✅ OPENAI_API_KEY = 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
 
 ---
 
@@ -34,9 +33,11 @@
 7. Choose number with **Voice + SMS** capabilities
 
 ```
-✅ TWILIO_ACCOUNT_SID = AC...
-✅ TWILIO_AUTH_TOKEN = ...
-✅ TWILIO_PHONE_NUMBER = +1919...
+✅ TWILIO_ACCOUNT_SID =ACe97f44ce5e7d8c55d066edfc580628b4
+✅ TWILIO_AUTH_TOKEN =7dcaa02aee04615aba06a499167c7cd2
+✅ TWILIO_PHONE_NUMBER = +13507772961
+https://demo.twilio.com/welcome/voice/
+https://demo.twilio.com/welcome/sms/reply
 ```
 
 ---
@@ -62,7 +63,7 @@
 4. Copy Website Token
 
 ```
-✅ NEXT_PUBLIC_CHATWOOT_TOKEN = ...
+✅ NEXT_PUBLIC_CHATWOOT_TOKEN =iNnj61D72EcvCtnWCgZADCyW
 ✅ NEXT_PUBLIC_CHATWOOT_URL = https://app.chatwoot.com
 ```
 
@@ -78,7 +79,7 @@
 5. **Cost:** Free for 3,000 emails/month
 
 ```
-✅ RESEND_API_KEY = re_...
+✅ RESEND_API_KEY =re_jVEkfbG8_HYC1LLtBX9gifuwijKwmGknG
 ```
 
 ---
@@ -94,9 +95,11 @@
 6. **Cost:** 2.9% + $0.30 per transaction
 
 ```
-✅ STRIPE_SECRET_KEY = sk_test_...
-✅ STRIPE_PUBLISHABLE_KEY = pk_test_...
-✅ STRIPE_WEBHOOK_SECRET = whsec_... (create in webhook settings)
+✅ STRIPE_SECRET_KEY =sk_test_51T5xnp0GYJI4LtZCs3UgsCYAPPBqWQUYVopfgv8IXNgRnpw95gKiF0KM8csyBR7EXLije0htmDxRSrwBKRQ6abDj004CT6U6d0
+✅ STRIPE_PUBLISHABLE_KEY =pk_test_51T5xnp0GYJI4LtZCEXqrYAAArQAMkz5pwKe2ymD9rexd5ygsfd3xeuMLsvV0KMqwGsS0EFod6l9STlw6SQaxnroH00j3M1b1Dl
+✅ STRIPE_WEBHOOK_SECRET =whsec_T0IWu5mIlISRLq7FSlMw5dvwU22mi22I
+
+thin payload whsec_tdukZiG4vNEyi8J4nENSPQJ6SWXxJSTu
 ```
 
 ---
@@ -110,7 +113,7 @@
 4. Copy **Connection string** (starts with `postgresql://...`)
 
 ```
-✅ DATABASE_URL = postgresql://...
+✅ DATABASE_URL ="postgresql://neondb_owner:npg_w4UFih0XWpqf@ep-billowing-night-ad5tk5tj.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 ```
 
 ---
@@ -136,7 +139,7 @@
 3. Copy the token
 
 ```
-✅ BLOB_READ_WRITE_TOKEN = ...
+✅ BLOB_READ_WRITE_TOKEN ="vercel_blob_rw_Y10utoTa8sIOmQOw_stJ2CoFdtJ19s1AM42gkzjP0S4ZQsd"
 ```
 
 ---
