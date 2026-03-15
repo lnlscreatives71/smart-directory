@@ -1,4 +1,4 @@
-import { sql } from '../src/lib/db';
+import { sql } from '../src/lib/db.js';
 
 async function main() {
   console.log('Creating voice calls and chat conversations tables...');
