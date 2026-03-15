@@ -2,15 +2,16 @@ import { withAuth } from "next-auth/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
 // Inject LICENSE_KEY into request headers so layout can read it at runtime (Vercel).
-// Server components may not see process.env at request time; middleware runs per-request.
+// Proxy runs on Node by default in Next.js 16, so process.env is available.
 function injectLicenseHeader(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
-  const key = process.env.LICENSE_KEY ?? process.env.NEXT_PUBLIC_LICENSE_KEY ?? "";
+  const key =
+    process.env.LICENSE_KEY ?? process.env.NEXT_PUBLIC_LICENSE_KEY ?? "";
   requestHeaders.set("x-license-key", key);
   return requestHeaders;
 }
 
-export default function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const requestHeaders = injectLicenseHeader(request);
 
   const isDashboard =
@@ -21,7 +22,8 @@ export default function middleware(request: NextRequest) {
     const authResponse = withAuth({
       pages: { signIn: "/login" },
     })(request);
-    if (authResponse.status === 307 || authResponse.status === 302) return authResponse;
+    if (authResponse.status === 307 || authResponse.status === 302)
+      return authResponse;
   }
 
   return NextResponse.next({
