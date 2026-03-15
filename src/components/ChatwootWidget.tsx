@@ -13,7 +13,7 @@ export default function ChatwootWidget({ config }: { config?: ChatwootConfig }) 
         if (!config?.websiteToken) return;
 
         // Load Chatwoot script
-        (function(w, d, i) {
+        ((w: any, d: any, i: string) => {
             if (!w[i]) {
                 w[i] = function() {
                     (w[i].q = w[i].q || []).push(arguments);
