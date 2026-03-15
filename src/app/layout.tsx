@@ -9,6 +9,7 @@ import { Providers } from '@/components/Providers';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import LNLFooter from '@/components/LNLFooter';
+import ChatwootWidget from '@/components/ChatwootWidget';
 
 export const dynamic = 'force-dynamic';
 
@@ -204,6 +205,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </Providers>
       <Analytics />
       <SpeedInsights />
+      
+      {/* Chatwoot Customer Support Widget */}
+      <ChatwootWidget config={{
+        websiteToken: process.env.NEXT_PUBLIC_CHATWOOT_TOKEN || '',
+        baseUrl: process.env.NEXT_PUBLIC_CHATWOOT_URL || 'https://app.chatwoot.com'
+      }} />
       </body>
     </html>
   );
