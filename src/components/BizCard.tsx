@@ -34,7 +34,7 @@ export default function BizCard({ biz, showFeatured = false }: { biz: Listing; s
           <MapPin size={14} className="text-primary-500 shrink-0" />
           {biz.location_city}, {biz.location_state}
           <span className="ml-auto flex items-center gap-1 text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded font-bold text-xs">
-            <Star size={11} fill="currentColor" stroke="none" />{biz.rating}
+            <Star size={11} fill="currentColor" stroke="none" />{Number(biz.rating).toFixed(1)}
           </span>
         </div>
 

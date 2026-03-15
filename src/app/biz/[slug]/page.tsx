@@ -5,6 +5,7 @@ import { Star, MapPin, CheckCircle, ExternalLink, Calendar, MessageSquare, Brief
 import Link from 'next/link';
 import BookingWidget from '@/components/BookingWidget';
 import AIChatWidget from '@/components/AIChatWidget';
+import ReviewsSection from '@/components/ReviewsSection';
 
 export default async function BusinessDetail({
     params
@@ -135,6 +136,9 @@ export default async function BusinessDetail({
                         </div>
                     </div>
 
+                    {/* Customer Reviews */}
+                    <ReviewsSection listingId={biz.id} listingName={biz.name} />
+
                     {/* Blogs & News Feed Section */}
                     {(blogs.length > 0 || news.length > 0) && (
                         <div className="glass rounded-2xl p-8 shadow-sm mt-8">
@@ -162,7 +166,7 @@ export default async function BusinessDetail({
                                             <h3 className="text-xl font-bold text-white mb-2">{blog.title}</h3>
                                             <p className="text-sm text-slate-500 mb-4">{new Date(blog.created_at).toLocaleDateString()}</p>
                                             <p className="text-slate-300 mb-4">{blog.excerpt || blog.content.substring(0, 150) + '...'}</p>
-                                            <button className="text-primary-600 font-bold hover:underline">Read Full Post &rarr;</button>
+                                            <a href={`/blogs?id=${blog.id}`} className="text-primary-600 font-bold hover:underline inline-block">Read Full Post &rarr;</a>
                                         </div>
                                     </div>
                                 ))}
@@ -186,7 +190,7 @@ export default async function BusinessDetail({
                                             </div>
                                             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">{job.description}</p>
                                         </div>
-                                        <button className="shrink-0 bg-primary-50 text-primary-700 font-bold px-6 py-2.5 rounded-lg hover:bg-primary-100 transition">
+                                        <button className="shrink-0 bg-primary-50 text-primary-700 font-bold px-6 py-2.5 rounded-lg hover:bg-primary-100 transition" onClick={() => window.location.href = job.application_url || `/jobs?apply=${job.id}`}>
                                             Apply Now &rarr;
                                         </button>
                                     </div>
@@ -272,7 +276,7 @@ export default async function BusinessDetail({
 
             {/* Premium AI Chat Widget (Floating on bottom right) */}
             {flags.ai_chat_widget && (
-                <AIChatWidget businessName={biz.name} />
+                <AIChatWidget businessName={biz.name} listingId={biz.id} />
             )}
         </div>
     );

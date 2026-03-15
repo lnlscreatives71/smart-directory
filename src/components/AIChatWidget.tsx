@@ -8,13 +8,23 @@ interface ChatMessage {
     content: string;
 }
 
-export default function AIChatWidget({ businessName, context }: { businessName: string, context?: string }) {
+export default function AIChatWidget({ 
+    businessName, 
+    listingId,
+    context 
+}: { 
+    businessName: string; 
+    listingId: number;
+    context?: string;
+}) {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<ChatMessage[]>([
-        { role: 'ai', content: `Hi there! I am the AI assistant for ${businessName}. How can I help you today?` }
+        { role: 'ai', content: `Hi there! I'm the AI assistant for ${businessName}. How can I help you today? 😊` }
     ]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
+    const [userInfo, setUserInfo] = useState({ name: '', email: '', phone: '' });
+    const [showLeadForm, setShowLeadForm] = useState(false);
 
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,26 +36,59 @@ export default function AIChatWidget({ businessName, context }: { businessName: 
         setLoading(true);
 
         try {
-            // Note: In production you would hit a real Next.js API route that hooks into OpenAI
-            // passing both the messages array and the business "context" document.
-            // For now, we simulate an intelligent response.
-            setTimeout(() => {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [...messages, { role: 'user', content: userMsg }],
+                    listing_id: listingId,
+                    user_name: userInfo.name || undefined,
+                    user_email: userInfo.email || undefined,
+                    user_phone: userInfo.phone || undefined
+                })
+            });
+            
+            const data = await res.json();
+            
+            if (data.success) {
+                setMessages(prev => [...prev, { role: 'ai', content: data.data.content }]);
+                
+                // If AI is asking for contact info, show lead form
+                if (data.data.content.toLowerCase().includes('email') || 
+                    data.data.content.toLowerCase().includes('name') ||
+                    data.data.content.toLowerCase().includes('contact')) {
+                    setShowLeadForm(true);
+                }
+            } else {
                 setMessages(prev => [...prev, { 
                     role: 'ai', 
-                    content: `Thanks for asking! As an AI assistant for ${businessName}, I am currently in demo mode. However, in a live environment, I would scan the business directory profile and answer your question about "${userMsg}" using OpenAI.` 
+                    content: 'Sorry, I encountered an error. Please try again or contact us directly!' 
                 }]);
-                setLoading(false);
-            }, 1000);
-        } catch (e) {
+            }
+        } catch (err) {
+            setMessages(prev => [...prev, { 
+                role: 'ai', 
+                content: 'Sorry, I encountered a network error. Please try again or contact us directly!' 
+            }]);
+        } finally {
             setLoading(false);
         }
+    };
+
+    const submitLeadInfo = () => {
+        if (!userInfo.name || !userInfo.email) return;
+        setShowLeadForm(false);
+        setMessages(prev => [...prev, { 
+            role: 'ai', 
+            content: `Thanks ${userInfo.name}! I've saved your contact info. Our team will reach out to you at ${userInfo.email} soon! 🎉` 
+        }]);
     };
 
     return (
         <>
             {/* The Floating Button */}
             {!isOpen && (
-                <button 
+                <button
                     onClick={() => setIsOpen(true)}
                     className="fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-full shadow-2xl hover:scale-105 hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all flex items-center gap-2 group"
                 >
@@ -80,8 +123,8 @@ export default function AIChatWidget({ businessName, context }: { businessName: 
                                         {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
                                     </div>
                                     <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed shadow-sm ${
-                                        msg.role === 'user' 
-                                            ? 'bg-secondary-600 text-white rounded-tr-sm' 
+                                        msg.role === 'user'
+                                            ? 'bg-secondary-600 text-white rounded-tr-sm'
                                             : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-sm'
                                     }`}>
                                         {msg.content}
@@ -103,19 +146,53 @@ export default function AIChatWidget({ businessName, context }: { businessName: 
                                 </div>
                             </div>
                         )}
+                        
+                        {/* Lead Capture Form */}
+                        {showLeadForm && (
+                            <div className="bg-primary-500/10 border border-primary-500/30 rounded-xl p-4 space-y-3">
+                                <p className="text-sm text-slate-300">Let's get you in touch with our team! 📬</p>
+                                <input
+                                    type="text"
+                                    placeholder="Your Name"
+                                    value={userInfo.name}
+                                    onChange={e => setUserInfo({...userInfo, name: e.target.value})}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-primary-500"
+                                />
+                                <input
+                                    type="email"
+                                    placeholder="Your Email"
+                                    value={userInfo.email}
+                                    onChange={e => setUserInfo({...userInfo, email: e.target.value})}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-primary-500"
+                                />
+                                <input
+                                    type="tel"
+                                    placeholder="Phone (optional)"
+                                    value={userInfo.phone}
+                                    onChange={e => setUserInfo({...userInfo, phone: e.target.value})}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-primary-500"
+                                />
+                                <button
+                                    onClick={submitLeadInfo}
+                                    className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-2 rounded-lg text-sm transition"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* Input */}
                     <form onSubmit={handleSend} className="p-3 bg-slate-900 border-t border-slate-800 shrink-0 relative">
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            placeholder="Type your message..." 
+                            placeholder="Type your message..."
                             className="w-full bg-slate-950 border border-slate-700 focus:border-primary-500 rounded-xl px-4 py-3 pr-12 text-[14px] text-white outline-none transition-colors placeholder:text-slate-500"
                         />
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             disabled={!input.trim() || loading}
                             className="absolute right-5 top-1/2 -translate-y-1/2 bg-primary-600 hover:bg-primary-500 text-white p-1.5 rounded-lg disabled:opacity-50 transition-colors"
                         >

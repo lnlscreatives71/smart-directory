@@ -33,6 +33,7 @@ export interface Listing {
     location_city: string;
     location_state: string;
     location_region: string;
+    street_address?: string;
     lat: number;
     lng: number;
     services: string[];
@@ -41,17 +42,37 @@ export interface Listing {
     claimed: boolean;
     plan_id: number;
     feature_flags: FeatureFlags;
+    contact_email?: string;
+    contact_name?: string;
+    phone?: string;
+    website?: string;
     image_url?: string;
+    business_hours?: BusinessHour[];
+    social_media?: SocialMediaLinks;
+    contact_form_enabled?: boolean;
     created_at: Date;
     updated_at: Date;
 
     // Joined fields returned by API
     plan_name?: string;
     plan_price?: number;
-    contact_name?: string;
-    contact_email?: string;
-    phone?: string;
-    website?: string;
+}
+
+export interface BusinessHour {
+    day: string;
+    open: string;
+    close: string;
+    isClosed: boolean;
+}
+
+export interface SocialMediaLinks {
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    linkedin?: string;
+    youtube?: string;
+    tiktok?: string;
+    [key: string]: string | undefined;
 }
 
 export interface OutreachCampaign {

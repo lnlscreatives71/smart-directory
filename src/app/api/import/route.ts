@@ -16,6 +16,38 @@ interface BusinessRow {
     rating?: string;
 }
 
+// Map categories to Unsplash image IDs (curated professional photos)
+const CATEGORY_IMAGES: Record<string, string> = {
+    'restaurant': 'photo-1517248135467-4c7edcad34c4',
+    'restaurants': 'photo-1517248135467-4c7edcad34c4',
+    'cafe': 'photo-1554118120-118149a7a66d',
+    'cafes': 'photo-1554118120-118149a7a66d',
+    'med spa': 'photo-1600334089648-b0d9d3028eb2',
+    'spa': 'photo-1600334089648-b0d9d3028eb2',
+    'wellness': 'photo-1600334089648-b0d9d3028eb2',
+    'plumbing': 'photo-1581244277943-fe4a8c327939',
+    'hvac': 'photo-1581094794329-c8112a89af12',
+    'real estate': 'photo-1560518883-ce09059eeffa',
+    'retail': 'photo-1441984904996-e0b6ba687e04',
+    'clothing': 'photo-1441986300917-64674bd600d8',
+    'gym': 'photo-1534438327276-14e5300c3a48',
+    'fitness': 'photo-1534438327276-14e5300c3a48',
+    'yoga': 'photo-1544367563-12123d8965cd',
+    'pet': 'photo-1516734295999-7f361c91b6c2',
+    'law': 'photo-1589829545856-d10d557cf95f',
+    'dental': 'photo-1629909613654-28e377c37b09',
+    'health': 'photo-1576091160399-112ba8d25d1d',
+    'services': 'photo-1454165804606-c3d57bc86b40',
+    'other': 'photo-1497366216548-37526070297c',
+};
+
+function getImageForCategory(category: string): string {
+    const normalized = category.toLowerCase().trim();
+    const imageId = CATEGORY_IMAGES[normalized] || CATEGORY_IMAGES['other'];
+    // Use direct Unsplash CDN with category-based sizing
+    return `https://images.unsplash.com/${imageId}?w=800&h=600&fit=crop&q=80`;
+}
+
 function slugify(name: string): string {
     return name
         .toLowerCase()
@@ -82,6 +114,9 @@ export async function POST(request: Request) {
             const safeRating = isNaN(rating) ? 4.0 : Math.min(5.0, Math.max(1.0, rating));
 
             try {
+                // Get category image
+                const imageUrl = getImageForCategory(row.category || 'Other');
+
                 // Insert the listing
                 const inserted = await sql`
                     INSERT INTO listings (
@@ -89,7 +124,7 @@ export async function POST(request: Request) {
                         location_city, location_state, location_region,
                         lat, lng, services, rating, featured, claimed,
                         plan_id, feature_flags, contact_email,
-                        contact_name, phone, website
+                        contact_name, phone, website, image_url
                     ) VALUES (
                         ${row.name},
                         ${slug},
@@ -109,7 +144,8 @@ export async function POST(request: Request) {
                         ${row.contact_email || null},
                         ${row.contact_name || null},
                         ${row.phone || null},
-                        ${row.website || null}
+                        ${row.website || null},
+                        ${imageUrl}
                     )
                     RETURNING id
                 `;
