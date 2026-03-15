@@ -89,10 +89,10 @@ export async function GET() {
     `;
 
     await sql`
-      INSERT INTO plans (name, monthly_price, description, limits) VALUES 
+      INSERT INTO plans (name, monthly_price, description, limits) VALUES
       ('free', 0.00, 'Basic exposure in the directory', '{"images": 1, "categories": 1}'),
-      ('premium', 97.00, 'Highlighted listing + AI chat + booking', '{"images": 5, "categories": 3}'),
-      ('pro', 297.00, 'Top placement + all features', '{"images": 20, "categories": 10}');
+      ('premium', 29.00, 'Highlighted listing + AI chat + booking', '{"images": 5, "categories": 3}'),
+      ('pro', 97.00, 'Top placement + all features', '{"images": 20, "categories": 10}');
     `;
 
     const listings = [
