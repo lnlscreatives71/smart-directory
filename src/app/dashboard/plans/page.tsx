@@ -129,7 +129,13 @@ function PlanModal({
                     </div>
 
                     <div className="pt-4 border-t border-gray-100">
-                        <label className="block text-sm font-semibold text-gray-700 mb-3">Included Features</label>
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="block text-sm font-semibold text-gray-700">Included Features</label>
+                            <span className="text-xs text-gray-500">Check features for this plan</span>
+                        </div>
+                        <p className="text-xs text-gray-500 mb-3">
+                            These features will be available to businesses on this plan. Uncheck to make them premium-only.
+                        </p>
                         <div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto px-1 mb-3">
                             {Array.from(new Set([...ALL_FEATURES, ...(form.features || [])])).map(feat => {
                                 const included = (form.features || []).includes(feat);
@@ -265,10 +271,10 @@ export default function PlansPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        Plans
-                        <span className="w-5 h-5 rounded-full bg-gray-200 dark:bg-slate-700 text-gray-500 text-xs flex items-center justify-center font-bold cursor-help" title="Manage subscription plans for business listings">?</span>
+                        Plans & Pricing
+                        <span className="w-5 h-5 rounded-full bg-gray-200 dark:bg-slate-700 text-gray-500 text-xs flex items-center justify-center font-bold cursor-help" title="Configure your subscription plans and feature gating">?</span>
                     </h1>
-                    <p className="text-sm text-slate-500 mt-1">Manage directory subscription tiers. Listings on paid plans get premium placement and outreach priority.</p>
+                    <p className="text-sm text-slate-500 mt-1">Set your own pricing and decide which features are free vs premium. These plans are what YOU charge small businesses.</p>
                 </div>
             </div>
 
@@ -279,6 +285,28 @@ export default function PlansPage() {
                     {toast.msg}
                 </div>
             )}
+
+            {/* Strategy Guide */}
+            <div className="bg-gradient-to-r from-primary-600/10 to-primary-500/10 border border-primary-500/30 rounded-2xl p-6">
+                <h3 className="font-bold text-white mb-3 flex items-center gap-2">
+                    <CheckCircle2 size={20} className="text-primary-400" />
+                    Pricing Strategy Tips
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-300">
+                    <div>
+                        <strong className="text-white block mb-1">Free Plan</strong>
+                        Basic exposure only. Get businesses in the door, then upsell premium.
+                    </div>
+                    <div>
+                        <strong className="text-white block mb-1">Premium ($29-49/mo)</strong>
+                        AI Chat + Booking. Most popular for small businesses.
+                    </div>
+                    <div>
+                        <strong className="text-white block mb-1">Pro ($97-197/mo)</strong>
+                        All features + priority. For serious growth businesses.
+                    </div>
+                </div>
+            </div>
 
             {/* Card */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
