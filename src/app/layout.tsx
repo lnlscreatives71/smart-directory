@@ -10,6 +10,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import LNLFooter from '@/components/LNLFooter';
 import ChatwootWidget from '@/components/ChatwootWidget';
+import SalesAgent from '@/components/SalesAgent';
 
 export const dynamic = 'force-dynamic';
 
@@ -211,6 +212,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         websiteToken: process.env.NEXT_PUBLIC_CHATWOOT_TOKEN || '',
         baseUrl: process.env.NEXT_PUBLIC_CHATWOOT_URL || 'https://app.chatwoot.com'
       }} />
+      
+      {/* AI Sales Agent - Revenue Generating Funnel */}
+      <SalesAgent />
       </body>
     </html>
   );
