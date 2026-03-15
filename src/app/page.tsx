@@ -213,7 +213,7 @@ export default async function Home({
                   Claim your free listing today or upgrade to Premium to unlock AI Chat, direct booking, and priority ranking.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                  <Link href="/dashboard/listings/new" className="inline-flex items-center justify-center gap-2 btn-primary px-8 py-4 text-lg shadow-xl shadow-primary-500/20">
+                  <Link href="/list-your-business" className="inline-flex items-center justify-center gap-2 btn-primary px-8 py-4 text-lg shadow-xl shadow-primary-500/20">
                     List Your Business <ArrowUpRight size={18} />
                   </Link>
                   <Link href="/pricing" className="inline-flex items-center justify-center gap-2 btn-outline px-8 py-4 text-lg">
