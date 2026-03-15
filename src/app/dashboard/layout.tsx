@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
+import DashboardUpsellBanner from '@/components/DashboardUpsellBanner';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -123,6 +124,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-[#0a0f1c] p-4 sm:p-6 lg:p-8">
                     <div className="max-w-7xl mx-auto space-y-6">
                         {children}
+                        <DashboardUpsellBanner />
                     </div>
                 </main>
             </div>

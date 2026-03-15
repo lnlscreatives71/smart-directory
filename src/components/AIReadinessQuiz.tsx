@@ -120,10 +120,32 @@ export default function AIReadinessQuiz() {
         e.preventDefault();
         setSubmitted(true);
         
-        // Here you would send to your CRM
-        console.log('Lead submitted:', { contactInfo, result, answers });
+        // Submit to API
+        try {
+            await fetch('/api/ai-leads', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    listing_id: null, // Could be set if business is claimed
+                    business_name: contactInfo.business,
+                    contact_name: contactInfo.name,
+                    email: contactInfo.email,
+                    phone: contactInfo.phone,
+                    quiz_score: result.score,
+                    quiz_percentage: Math.round(result.percentage),
+                    quiz_level: result.level,
+                    answers: answers,
+                    recommendations: result.recommendations
+                })
+            });
+        } catch (err) {
+            console.error('Failed to submit lead:', err);
+        }
         
-        // Could send to /api/leads or webhook
+        // Also open calendar for demo booking
+        setTimeout(() => {
+            window.open('https://www.lnlaiagency.com/', '_blank');
+        }, 1500);
     };
 
     if (showResults && result) {
