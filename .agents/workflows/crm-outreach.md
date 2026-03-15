@@ -70,7 +70,7 @@ Add these in **Vercel → Settings → Environment Variables → Production**:
 
 | Key | Value |
 |-----|-------|
-| `RESEND_API_KEY` | `re_jVEkfbG8_HYC1LLtBX9gifuwijKwmGknG` |
+| `RESEND_API_KEY` | `re_[REDACTED - GET YOUR OWN KEY FROM resend.com]` |
 | `RESEND_FROM_EMAIL` | `directory@mail.thetrianglehub.online` |
 | `NEXTAUTH_URL` | `https://thetrianglehub.online` |
 | `NEXT_PUBLIC_APP_URL` | `https://thetrianglehub.online` |

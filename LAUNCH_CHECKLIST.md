@@ -79,7 +79,7 @@ https://demo.twilio.com/welcome/sms/reply
 5. **Cost:** Free for 3,000 emails/month
 
 ```
-✅ RESEND_API_KEY =re_jVEkfbG8_HYC1LLtBX9gifuwijKwmGknG
+✅ RESEND_API_KEY =re_[REDACTED - GET NEW KEY]
 ```
 
 ---
@@ -95,11 +95,11 @@ https://demo.twilio.com/welcome/sms/reply
 6. **Cost:** 2.9% + $0.30 per transaction
 
 ```
-✅ STRIPE_SECRET_KEY =sk_test_51T5xnp0GYJI4LtZCs3UgsCYAPPBqWQUYVopfgv8IXNgRnpw95gKiF0KM8csyBR7EXLije0htmDxRSrwBKRQ6abDj004CT6U6d0
-✅ STRIPE_PUBLISHABLE_KEY =pk_test_51T5xnp0GYJI4LtZCEXqrYAAArQAMkz5pwKe2ymD9rexd5ygsfd3xeuMLsvV0KMqwGsS0EFod6l9STlw6SQaxnroH00j3M1b1Dl
-✅ STRIPE_WEBHOOK_SECRET =whsec_T0IWu5mIlISRLq7FSlMw5dvwU22mi22I
+✅ STRIPE_SECRET_KEY =sk_test_[REDACTED - GET NEW KEY]
+✅ STRIPE_PUBLISHABLE_KEY =pk_test_[REDACTED - GET NEW KEY]
+✅ STRIPE_WEBHOOK_SECRET =whsec_[REDACTED - GET NEW KEY]
 
-thin payload whsec_tdukZiG4vNEyi8J4nENSPQJ6SWXxJSTu
+thin payload whsec_[REDACTED]
 ```
 
 ---
@@ -113,7 +113,7 @@ thin payload whsec_tdukZiG4vNEyi8J4nENSPQJ6SWXxJSTu
 4. Copy **Connection string** (starts with `postgresql://...`)
 
 ```
-✅ DATABASE_URL ="postgresql://neondb_owner:npg_w4UFih0XWpqf@ep-billowing-night-ad5tk5tj.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+✅ DATABASE_URL ="postgresql://[USER]:[PASSWORD]@[HOST]/neondb?sslmode=require"
 ```
 
 ---
