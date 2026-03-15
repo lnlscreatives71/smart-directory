@@ -8,9 +8,9 @@ import { getSiteSettings } from '@/lib/settings';
 import { Providers } from '@/components/Providers';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import LNLFooter from '@/components/LNLFooter';
 import ChatwootWidget from '@/components/ChatwootWidget';
 import SalesAgent from '@/components/SalesAgent';
+// import LNLFooter from '@/components/LNLFooter'; // Temporarily disabled due to Unicode issues
 
 export const dynamic = 'force-dynamic';
 
@@ -200,8 +200,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </footer>
           
-          {/* LNL AI Agency Upsell Footer */}
-          <LNLFooter />
+          {/* LNL AI Agency Upsell Footer - Temporarily disabled */}
+          {/* <LNLFooter /> */}
         </div>
       </Providers>
       <Analytics />
@@ -215,6 +215,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       
       {/* AI Sales Agent - Revenue Generating Funnel */}
       <SalesAgent />
+      
+      {/* LNLFooter temporarily disabled - Unicode encoding issues */}
       </body>
     </html>
   );

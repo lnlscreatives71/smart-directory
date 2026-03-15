@@ -1,8 +1,8 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { sql } from '@/lib/db';
+
 /**
  * Voice Agent API - Twilio Integration
- * 
- * This API handles outbound marketing calls using Twilio Voice + TwiML
- * Combined with Twilio Studio or custom AI voice (ElevenLabs, Deepgram, etc.)
  * 
  * USE CASES:
  * - Outbound marketing calls to leads

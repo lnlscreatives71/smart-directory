@@ -1,4 +1,9 @@
-import { sql } from '../src/lib/db.js';
+import { sql } from '../src/lib/db';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load .env.local from project root
+dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 async function main() {
   console.log('Creating Chatwoot-like support system tables...');
@@ -50,7 +55,7 @@ async function main() {
       )
     `;
 
-    # Ticket Messages
+    // Ticket Messages
     await sql`
       CREATE TABLE IF NOT EXISTS ticket_messages (
         id SERIAL PRIMARY KEY,
@@ -66,7 +71,7 @@ async function main() {
       )
     `;
 
-    # Conversation Labels/Tags
+    // Conversation Labels/Tags
     await sql`
       CREATE TABLE IF NOT EXISTS conversation_labels (
         id SERIAL PRIMARY KEY,
@@ -77,7 +82,7 @@ async function main() {
       )
     `;
 
-    # Ticket-Label associations
+    // Ticket-Label associations
     await sql`
       CREATE TABLE IF NOT EXISTS ticket_labels (
         id SERIAL PRIMARY KEY,
@@ -88,7 +93,7 @@ async function main() {
       )
     `;
 
-    # Support Agents
+    // Support Agents
     await sql`
       CREATE TABLE IF NOT EXISTS support_agents (
         id SERIAL PRIMARY KEY,
@@ -104,7 +109,7 @@ async function main() {
       )
     `;
 
-    # Auto-responses (AI-powered)
+    // Auto-responses (AI-powered)
     await sql`
       CREATE TABLE IF NOT EXISTS auto_responses (
         id SERIAL PRIMARY KEY,
@@ -123,24 +128,28 @@ async function main() {
       )
     `;
 
-    # Create indexes
-    await sql`
-      CREATE INDEX IF NOT EXISTS idx_kb_agency ON knowledge_base(agency_id);
-      CREATE INDEX IF NOT EXISTS idx_kb_listing ON knowledge_base(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_kb_published ON knowledge_base(published);
-      CREATE INDEX IF NOT EXISTS idx_kb_slug ON knowledge_base(slug);
-      
-      CREATE INDEX IF NOT EXISTS idx_tickets_agency ON support_tickets(agency_id);
-      CREATE INDEX IF NOT EXISTS idx_tickets_listing ON support_tickets(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_tickets_status ON support_tickets(status);
-      CREATE INDEX IF NOT EXISTS idx_tickets_created ON support_tickets(created_at);
-      
-      CREATE INDEX IF NOT EXISTS idx_messages_ticket ON ticket_messages(ticket_id);
-      CREATE INDEX IF NOT EXISTS idx_messages_sent ON ticket_messages(sent_at);
-      
-      CREATE INDEX IF NOT EXISTS idx_agents_agency ON support_agents(agency_id);
-      CREATE INDEX IF NOT EXISTS idx_auto_responses_agency ON auto_responses(agency_id);
-    `;
+    // Create indexes (split for Neon)
+    await sql`CREATE INDEX IF NOT EXISTS idx_kb_agency ON knowledge_base(agency_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_kb_listing ON knowledge_base(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_kb_published ON knowledge_base(published)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_kb_slug ON knowledge_base(slug)`;
+    console.log('✅ Created knowledge_base indexes');
+    
+    await sql`CREATE INDEX IF NOT EXISTS idx_tickets_agency ON support_tickets(agency_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_tickets_listing ON support_tickets(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_tickets_status ON support_tickets(status)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_tickets_created ON support_tickets(created_at)`;
+    console.log('✅ Created support_tickets indexes');
+    
+    await sql`CREATE INDEX IF NOT EXISTS idx_messages_ticket ON ticket_messages(ticket_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_messages_sent ON ticket_messages(sent_at)`;
+    console.log('✅ Created ticket_messages indexes');
+    
+    await sql`CREATE INDEX IF NOT EXISTS idx_agents_agency ON support_agents(agency_id)`;
+    console.log('✅ Created support_agents indexes');
+    
+    await sql`CREATE INDEX IF NOT EXISTS idx_auto_responses_agency ON auto_responses(agency_id)`;
+    console.log('✅ Created auto_responses indexes');
 
     console.log('✅ Created Chatwoot-like support system:');
     console.log('  - knowledge_base (help center articles)');

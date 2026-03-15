@@ -1,4 +1,9 @@
-import { sql } from '../src/lib/db.js';
+import { sql } from '../src/lib/db';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load .env.local from project root
+dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 async function main() {
   console.log('Creating booking calendar tables...');
@@ -109,16 +114,15 @@ async function main() {
       )
     `;
 
-    // Create indexes for performance
-    await sql`
-      CREATE INDEX IF NOT EXISTS idx_appointments_listing ON appointments(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date);
-      CREATE INDEX IF NOT EXISTS idx_appointments_status ON appointments(status);
-      CREATE INDEX IF NOT EXISTS idx_schedules_listing ON business_schedules(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_services_listing ON business_services(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_time_off_listing ON business_time_off(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_questions_listing ON booking_questions(listing_id);
-    `;
+    // Create indexes for performance (split for Neon compatibility)
+    await sql`CREATE INDEX IF NOT EXISTS idx_appointments_listing ON appointments(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_appointments_status ON appointments(status)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_schedules_listing ON business_schedules(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_services_listing ON business_services(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_time_off_listing ON business_time_off(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_questions_listing ON booking_questions(listing_id)`;
+    console.log('✅ Created booking calendar indexes');
 
     console.log('✅ Successfully created booking calendar tables:');
     console.log('  - business_schedules (weekly availability + buffers)');

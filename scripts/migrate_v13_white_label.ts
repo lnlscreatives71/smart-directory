@@ -1,4 +1,9 @@
-import { sql } from '../src/lib/db.js';
+import { sql } from '../src/lib/db';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load .env.local from project root
+dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 async function main() {
   console.log('Creating white-label multi-tenant architecture...');

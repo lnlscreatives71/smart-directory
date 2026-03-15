@@ -1,4 +1,9 @@
-import { sql } from '../src/lib/db.js';
+import { sql } from '../src/lib/db';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load .env.local from project root
+dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 async function main() {
   console.log('Creating voice calls and chat conversations tables...');
@@ -24,6 +29,7 @@ async function main() {
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )
     `;
+    console.log('✅ Created voice_calls table');
 
     // Chat conversations table for AI chat history
     await sql`
@@ -41,17 +47,18 @@ async function main() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       )
     `;
+    console.log('✅ Created chat_conversations table');
 
     // Create indexes for better query performance
-    await sql`
-      CREATE INDEX IF NOT EXISTS idx_voice_calls_listing ON voice_calls(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_voice_calls_status ON voice_calls(status);
-      CREATE INDEX IF NOT EXISTS idx_voice_calls_created ON voice_calls(created_at);
-      
-      CREATE INDEX IF NOT EXISTS idx_chat_conversations_listing ON chat_conversations(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_chat_conversations_session ON chat_conversations(session_id);
-      CREATE INDEX IF NOT EXISTS idx_chat_conversations_created ON chat_conversations(created_at);
-    `;
+    await sql`CREATE INDEX IF NOT EXISTS idx_voice_calls_listing ON voice_calls(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_voice_calls_status ON voice_calls(status)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_voice_calls_created ON voice_calls(created_at)`;
+    console.log('✅ Created voice_calls indexes');
+    
+    await sql`CREATE INDEX IF NOT EXISTS idx_chat_conversations_listing ON chat_conversations(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_chat_conversations_session ON chat_conversations(session_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_chat_conversations_created ON chat_conversations(created_at)`;
+    console.log('✅ Created chat_conversations indexes');
 
     console.log('✅ Successfully created tables:');
     console.log('  - voice_calls (for outbound marketing calls)');

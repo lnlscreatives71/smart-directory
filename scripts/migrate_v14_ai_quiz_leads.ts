@@ -1,4 +1,9 @@
-import { sql } from '../src/lib/db.js';
+import { sql } from '../src/lib/db';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load .env.local from project root
+dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 async function main() {
   console.log('Creating AI quiz leads table...');
@@ -26,14 +31,13 @@ async function main() {
       )
     `;
 
-    // Create index for fast lookups
-    await sql`
-      CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_email ON ai_quiz_leads(email);
-      CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_level ON ai_quiz_leads(quiz_level);
-      CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_status ON ai_quiz_leads(status);
-      CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_listing ON ai_quiz_leads(listing_id);
-      CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_agency ON ai_quiz_leads(agency_id);
-    `;
+    // Create index for fast lookups (split for Neon)
+    await sql`CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_email ON ai_quiz_leads(email)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_level ON ai_quiz_leads(quiz_level)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_status ON ai_quiz_leads(status)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_listing ON ai_quiz_leads(listing_id)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_ai_quiz_leads_agency ON ai_quiz_leads(agency_id)`;
+    console.log('✅ Created ai_quiz_leads indexes');
 
     console.log('✅ Successfully created ai_quiz_leads table with indexes');
   } catch (err) {

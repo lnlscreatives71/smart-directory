@@ -166,9 +166,9 @@ export default function SalesAgent() {
                 addMessage({
                     role: 'bot',
                     type: 'pitch',
-                    content: "📊 **I get it. Here's what our clients say:**\n\n⭐ \"AI books 15-20 appointments/week for us. Pays for itself 10x.\" - Med Spa Owner\n\n⭐ \"+340% more leads, 62% fewer no-shows\" - HVAC Company\n\n**Ready to see results like this?**",
+                    content: "**I get it. Here's what our clients say:**\\n\\n- \\\"AI books 15-20 appointments/week for us. Pays for itself 10x.\\\" - Med Spa Owner\\n\\n- \\\"+340% more leads, 62% fewer no-shows\\\" - HVAC Company\\n\\n**Ready to see results like this?**",
                     options: [
-                        { label: 'Yes, let's do it!', value: 'yes', nextStep: 'budget' },
+                        { label: 'Yes, let\'s do it!', value: 'yes', nextStep: 'budget' },
                         { label: 'I need to think about it', value: 'thinking', nextStep: 'nurture' },
                     ]
                 });

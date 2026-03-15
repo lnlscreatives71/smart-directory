@@ -122,11 +122,12 @@ export default function AIReadinessQuiz() {
         
         // Submit to API
         try {
+            if (!result) return;
             await fetch('/api/ai-leads', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    listing_id: null, // Could be set if business is claimed
+                    listing_id: null,
                     business_name: contactInfo.business,
                     contact_name: contactInfo.name,
                     email: contactInfo.email,
