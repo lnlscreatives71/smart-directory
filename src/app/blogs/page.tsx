@@ -59,16 +59,6 @@ export default async function BlogsPage() {
                                     <span className="text-primary-400 text-sm font-semibold group-hover:text-primary-300 transition-colors">Read More →</span>
                                 </div>
                             </Link>
-                                )}
-                                <div className="p-6 flex flex-col flex-1">
-                                    <div className="text-xs font-bold text-primary-600 mb-2 uppercase tracking-wide">{blog.listing_name}</div>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">{blog.title}</h3>
-                                    <p className="text-slate-500 text-sm mb-4 line-clamp-3 flex-1">{blog.excerpt || blog.content.substring(0, 150)}</p>
-                                    <div className="text-xs font-medium text-slate-400 mt-auto pt-4 border-t border-slate-100">
-                                        {new Date(blog.created_at).toLocaleDateString()}
-                                    </div>
-                                </div>
-                            </Link>
                         ))}
                     </div>
                 )}
