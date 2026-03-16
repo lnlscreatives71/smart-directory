@@ -195,7 +195,7 @@ export default function PublicListingForm() {
                                 type="tel"
                                 value={formData.phone}
                                 onChange={e => setFormData({...formData, phone: e.target.value})}
-                                placeholder="(919) 555-0100"
+                                placeholder="(350) 777-2961"
                                 className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white outline-none focus:border-primary-500 transition"
                             />
                         </div>

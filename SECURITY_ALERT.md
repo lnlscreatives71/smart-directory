@@ -41,7 +41,7 @@ Multiple API keys and database credentials were accidentally exposed in your Git
 
 **Steps:**
 1. Go to: https://resend.com/api-keys
-2. **Delete the exposed key:** `re_jVEkfbG8_HYC1LLtBX9gifuwijKwmGknG`
+2. **Delete the exposed key:** 
 3. **Create new API key**
 4. **Update in Vercel:**
    - Vercel Dashboard → Your Project → Settings → Environment Variables

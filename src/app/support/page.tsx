@@ -76,7 +76,7 @@ export default function SupportPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-white">Phone</p>
-                    <a href="tel:9195550100" className="text-slate-400 hover:text-primary-400 transition-colors">(919) 555-0100</a>
+                    <a href="tel:+13507772961" className="text-slate-400 hover:text-primary-400 transition-colors">(350) 777-2961</a>
                     <p className="text-xs text-slate-500 mt-1">Mon-Fri, 9am - 5pm EST</p>
                   </div>
                 </div>

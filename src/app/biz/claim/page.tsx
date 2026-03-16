@@ -249,7 +249,7 @@ function ClaimContent() {
 
             <div className="space-y-4 mb-8">
                 <Field label="Your Name" icon={Building2} value={contactName} onChange={setContactName} placeholder="Jane Smith" />
-                <Field label="Phone Number" icon={Phone} value={phone} onChange={setPhone} placeholder="(919) 555-0100" type="tel" />
+                <Field label="Phone Number" icon={Phone} value={phone} onChange={setPhone} placeholder="(350) 777-2961" type="tel" />
                 <Field label="Website" icon={Globe} value={website} onChange={setWebsite} placeholder="https://yourbusiness.com" type="url" />
                 <div>
                     <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Business Description</label>

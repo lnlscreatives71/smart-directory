@@ -246,9 +246,9 @@ export default function SalesAgent() {
                             nextStep: 'book_demo' 
                         },
                         { 
-                            label: '📞 Call: (919) 555-0100', 
-                            value: 'call', 
-                            nextStep: 'phone' 
+                            label: '📞 Call: (350) 777-2961',
+                            value: 'call',
+                            nextStep: 'phone'
                         },
                     ]
                 });
@@ -275,7 +275,7 @@ export default function SalesAgent() {
                 break;
 
             case 'phone':
-                window.open('tel:+19195550100');
+                window.open('tel:+13507772961');
                 break;
 
             default:

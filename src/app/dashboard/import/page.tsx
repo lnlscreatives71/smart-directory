@@ -31,7 +31,7 @@ const OPTIONAL_COLUMNS = ['category', 'description', 'location_city', 'location_
 const ALL_COLUMNS = [...REQUIRED_COLUMNS, ...OPTIONAL_COLUMNS];
 
 const SAMPLE_CSV = `name,category,description,location_city,location_state,contact_name,contact_email,phone,website,rating
-Triangle Wellness Spa,Med Spa,Premier wellness and med spa services in Raleigh,Raleigh,NC,Jane Doe,hello@trianglewellness.com,919-555-0100,https://trianglewellness.com,4.8
+Triangle Wellness Spa,Med Spa,Premier wellness and med spa services in Raleigh,Raleigh,NC,Jane Doe,hello@trianglewellness.com,350-777-2961,https://trianglewellness.com,4.8
 Oak City Plumbing,Plumbing,Residential and commercial plumbing services,Durham,NC,John Smith,info@oakcityplumbing.com,919-555-0101,,4.5
 Cary Pet Grooming,Pet Services,Full-service grooming for dogs and cats,Cary,NC,,,,4.6
 Triangle HVAC Pros,HVAC,Heating and cooling installation and repair,Raleigh,NC,,service@trianglehvac.com,,https://trianglehvac.com,4.7`;

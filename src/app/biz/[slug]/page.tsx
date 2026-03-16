@@ -212,7 +212,7 @@ export default async function BusinessDetail({
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1 text-slate-300">Phone</label>
-                                <input type="tel" className="w-full p-2.5 rounded-lg glass-input" placeholder="(919) 555-0123" />
+                                <input type="tel" className="w-full p-2.5 rounded-lg glass-input" placeholder="(350) 777-2961" />
                             </div>
                             <button type="button" className="btn-primary w-full py-3 rounded-lg font-semibold shadow-md">
                                 Request a Quote
