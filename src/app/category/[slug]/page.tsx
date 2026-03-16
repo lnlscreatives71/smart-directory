@@ -1,29 +1,42 @@
 import { sql } from '@/lib/db';
 import { Listing } from '@/lib/types';
 import Link from 'next/link';
-import { Star, MapPin, Search, ExternalLink, Copy, Heart, ArrowUpRight } from 'lucide-react';
+import { Star, MapPin, Search, ArrowUpRight } from 'lucide-react';
 import BizCard from '@/components/BizCard';
+import CategoryFilters from '@/components/CategoryFilters';
 
 export default async function CategoryPage({
+    searchParams,
     params
 }: {
+    searchParams: { city?: string; rating?: string; plan?: string };
     params: { slug: string } | Promise<{ slug: string }>
 }) {
     const { slug } = await params;
     const categoryStr = slug.replace(/-/g, ' ');
     const titleCaseCategory = categoryStr.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    const q = `%${categoryStr}%`;
-
+    
+    // Build query with filters
+    let query = sql`SELECT * FROM listings WHERE category ILIKE ${`%${categoryStr}%`}`;
+    
+    if (searchParams.city) {
+        query = sql`${query} AND location_city = ${searchParams.city}`;
+    }
+    if (searchParams.rating) {
+        query = sql`${query} AND rating >= ${parseFloat(searchParams.rating)}`;
+    }
+    if (searchParams.plan === 'Featured') {
+        query = sql`${query} AND featured = true`;
+    }
+    
+    query = sql`${query} ORDER BY CASE WHEN featured = true THEN 1 ELSE 0 END DESC, rating DESC`;
+    
     let listings: Listing[] = [];
     try {
-        listings = (await sql`
-      SELECT * FROM listings 
-      WHERE category ILIKE ${q}
-      ORDER BY CASE WHEN featured = true THEN 1 ELSE 0 END DESC, rating DESC 
-    `) as Listing[];
+        listings = (await query) as Listing[];
     } catch (err) {
         console.error(err);
-        return <div className="p-10 text-center text-red-500">Database Error. Seed first.</div>;
+        return <div className="p-10 text-center text-red-500">Database Error.</div>;
     }
 
     return (
@@ -46,45 +59,7 @@ export default async function CategoryPage({
             <div className="max-w-7xl mx-auto px-4 pt-8 flex flex-col lg:flex-row gap-8">
 
                 {/* ── Sidebar Filters ───────────────────── */}
-                <aside className="w-full lg:w-64 shrink-0 space-y-4">
-                    <div className="glass rounded-2xl border border-white/10 shadow-sm p-5">
-                        <h3 className="font-bold text-sm uppercase tracking-wider text-slate-400 mb-4">Location</h3>
-                        <div className="space-y-2.5">
-                            {['Raleigh', 'Durham', 'Cary', 'Chapel Hill'].map(city => (
-                                <label key={city} className="flex items-center gap-2.5 text-sm text-slate-300 cursor-pointer font-medium">
-                                    <input type="checkbox" className="rounded text-primary-500 focus:ring-primary-400 w-4 h-4 bg-slate-800 border-slate-600" />
-                                    {city}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="glass rounded-2xl border border-white/10 shadow-sm p-5">
-                        <h3 className="font-bold text-sm uppercase tracking-wider text-slate-400 mb-4">Rating</h3>
-                        <div className="space-y-2.5">
-                            {[['4.5+', '4.5'], ['4.0+', '4.0'], ['3.5+', '3.5']].map(([label, val]) => (
-                                <label key={val} className="flex items-center gap-2.5 text-sm text-slate-300 cursor-pointer font-medium">
-                                    <input type="checkbox" className="rounded text-primary-500 focus:ring-primary-400 w-4 h-4 bg-slate-800 border-slate-600" />
-                                    <span className="flex items-center gap-1">
-                                        <Star size={13} className="text-amber-400 fill-amber-400" /> {label}
-                                    </span>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="glass rounded-2xl border border-white/10 shadow-sm p-5">
-                        <h3 className="font-bold text-sm uppercase tracking-wider text-slate-400 mb-4">Plan</h3>
-                        <div className="space-y-2.5">
-                            {['Featured', 'Premium', 'Free'].map(plan => (
-                                <label key={plan} className="flex items-center gap-2.5 text-sm text-slate-300 cursor-pointer font-medium">
-                                    <input type="checkbox" className="rounded text-primary-500 focus:ring-primary-400 w-4 h-4 bg-slate-800 border-slate-600" />
-                                    {plan}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-                </aside>
+                <CategoryFilters />
 
                 {/* ── Listings Grid ──────────────────────── */}
                 <div className="flex-1">

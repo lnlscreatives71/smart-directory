@@ -44,11 +44,11 @@ export default async function PricingPage() {
 
 
     return (
-        <div className="bg-[#f0f2f5] min-h-[calc(100vh-64px)] py-16 px-4">
+        <div className="bg-slate-950 min-h-[calc(100vh-64px)] py-16 px-4">
             <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-10">
-                    <h1 className="text-3xl md:text-4xl font-extrabold text-[#1a202c] mb-6">
-                        Choose Your Perfect Plan From Us
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
+                        Choose Your Perfect Plan
                     </h1>
                 </div>
 
