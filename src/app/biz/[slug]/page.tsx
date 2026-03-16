@@ -207,14 +207,22 @@ export default async function BusinessDetail({
                         <h3 className="text-xl font-bold mb-4 text-white">Contact {biz.name}</h3>
                         <form className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium mb-1 text-slate-300">Name</label>
-                                <input type="text" className="w-full p-2.5 rounded-lg glass-input" placeholder="John Doe" />
+                                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Name</label>
+                                <input type="text" className="w-full p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder:text-slate-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition" placeholder="John Doe" />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-1 text-slate-300">Phone</label>
-                                <input type="tel" className="w-full p-2.5 rounded-lg glass-input" placeholder="(350) 777-2961" />
+                                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Phone</label>
+                                <input type="tel" className="w-full p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder:text-slate-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition" placeholder="(350) 777-2961" />
                             </div>
-                            <button type="button" className="btn-primary w-full py-3 rounded-lg font-semibold shadow-md">
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Email</label>
+                                <input type="email" className="w-full p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder:text-slate-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition" placeholder="you@example.com" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Message</label>
+                                <textarea rows={3} className="w-full p-3 rounded-xl bg-slate-800/50 border border-slate-700 text-white placeholder:text-slate-500 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition resize-none" placeholder="Tell them what you need..." />
+                            </div>
+                            <button type="button" className="w-full bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary-500/30 transition-all hover:scale-[1.02]">
                                 Request a Quote
                             </button>
                         </form>
