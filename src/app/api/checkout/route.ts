@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
+// Use a stable, older API version that's well-tested
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-    apiVersion: '2026-02-25.clover'
+    apiVersion: '2024-12-18.acacia'
 });
 
 export async function POST(request: Request) {
@@ -10,17 +11,23 @@ export async function POST(request: Request) {
         const { plan, billing, listing_id } = await request.json();
 
         // Check if Stripe is configured
-        if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === 'sk_test_placeholder') {
+        if (!process.env.STRIPE_SECRET_KEY) {
+            console.error('❌ STRIPE_SECRET_KEY not set in environment');
             return NextResponse.json({ 
                 error: 'Payments not configured',
                 message: 'Stripe is not configured. Contact the site administrator to enable payments.',
                 demo: true
             }, { status: 501 });
         }
+        
+        // Log key format (first 8 chars only for security)
+        const keyPrefix = process.env.STRIPE_SECRET_KEY.substring(0, 8);
+        console.log('🔑 Stripe key format:', keyPrefix + '...');
 
         // Validate Stripe key format
-        if (!process.env.STRIPE_SECRET_KEY.startsWith('sk_')) {
-            console.error('Invalid Stripe key format');
+        if (!process.env.STRIPE_SECRET_KEY.startsWith('sk_test_') && 
+            !process.env.STRIPE_SECRET_KEY.startsWith('sk_live_')) {
+            console.error('❌ Invalid Stripe key format:', keyPrefix);
             return NextResponse.json({ 
                 error: 'Invalid Stripe configuration',
                 message: 'Stripe API key is not properly configured.'
