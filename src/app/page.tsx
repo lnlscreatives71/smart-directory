@@ -89,6 +89,15 @@ export default async function Home({
               Search
             </button>
           </form>
+          
+          {/* Show search results count when searching */}
+          {query && (
+            <div className="mt-4 text-slate-300 text-sm">
+              {listings.length === 0 
+                ? `No results for "${query}"` 
+                : `${listings.length} result${listings.length !== 1 ? 's' : ''} for "${query}"`}
+            </div>
+          )}
         </div>
       </section>
 
