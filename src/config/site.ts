@@ -5,8 +5,8 @@ export const siteConfig = {
     url: "https://thetrianglehub.online",
     contact: {
         email: "support@thetrianglehub.online",
-        phone: "(919) 555-0100",
-        phoneRaw: "9195550100",
+        phone: "(350) 777-2961",
+        phoneRaw: "3507772961",
         address: "Raleigh, NC 27601",
     },
     seo: {

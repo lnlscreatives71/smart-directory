@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
             twiml = `<?xml version="1.0" encoding="UTF-8"?>
                 <Response>
                     <Say>Connecting you to a team member now. Please hold.</Say>
-                    <Dial>+19195550100</Dial>
+                    <Dial>+13507772961</Dial>
                 </Response>`;
         } else if (digits === '2') {
             // User wants SMS with more info
