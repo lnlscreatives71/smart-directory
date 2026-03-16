@@ -6,6 +6,22 @@ import { ExternalLink, Copy, Heart, Star, MapPin } from 'lucide-react';
 
 export default function BizCard({ biz, showFeatured = false }: { biz: Listing; showFeatured?: boolean }) {
   const isHighlight = biz.feature_flags?.highlight_on_home === true || biz.featured;
+  
+  // Get category-based fallback image
+  const getCategoryImage = (category: string) => {
+    const cat = category.toLowerCase();
+    if (cat.includes('restaurant') || cat.includes('dining') || cat.includes('food')) return 'photo-1517248135467-4c7edcad34c4';
+    if (cat.includes('spa') || cat.includes('wellness') || cat.includes('beauty')) return 'photo-1600334089648-b0d9d3028eb2';
+    if (cat.includes('health') || cat.includes('medical') || cat.includes('dental')) return 'photo-1576091160399-112ba8d25d1d';
+    if (cat.includes('gym') || cat.includes('fitness')) return 'photo-1534438327276-14e5300c3a48';
+    if (cat.includes('real estate')) return 'photo-1560518883-ce09059eeffa';
+    if (cat.includes('service') || cat.includes('hvac') || cat.includes('plumbing')) return 'photo-1581094794329-c8112a89af12';
+    if (cat.includes('retail') || cat.includes('shop') || cat.includes('store')) return 'photo-1441984904996-e0b6ba687e04';
+    // Default office/business image
+    return 'photo-1497366216548-37526070297c';
+  };
+  
+  const imageId = biz.image_url ? null : getCategoryImage(biz.category);
 
   return (
     <div className="biz-card flex flex-col">
@@ -13,9 +29,16 @@ export default function BizCard({ biz, showFeatured = false }: { biz: Listing; s
       <div className="relative">
         <Link href={`/biz/${biz.slug}`}>
           <img
-            src={biz.image_url || `https://images.unsplash.com/photo-${biz.id % 3 === 0 ? '1497366216548-37526070297c' : biz.id % 3 === 1 ? '1517248135467-4c7edcad34c4' : '1560750588-73207b1ef5b9'}?auto=format&fit=crop&q=80&w=500`}
+            src={biz.image_url || `https://images.unsplash.com/${imageId}?auto=format&fit=crop&q=80&w=500`}
             alt={biz.name}
             className="biz-card-img hover:opacity-95 transition-opacity"
+            onError={(e) => {
+              // Fallback if image fails to load
+              const target = e.target as HTMLImageElement;
+              if (!target.src.includes('photo-1497366216548-37526070297c')) {
+                target.src = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=500';
+              }
+            }}
           />
         </Link>
         {(showFeatured || isHighlight) && (
