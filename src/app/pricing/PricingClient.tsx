@@ -65,7 +65,7 @@ export default function PricingClient({
                         ))}
                     </div>
 
-                    <Link href="/dashboard/listings/new" className="w-full sm:w-auto px-8 py-3 bg-[#e53e3e] hover:bg-red-600 text-white font-bold rounded shadow-md transition-colors text-sm uppercase tracking-wide">
+                    <Link href="/list-your-business" className="w-full sm:w-auto px-8 py-3 bg-[#e53e3e] hover:bg-red-600 text-white font-bold rounded shadow-md transition-colors text-sm uppercase tracking-wide">
                         ADD YOUR BUSINESS
                     </Link>
                 </div>
