@@ -26,14 +26,16 @@ export default function LoginPage() {
             });
 
             if (res?.error) {
-                setError("Invalid email or password");
+                setError(res.error === "Configuration" 
+                    ? "Login is temporarily unavailable. Please contact support."
+                    : "Invalid email or password");
                 setLoading(false);
             } else {
                 router.push("/dashboard");
                 router.refresh();
             }
         } catch (err) {
-            setError("An unexpected error occurred. Please try again.");
+            setError("Unable to connect to authentication service. Please try again later.");
             setLoading(false);
         }
     };
