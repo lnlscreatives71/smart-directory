@@ -95,7 +95,7 @@ export default function PricingClient({
                         ))}
                     </div>
 
-                    <button 
+                    <button
                         onClick={async () => {
                             try {
                                 const res = await fetch('/api/checkout', {
@@ -106,8 +106,11 @@ export default function PricingClient({
                                 const data = await res.json();
                                 if (data.url) {
                                     window.location.href = data.url;
+                                } else if (data.demo) {
+                                    // Show friendly message for demo mode
+                                    alert('🎉 Demo Mode!\n\nThis is a demonstration platform. To enable payments and upgrade your listing, contact us at agency@lnlaiagency.com');
                                 } else {
-                                    alert('Checkout failed: ' + data.error);
+                                    alert('Checkout failed: ' + (data.message || data.error));
                                 }
                             } catch (err) {
                                 alert('An error occurred during checkout.');
