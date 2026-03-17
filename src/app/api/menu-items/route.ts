@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
         `;
 
         // Build hierarchical structure
-        const buildTree = (items: any[], parentId: number | null = null) => {
+        const buildTree = (items: any[], parentId: number | null = null): any[] => {
             return items
                 .filter(item => item.parent_id === parentId)
                 .map(item => ({
