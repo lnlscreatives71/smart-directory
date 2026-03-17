@@ -23,18 +23,25 @@ export default function LoginPage() {
                 email,
                 password,
                 redirect: false,
+                callbackUrl: "/dashboard",
             });
 
+            console.log('Login response:', res);
+
             if (res?.error) {
-                setError(res.error === "Configuration" 
+                setError(res.error === "Configuration"
                     ? "Login is temporarily unavailable. Please contact support."
                     : "Invalid email or password");
                 setLoading(false);
+            } else if (res?.url) {
+                // Successfully logged in, redirect to callback URL
+                window.location.href = res.url;
             } else {
-                router.push("/dashboard");
-                router.refresh();
+                setError("Login succeeded but no redirect URL was provided");
+                setLoading(false);
             }
         } catch (err) {
+            console.error('Login error:', err);
             setError("Unable to connect to authentication service. Please try again later.");
             setLoading(false);
         }
