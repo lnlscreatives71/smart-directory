@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { Settings, Star, CheckCircle2, ArrowRight, ExternalLink, Clock, Phone, Globe, MapPin } from 'lucide-react';
+import { Settings, Star, CheckCircle2, ArrowRight, ExternalLink, Clock, Phone, Globe, MapPin, XCircle } from 'lucide-react';
 
 interface Listing {
     id: number;
@@ -62,6 +62,42 @@ export default function SmbDashboardPage() {
         return (
             <div className="text-center py-20">
                 <p className="text-slate-500">No listing found for your account. Contact support.</p>
+            </div>
+        );
+    }
+
+    // Pending approval — show holding screen
+    if ((listing as any).claim_status === 'pending') {
+        return (
+            <div className="max-w-lg mx-auto text-center py-16">
+                <div className="w-20 h-20 bg-amber-100 dark:bg-amber-900/30 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Clock size={36} />
+                </div>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Your claim is under review</h1>
+                <p className="text-slate-500 leading-relaxed mb-6">
+                    We've received your claim for <strong className="text-slate-800 dark:text-white">{listing.name}</strong>.
+                    Our team will review and approve it shortly — usually within 1 business day.
+                    You'll receive an email once it's approved and your dashboard is unlocked.
+                </p>
+                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-5 text-sm text-amber-700 dark:text-amber-300">
+                    While you wait, you won't be able to edit your listing. Once approved, you'll have full access.
+                </div>
+            </div>
+        );
+    }
+
+    // Rejected — show message
+    if ((listing as any).claim_status === 'rejected') {
+        return (
+            <div className="max-w-lg mx-auto text-center py-16">
+                <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <XCircle size={36} />
+                </div>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Claim not approved</h1>
+                <p className="text-slate-500 leading-relaxed">
+                    We were unable to verify your ownership of <strong className="text-slate-800 dark:text-white">{listing.name}</strong>.
+                    Please contact us if you believe this is an error.
+                </p>
             </div>
         );
     }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase, LogOut, Tags, MenuSquare } from 'lucide-react';
+import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase, LogOut, Tags, MenuSquare, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import DashboardUpsellBanner from '@/components/DashboardUpsellBanner';
@@ -15,6 +15,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const navItems = [
         { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
         { name: 'Listings', href: '/dashboard/listings', icon: Database },
+        { name: 'Claim Requests', href: '/dashboard/claims', icon: ShieldCheck },
         { name: 'Import Businesses', href: '/dashboard/import', icon: Upload },
         { name: 'Plans', href: '/dashboard/plans', icon: CreditCard },
         { name: 'Leads & CRM', href: '/dashboard/leads', icon: Users },

@@ -21,7 +21,9 @@ export default function SmbLayout({ children }: { children: React.ReactNode }) {
         );
     }
 
-    if (status === 'unauthenticated' || (session && (session.user as any)?.role !== 'smb')) {
+    const isPublicSmbPage = pathname === '/smb/login' || pathname === '/smb/auth-callback';
+
+    if (!isPublicSmbPage && (status === 'unauthenticated' || (session && (session.user as any)?.role !== 'smb'))) {
         if (typeof window !== 'undefined') router.replace('/smb/login');
         return null;
     }

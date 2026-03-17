@@ -1,35 +1,58 @@
 import { sql } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 import { sendEmail } from '@/lib/email';
-import { welcomeEmail } from '@/lib/email-templates';
-import crypto from 'crypto';
+import { adminClaimNotification } from '@/lib/email-templates';
 
+const ADMIN_EMAIL = process.env.ADMIN_NOTIFY_EMAIL || process.env.RESEND_FROM_EMAIL || '';
 const SITE_URL = process.env.NEXTAUTH_URL || 'https://thetrianglehub.online';
 
 export async function POST(req: Request) {
     try {
-        const { id, contact_name, phone, website, description } = await req.json();
-        if (!id) return NextResponse.json({ success: false, error: 'No ID' }, { status: 400 });
+        const { id, name, email, password } = await req.json();
 
-        // Fetch the current listing info for the email
+        if (!id) return NextResponse.json({ success: false, error: 'No listing ID' }, { status: 400 });
+        if (!email || !password) return NextResponse.json({ success: false, error: 'Email and password are required' }, { status: 400 });
+        if (password.length < 8) return NextResponse.json({ success: false, error: 'Password must be at least 8 characters' }, { status: 400 });
+
+        // Fetch listing
         const [listing] = await sql`
-            SELECT id, name, slug, contact_email, contact_name, claimed
+            SELECT id, name, slug, claimed
             FROM listings WHERE id = ${Number(id)}
         `;
-
         if (!listing) return NextResponse.json({ success: false, error: 'Listing not found' }, { status: 404 });
         if (listing.claimed) return NextResponse.json({ success: false, error: 'Already claimed' }, { status: 409 });
 
-        // Update listing: mark claimed + save any profile info they filled out
+        // Check if email already has an account
+        const [existing] = await sql`SELECT id FROM users WHERE email = ${email} LIMIT 1`;
+        if (existing) {
+            return NextResponse.json({ success: false, code: 'account_exists', error: 'An account with this email already exists.' }, { status: 409 });
+        }
+
+        // Hash password
+        const passwordHash = await bcrypt.hash(password, 12);
+
+        // Create SMB user account
+        await sql`
+            INSERT INTO users (name, email, password_hash, role, listing_id)
+            VALUES (
+                ${name || listing.name},
+                ${email},
+                ${passwordHash},
+                'smb',
+                ${Number(id)}
+            )
+        `;
+
+        // Mark listing as claimed with status = pending (awaiting admin approval)
         await sql`
             UPDATE listings
             SET
                 claimed = TRUE,
-                updated_at = NOW(),
-                contact_name = COALESCE(${contact_name || null}, contact_name),
-                phone        = COALESCE(${phone || null}, phone),
-                website      = COALESCE(${website || null}, website),
-                description  = COALESCE(${description || null}, description)
+                claim_status = 'pending',
+                contact_email = COALESCE(contact_email, ${email}),
+                claimed_at = NOW(),
+                updated_at = NOW()
             WHERE id = ${Number(id)}
         `;
 
@@ -38,52 +61,18 @@ export async function POST(req: Request) {
             UPDATE outreach_campaigns
             SET pipeline_stage = 'claimed', updated_at = NOW()
             WHERE listing_id = ${Number(id)}
-        `;
+        `.catch(() => {}); // non-fatal if no outreach record exists
 
-        // ── Create or update SMB user account ────────────────────────────────
-        const emailTo = listing.contact_email as string | null;
-        const bizName = listing.name as string;
-        const slug = listing.slug as string;
-        const name = (contact_name || listing.contact_name) as string | null;
-
-        let magicLink: string | null = null;
-
-        if (emailTo) {
-            // Generate a secure magic login token (48 bytes = 64 hex chars)
-            const magicToken = crypto.randomBytes(48).toString('hex');
-            const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000); // 72 hours
-
-            // Upsert SMB user: if the email already has an account, just refresh the token
-            await sql`
-                INSERT INTO users (name, email, password_hash, role, listing_id, magic_token, magic_token_expires_at)
-                VALUES (
-                    ${name || bizName},
-                    ${emailTo},
-                    '',
-                    'smb',
-                    ${Number(id)},
-                    ${magicToken},
-                    ${expiresAt.toISOString()}
-                )
-                ON CONFLICT (email) DO UPDATE SET
-                    role                    = 'smb',
-                    listing_id              = ${Number(id)},
-                    magic_token             = ${magicToken},
-                    magic_token_expires_at  = ${expiresAt.toISOString()},
-                    updated_at              = NOW()
-            `;
-
-            magicLink = `${SITE_URL}/api/smb/magic-login?token=${magicToken}`;
-
-            // Send welcome confirmation email (with magic login link embedded)
+        // Notify admin
+        if (ADMIN_EMAIL) {
             await sendEmail({
-                to: emailTo,
-                subject: `✅ You've claimed ${bizName} on The Triangle Hub!`,
-                html: welcomeEmail(bizName, name, slug, magicLink),
-            });
+                to: ADMIN_EMAIL,
+                subject: `🔔 New claim: ${listing.name}`,
+                html: adminClaimNotification(listing.name as string, name || null, email, Number(id)),
+            }).catch(() => {}); // non-fatal
         }
 
-        return NextResponse.json({ success: true, slug });
+        return NextResponse.json({ success: true, slug: listing.slug });
     } catch (e: any) {
         return NextResponse.json({ success: false, error: e.message }, { status: 500 });
     }

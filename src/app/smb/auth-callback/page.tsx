@@ -25,7 +25,8 @@ function AuthCallbackContent() {
         }
 
         try {
-            const payload = JSON.parse(Buffer.from(st, 'base64url').toString('utf8'));
+            const base64 = st.replace(/-/g, '+').replace(/_/g, '/');
+            const payload = JSON.parse(atob(base64));
             if (!payload.email || !payload.token || Date.now() > payload.exp) {
                 setError('This link has expired. Please request a new one.');
                 return;

@@ -304,6 +304,64 @@ export function getEmailSet(variant: ABVariant) {
     };
 }
 
+// ─── Admin: New Claim Notification ────────────────────────────────────────────
+export function adminClaimNotification(businessName: string, claimantName: string | null, claimantEmail: string, listingId: number): string {
+    const approveUrl = `${SITE_URL}/dashboard/claims`;
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">🔔 New Claim Request</h1>
+        <p style="color:#94a3b8;font-size:15px;margin:0 0 24px;">Someone just claimed a listing on ${SITE_NAME}. Review and approve or reject below.</p>
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:0 0 24px;border-left:4px solid #f59e0b;">
+            <p style="margin:0 0 8px;color:#fbbf24;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Business</p>
+            <p style="margin:0 0 16px;color:#fff;font-size:18px;font-weight:700;">${businessName}</p>
+            <p style="margin:0 0 4px;color:#94a3b8;font-size:13px;"><strong style="color:#cbd5e1;">Claimant:</strong> ${claimantName || 'Not provided'}</p>
+            <p style="margin:0;color:#94a3b8;font-size:13px;"><strong style="color:#cbd5e1;">Email:</strong> ${claimantEmail}</p>
+        </div>
+        ${ctaButton('Review Claim in Dashboard →', approveUrl)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">Log in to your admin dashboard to approve or reject this claim.</p>
+    `);
+}
+
+// ─── SMB: Claim Approved ───────────────────────────────────────────────────────
+export function smbClaimApproved(businessName: string, contactName: string | null, slug: string): string {
+    const dashboardUrl = `${SITE_URL}/smb`;
+    const profileUrl = `${SITE_URL}/biz/${slug}`;
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Your claim has been approved! ✅</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Great news — your claim for <strong style="color:#fff;">${businessName}</strong> on
+            <strong style="color:#6366f1;">${SITE_NAME}</strong> has been approved.
+            Your dashboard is now fully unlocked and you can start managing your listing.
+        </p>
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid #10b981;">
+            <p style="margin:0 0 4px;color:#6ee7b7;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">✅ Your profile is live at</p>
+            <a href="${profileUrl}" style="color:#6366f1;font-size:16px;font-weight:700;text-decoration:none;">${profileUrl}</a>
+        </div>
+        ${ctaButton('Go to My Dashboard →', dashboardUrl)}
+        <p style="margin-top:20px;color:#cbd5e1;font-size:14px;line-height:1.7;">From your dashboard you can add photos, update hours, edit your description, and upgrade to Premium for more visibility.</p>
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">Questions? Reply to this email and we'll help you out.</p>
+    `);
+}
+
+// ─── SMB: Claim Rejected ───────────────────────────────────────────────────────
+export function smbClaimRejected(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Update on your claim request</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            We were unable to verify your ownership of <strong style="color:#fff;">${businessName}</strong> at this time.
+            Your claim request has not been approved.
+        </p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            If you believe this is an error or would like to provide additional verification,
+            please reply to this email and we'll be happy to assist.
+        </p>
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">Reply to this email if you have questions.</p>
+    `);
+}
+
 // ─── Welcome / Claim Confirmation Email ───────────────────────────────────────
 export function welcomeEmail(businessName: string, contactName: string | null, slug: string, magicLink?: string): string {
     const profileUrl = `${SITE_URL}/biz/${slug}`;

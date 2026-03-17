@@ -292,6 +292,27 @@ export default function SmbListingEditorPage() {
         );
     }
 
+    // Block editing until approved
+    if ((listing as any).claim_status === 'pending') {
+        return (
+            <div className="max-w-lg mx-auto text-center py-16">
+                <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <Clock size={28} />
+                </div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Awaiting approval</h2>
+                <p className="text-slate-500 text-sm">You'll be able to edit your listing once your claim has been approved by our team.</p>
+            </div>
+        );
+    }
+
+    if ((listing as any).claim_status === 'rejected') {
+        return (
+            <div className="max-w-lg mx-auto text-center py-16">
+                <p className="text-slate-500 text-sm">Your claim was not approved. Please contact support.</p>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6 max-w-2xl">
             <div className="flex items-center justify-between">
