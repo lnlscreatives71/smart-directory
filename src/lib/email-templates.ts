@@ -305,14 +305,23 @@ export function getEmailSet(variant: ABVariant) {
 }
 
 // ─── Welcome / Claim Confirmation Email ───────────────────────────────────────
-export function welcomeEmail(businessName: string, contactName: string | null, slug: string): string {
+export function welcomeEmail(businessName: string, contactName: string | null, slug: string, magicLink?: string): string {
     const profileUrl = `${SITE_URL}/biz/${slug}`;
+    const dashboardSection = magicLink ? `
+        <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid #6366f1;">
+            <p style="margin:0 0 6px;color:#a5b4fc;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">🔑 Access Your Business Dashboard</p>
+            <p style="margin:0 0 14px;color:#cbd5e1;font-size:14px;">Click below to log in and manage your listing — update photos, hours, description and more.</p>
+            ${ctaButton('Go to My Dashboard →', magicLink)}
+            <p style="margin:12px 0 0;color:#64748b;font-size:12px;">This login link expires in 72 hours. You can always request a new one from the login page.</p>
+        </div>
+    ` : '';
+
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Welcome to The Triangle Hub! 🎉</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
         <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            You've successfully claimed <strong style="color:#fff;">${businessName}</strong> on 
-            <strong style="color:#6366f1;">The Triangle Hub</strong>. Your listing now shows a 
+            You've successfully claimed <strong style="color:#fff;">${businessName}</strong> on
+            <strong style="color:#6366f1;">The Triangle Hub</strong>. Your listing now shows a
             verified badge and you're live to local customers searching in the Triangle.
         </p>
 
@@ -321,16 +330,16 @@ export function welcomeEmail(businessName: string, contactName: string | null, s
             <a href="${profileUrl}" style="color:#6366f1;font-size:16px;font-weight:700;text-decoration:none;">${profileUrl}</a>
         </div>
 
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">What you can do next:</p>
+        ${dashboardSection}
+
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">What you can do from your dashboard:</p>
         <ul style="color:#cbd5e1;font-size:14px;line-height:2.2;padding-left:20px;margin:0 0 24px;">
             <li>📷 Add photos to your profile</li>
             <li>📝 Update your description and services</li>
-            <li>📅 Enable booking so customers can schedule directly</li>
+            <li>🕐 Set your business hours</li>
             <li>🔝 Upgrade to Premium for 4x more visibility</li>
         </ul>
 
-        ${ctaButton('View My Live Profile →', profileUrl)}
-        <br/><br/>
         <a href="${UPGRADE_URL}" style="display:inline-block;padding:12px 28px;background:transparent;color:#6366f1;font-weight:600;font-size:14px;text-decoration:none;border-radius:10px;border:2px solid #6366f1;">
             Explore Premium Features
         </a>

@@ -16,24 +16,58 @@ export const authOptions: NextAuthOptions = {
                     return null;
                 }
 
+                // Magic token login: password field carries the token prefixed with "magic:"
+                if (credentials.password.startsWith('magic:')) {
+                    const token = credentials.password.slice(6);
+                    try {
+                        const res = await sql`
+                            SELECT * FROM users
+                            WHERE email = ${credentials.email}
+                              AND magic_token = ${token}
+                              AND magic_token_expires_at > NOW()
+                            LIMIT 1
+                        `;
+                        const user = res[0];
+                        if (!user) return null;
+
+                        // Burn the token (one-time use)
+                        await sql`
+                            UPDATE users
+                            SET magic_token = NULL, magic_token_expires_at = NULL
+                            WHERE id = ${user.id}
+                        `;
+
+                        return {
+                            id: user.id.toString(),
+                            name: user.name,
+                            email: user.email,
+                            role: user.role,
+                            listingId: user.listing_id ?? null,
+                        };
+                    } catch {
+                        return null;
+                    }
+                }
+
+                // Standard password login
                 try {
                     const res = await sql`SELECT * FROM users WHERE email = ${credentials.email} LIMIT 1`;
                     const user = res[0];
 
-                    if (!user) {
-                        return null;
-                    }
+                    if (!user) return null;
+
+                    // SMB users created via claim have no password — password login not allowed
+                    if (!user.password_hash) return null;
 
                     const pwValid = await bcrypt.compare(credentials.password, user.password_hash);
-                    if (!pwValid) {
-                        return null;
-                    }
+                    if (!pwValid) return null;
 
                     return {
                         id: user.id.toString(),
                         name: user.name,
                         email: user.email,
-                        role: user.role
+                        role: user.role,
+                        listingId: user.listing_id ?? null,
                     };
                 } catch (e) {
                     console.error("Auth Error", e);
@@ -54,8 +88,8 @@ export const authOptions: NextAuthOptions = {
             if (user) {
                 token.id = user.id;
                 token.role = (user as any).role;
+                token.listingId = (user as any).listingId ?? null;
             }
-            // Add session update logic if user updates profile
             if (trigger === "update" && session?.name) {
                 token.name = session.name;
             }
@@ -65,6 +99,7 @@ export const authOptions: NextAuthOptions = {
             if (token && session.user) {
                 (session.user as any).id = token.id;
                 (session.user as any).role = token.role;
+                (session.user as any).listingId = token.listingId ?? null;
             }
             return session;
         }

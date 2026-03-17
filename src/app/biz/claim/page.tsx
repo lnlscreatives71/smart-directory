@@ -140,7 +140,7 @@ function ClaimContent() {
             </div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Already Claimed</h2>
             <p className="text-slate-500 mb-6 text-sm">This business has already been claimed. If you own it, log in to manage your profile.</p>
-            <Link href="/dashboard" className="btn-primary px-6 py-2.5 text-sm">Go to Dashboard</Link>
+            <Link href="/smb/login" className="btn-primary px-6 py-2.5 text-sm">Go to My Business Portal</Link>
         </div>
     );
 
@@ -153,8 +153,14 @@ function ClaimContent() {
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">You're live! 🎉</h1>
             <p className="text-slate-500 mb-8 leading-relaxed">
                 <strong className="text-slate-800 dark:text-white">{biz?.name}</strong> is now verified on The Triangle Hub.
-                A confirmation email is on its way to you.
+                Check your email — we sent a link to access your business dashboard.
             </p>
+
+            <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-5 rounded-2xl text-left mb-4">
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    From your dashboard you can add photos, update your hours, edit your description, and more.
+                </p>
+            </div>
 
             <div className="bg-gradient-to-br from-primary-50 to-indigo-50 dark:from-primary-900/20 dark:to-indigo-900/20 border border-primary-100 dark:border-primary-800/50 p-6 rounded-2xl text-left mb-8">
                 <div className="flex items-center gap-2 mb-3">

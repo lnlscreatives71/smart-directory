@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    // Dashboard auth protection
+    // Dashboard auth protection (admin)
     const isDashboard = pathname.startsWith('/dashboard');
     if (isDashboard) {
         const token = await getToken({ req: request });
@@ -40,6 +40,17 @@ export async function middleware(request: NextRequest) {
             const url = new URL("/login", request.url);
             url.searchParams.set("callbackUrl", encodeURI(request.url));
             return NextResponse.redirect(url);
+        }
+    }
+
+    // SMB portal auth protection
+    const isSmbPortal = pathname.startsWith('/smb') &&
+        !pathname.startsWith('/smb/login') &&
+        !pathname.startsWith('/smb/auth-callback');
+    if (isSmbPortal) {
+        const token = await getToken({ req: request });
+        if (!token) {
+            return NextResponse.redirect(new URL('/smb/login', request.url));
         }
     }
     
