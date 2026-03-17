@@ -47,23 +47,39 @@ export default function DynamicMenu({ agencyId }: { agencyId?: number }) {
             const res = await fetch('/api/agencies');
             if (res.ok) {
                 const data = await res.json();
-                if (data.data && data.data.id) {
+                console.log('Agencies API response:', data);
+                // Get the first agency (for single-directory setup)
+                if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                    setCurrentAgencyId(data.data[0].id);
+                } else if (data.data && data.data.id) {
+                    // Fallback for single object response
                     setCurrentAgencyId(data.data.id);
+                } else {
+                    console.error('No agency found in response');
+                    setLoading(false);
                 }
+            } else {
+                console.error('Failed to fetch agencies:', res.status);
+                setLoading(false);
             }
         } catch (error) {
             console.error('Error fetching agency:', error);
+            setLoading(false);
         }
     };
 
     const fetchMenu = async () => {
         if (!currentAgencyId) return;
-        
+
         try {
             const res = await fetch(`/api/menu?agency_id=${currentAgencyId}`);
+            console.log('Menu API response status:', res.status);
             if (res.ok) {
                 const data = await res.json();
+                console.log('Menu data:', data);
                 setMenuData(data.data);
+            } else {
+                console.error('Failed to fetch menu:', res.status);
             }
         } catch (error) {
             console.error('Error fetching menu:', error);
@@ -80,12 +96,41 @@ export default function DynamicMenu({ agencyId }: { agencyId?: number }) {
         );
     }
 
-    // If no menu exists, show default fallback or nothing
+    // If no menu exists, show default fallback menu
     if (!menuData || menuData.menu.length === 0) {
         return (
-            <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
-                <span className="text-slate-400 text-sm">Menu not configured</span>
-            </div>
+            <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center">
+                <div className="relative group">
+                    <Link href="/category/dining" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all">
+                        Dining
+                    </Link>
+                </div>
+                <div className="relative group">
+                    <Link href="/category/services" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all">
+                        Services
+                    </Link>
+                </div>
+                <div className="relative group">
+                    <Link href="/category/retail" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all">
+                        Retail
+                    </Link>
+                </div>
+                <div className="relative group">
+                    <Link href="/category/health" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all">
+                        Health & Wellness
+                    </Link>
+                </div>
+                <div className="relative group">
+                    <Link href="/blogs" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all">
+                        Blogs
+                    </Link>
+                </div>
+                <div className="relative group">
+                    <Link href="/pricing" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all">
+                        Pricing
+                    </Link>
+                </div>
+            </nav>
         );
     }
 

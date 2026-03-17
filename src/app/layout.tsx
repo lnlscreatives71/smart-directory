@@ -112,7 +112,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </Link>
 
               {/* Dynamic Menu - Client Component */}
-              <DynamicMenu agencyId={0} />
+              <DynamicMenu />
 
               {/* Right actions */}
               <div className="flex items-center gap-5 shrink-0">
