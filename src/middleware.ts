@@ -1,4 +1,4 @@
-import { withAuth } from "next-auth/middleware";
+import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 // Inject LICENSE_KEY into request headers so layout can read it at runtime (Vercel).
@@ -12,7 +12,7 @@ function injectLicenseHeader(request: NextRequest) {
 
 /**
  * Multi-tenant Middleware
- * 
+ *
  * Handles:
  * 1. Custom domain routing (directory.theircompany.com → their directory)
  * 2. Subdomain routing (slug.trianglehub.online → agency directory)
@@ -23,23 +23,23 @@ function injectLicenseHeader(request: NextRequest) {
 export async function middleware(request: NextRequest) {
     const { hostname, pathname } = request.nextUrl;
     const requestHeaders = injectLicenseHeader(request);
-    
+
     // Skip API routes and static files (except API auth check)
     const isApiRoute = pathname.startsWith('/api');
     const isStaticFile = pathname.includes('.') || pathname.startsWith('/_next/static');
-    
+
     if (isStaticFile) {
         return NextResponse.next();
     }
-    
+
     // Dashboard auth protection
     const isDashboard = pathname.startsWith('/dashboard');
     if (isDashboard) {
-        const authResponse = withAuth({
-            pages: { signIn: "/login" },
-        })(request);
-        if (authResponse.status === 307 || authResponse.status === 302) {
-            return authResponse;
+        const token = await getToken({ req: request });
+        if (!token) {
+            const url = new URL("/login", request.url);
+            url.searchParams.set("callbackUrl", encodeURI(request.url));
+            return NextResponse.redirect(url);
         }
     }
     
