@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
         `;
 
         // Build hierarchical structure with URL generation
-        const buildMenuTree = (items: any[], parentId: number | null = null, depth: number = 0) => {
+        const buildMenuTree = (items: any[], parentId: number | null = null, depth: number = 0): any[] => {
             const maxDepth = settings[0]?.max_depth || 2;
             if (depth >= maxDepth) return [];
 
