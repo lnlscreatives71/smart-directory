@@ -2,12 +2,23 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plan, Listing } from '@/lib/types';
-import { CheckCircle2, AlertCircle, Save } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Save, Tags, X, Plus } from 'lucide-react';
 
-export default function ListingForm({ initialData = null }: { initialData?: Listing | null }) {
+interface Tag {
+    id: number;
+    name: string;
+    slug: string;
+    icon: string | null;
+    color: string;
+}
+
+export default function ListingForm({ initialData = null, agencyId }: { initialData?: Listing | null, agencyId?: number }) {
     const router = useRouter();
     const [plans, setPlans] = useState<Plan[]>([]);
     const [loading, setLoading] = useState(false);
+    const [availableTags, setAvailableTags] = useState<Tag[]>([]);
+    const [selectedTags, setSelectedTags] = useState<number[]>([]);
+    const [tagSearch, setTagSearch] = useState('');
 
     // Toast State
     const [toast, setToast] = useState<{ show: boolean, type: 'success' | 'error', message: string }>({ show: false, type: 'success', message: '' });
@@ -44,6 +55,26 @@ export default function ListingForm({ initialData = null }: { initialData?: List
         fetch('/api/plans').then(res => res.json()).then(data => {
             if (data.success) setPlans(data.data);
         });
+        
+        // Fetch available tags
+        if (agencyId) {
+            fetch(`/api/tags?agency_id=${agencyId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.data) setAvailableTags(data.data);
+                });
+            
+            // Fetch listing's current tags if editing
+            if (initialData?.id) {
+                fetch(`/api/listing-tags?listing_id=${initialData.id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.data) {
+                            setSelectedTags(data.data.map((t: Tag) => t.id));
+                        }
+                    });
+            }
+        }
     }, []);
 
     const showToast = (type: 'success' | 'error', message: string) => {
@@ -103,7 +134,36 @@ export default function ListingForm({ initialData = null }: { initialData?: List
             });
 
             if (res.ok) {
+                const result = initialData ? await res.json() : await res.json();
+                const listingId = initialData?.id || result.data?.id;
+                
                 showToast('success', initialData ? 'Listing updated successfully!' : 'Listing created successfully!');
+                
+                // Update tags if we have a listing ID
+                if (listingId && agencyId) {
+                    // Remove old tags
+                    const oldTagsRes = await fetch(`/api/listing-tags?listing_id=${listingId}`);
+                    if (oldTagsRes.ok) {
+                        const oldTagsData = await oldTagsRes.json();
+                        if (oldTagsData.data) {
+                            for (const oldTag of oldTagsData.data) {
+                                if (!selectedTags.includes(oldTag.id)) {
+                                    await fetch(`/api/listing-tags?listing_id=${listingId}&tag_id=${oldTag.id}`, { method: 'DELETE' });
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Add new tags
+                    for (const tagId of selectedTags) {
+                        await fetch('/api/listing-tags', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ listing_id: listingId, tag_id: tagId })
+                        });
+                    }
+                }
+                
                 if (!initialData) {
                     router.push('/dashboard/listings');
                 } else {
@@ -268,9 +328,9 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                     </div>
                 </section>
 
-                {/* Section 2: Services & Network */}
+                {/* Section 2: Services & Business Tags */}
                 <section className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <SectionHeading title="Services & Validation" subtitle="Tags and status badges displayed on the profile." />
+                    <SectionHeading title="Services & Business Tags" subtitle="Tags and status badges displayed on the profile." />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">Services (comma separated keywords)</label>
@@ -286,7 +346,7 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                                     checked={formData.featured} onChange={e => setFormData({ ...formData, featured: e.target.checked })} />
                                 <div>
                                     <p className="font-semibold text-sm">Featured Profile</p>
-                                    <p className="text-xs text-slate-500">Adds visual &quot;Featured&quot; UI badges directly onto cards.</p>
+                                    <p className="text-xs text-slate-500">Adds visual "Featured" UI badges directly onto cards.</p>
                                 </div>
                             </label>
                             <label className="flex items-center space-x-3 p-4 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
@@ -299,6 +359,79 @@ export default function ListingForm({ initialData = null }: { initialData?: List
                             </label>
                         </div>
                     </div>
+                    
+                    {/* Business Tags Selector */}
+                    {availableTags.length > 0 && (
+                        <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+                            <label className="block text-sm font-semibold mb-3 flex items-center gap-2">
+                                <Tags size={18} /> Business Tags
+                            </label>
+                            <p className="text-sm text-slate-500 mb-4">Select tags that apply to this business. These tags can be used to build custom navigation menus.</p>
+                            
+                            {/* Search */}
+                            <div className="mb-4">
+                                <input
+                                    type="text"
+                                    placeholder="Search tags..."
+                                    value={tagSearch}
+                                    onChange={(e) => setTagSearch(e.target.value)}
+                                    className="w-full md:w-64 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:ring-2 focus:ring-primary-500"
+                                />
+                            </div>
+                            
+                            {/* Selected Tags */}
+                            {selectedTags.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    {availableTags
+                                        .filter(tag => selectedTags.includes(tag.id))
+                                        .map(tag => (
+                                            <span
+                                                key={tag.id}
+                                                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium border"
+                                                style={{ 
+                                                    backgroundColor: `${tag.color}20`,
+                                                    borderColor: tag.color,
+                                                    color: tag.color
+                                                }}
+                                            >
+                                                {tag.icon && <span className="mr-1">{tag.icon}</span>}
+                                                {tag.name}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setSelectedTags(prev => prev.filter(id => id !== tag.id))}
+                                                    className="ml-1 hover:opacity-70"
+                                                >
+                                                    <X size={14} />
+                                                </button>
+                                            </span>
+                                        ))}
+                                </div>
+                            )}
+                            
+                            {/* Available Tags */}
+                            <div className="flex flex-wrap gap-2">
+                                {availableTags
+                                    .filter(tag => {
+                                        const matchesSearch = tag.name.toLowerCase().includes(tagSearch.toLowerCase());
+                                        const isSelected = selectedTags.includes(tag.id);
+                                        return matchesSearch && !isSelected;
+                                    })
+                                    .map(tag => (
+                                        <button
+                                            key={tag.id}
+                                            type="button"
+                                            onClick={() => setSelectedTags(prev => [...prev, tag.id])}
+                                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium border border-slate-200 dark:border-slate-700 hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition"
+                                            style={{ color: tag.color }}
+                                        >
+                                            {tag.icon && <span className="mr-1">{tag.icon}</span>}
+                                            {tag.name}
+                                            <Plus size={14} />
+                                        </button>
+                                    ))}
+                            </div>
+                        </div>
+                    )}
                 </section>
 
                 {/* Section 3: Plan & Features */}

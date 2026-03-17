@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase, LogOut } from 'lucide-react';
+import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase, LogOut, Tags, MenuSquare } from 'lucide-react';
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import DashboardUpsellBanner from '@/components/DashboardUpsellBanner';
@@ -23,6 +23,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         { name: 'Blogs', href: '/dashboard/blogs', icon: LayoutDashboard },
         { name: 'News', href: '/dashboard/news', icon: FileText },
         { name: 'Jobs', href: '/dashboard/jobs', icon: Briefcase },
+        { name: 'Categories', href: '/dashboard/categories', icon: MenuSquare },
+        { name: 'Business Tags', href: '/dashboard/tags', icon: Tags },
+        { name: 'Menu Builder', href: '/dashboard/menu-builder', icon: MenuSquare },
         { name: 'Branding & Settings', href: '/dashboard/settings', icon: Settings },
     ];
 

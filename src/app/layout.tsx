@@ -11,6 +11,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import ChatwootWidget from '@/components/ChatwootWidget';
 import SalesAgent from '@/components/SalesAgent';
 import LNLFooter from '@/components/LNLFooter';
+import DynamicMenu from '@/components/DynamicMenu';
 
 export const dynamic = 'force-dynamic';
 
@@ -110,34 +111,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <img src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" className="h-[75px] w-auto drop-shadow-lg" />
               </Link>
 
-              {/* Category Nav */}
-              <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center">
-                {CATEGORIES.map((cat) => (
-                  <div key={cat.label} className="relative group">
-                    <Link
-                      href={cat.href}
-                      className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all whitespace-nowrap tracking-wide"
-                    >
-                      {cat.label}
-                      {cat.subcategories.length > 0 && (
-                        <svg className="w-4 h-4 opacity-50 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="m19 9-7 7-7-7" /></svg>
-                      )}
-                    </Link>
-                    {/* Dropdown glass block */}
-                    {cat.subcategories.length > 0 && (
-                      <div className="absolute top-10 left-0 pt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 translate-y-2 group-hover:translate-y-0">
-                        <div className="glass rounded-xl shadow-2xl p-2 flex flex-col gap-1 border border-slate-700/50">
-                          {cat.subcategories.map((sub) => (
-                            <Link key={sub.href} href={sub.href} className="flex px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white rounded-lg transition-colors">
-                              {sub.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </nav>
+              {/* Dynamic Menu - Client Component */}
+              <DynamicMenu agencyId={0} />
 
               {/* Right actions */}
               <div className="flex items-center gap-5 shrink-0">
