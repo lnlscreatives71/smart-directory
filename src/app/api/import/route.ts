@@ -16,6 +16,25 @@ interface BusinessRow {
     rating?: string;
 }
 
+const MAPS_API_KEY = process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
+
+async function fetchGooglePhoto(name: string, city: string, state: string): Promise<string | null> {
+    if (!MAPS_API_KEY) return null;
+    try {
+        const query = `${name} ${city} ${state}`;
+        const searchRes = await fetch(
+            `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,photos&key=${MAPS_API_KEY}`
+        );
+        const searchData = await searchRes.json();
+        const photoRef = searchData?.candidates?.[0]?.photos?.[0]?.photo_reference;
+        if (!photoRef) return null;
+        // Return the Places photo URL (redirects to actual image)
+        return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${MAPS_API_KEY}`;
+    } catch {
+        return null;
+    }
+}
+
 // Map categories to Unsplash image IDs (curated professional photos)
 const CATEGORY_IMAGES: Record<string, string> = {
     'restaurant': 'photo-1517248135467-4c7edcad34c4',
@@ -114,8 +133,13 @@ export async function POST(request: Request) {
             const safeRating = isNaN(rating) ? 4.0 : Math.min(5.0, Math.max(1.0, rating));
 
             try {
-                // Get category image
-                const imageUrl = getImageForCategory(row.category || 'Other');
+                // Try Google Places photo first, fall back to Unsplash category image
+                const googlePhoto = await fetchGooglePhoto(
+                    row.name,
+                    row.location_city || 'Raleigh',
+                    row.location_state || 'NC'
+                );
+                const imageUrl = googlePhoto || getImageForCategory(row.category || 'Other');
 
                 // Insert the listing
                 const inserted = await sql`

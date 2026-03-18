@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plan, Listing } from '@/lib/types';
-import { CheckCircle2, AlertCircle, Save, Tags, X, Plus } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Save, Tags, X, Plus, ImageIcon, Loader2 } from 'lucide-react';
 
 interface Tag {
     id: number;
@@ -25,6 +25,9 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
 
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.image_url || null);
+    const [googlePhotoUrl, setGooglePhotoUrl] = useState<string | null>(null);
+    const [fetchingPhoto, setFetchingPhoto] = useState(false);
+    const [photoFetchMsg, setPhotoFetchMsg] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
         name: initialData?.name || '',
@@ -77,6 +80,32 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
         }
     }, []);
 
+    const fetchGooglePhoto = async () => {
+        if (!formData.name || !formData.location_city) {
+            setPhotoFetchMsg('Enter business name and city first.');
+            return;
+        }
+        setFetchingPhoto(true);
+        setPhotoFetchMsg(null);
+        try {
+            const res = await fetch(
+                `/api/places-photo?name=${encodeURIComponent(formData.name)}&city=${encodeURIComponent(formData.location_city)}&state=${encodeURIComponent(formData.location_state)}`
+            );
+            const data = await res.json();
+            if (data.success) {
+                setGooglePhotoUrl(data.imageUrl);
+                setPreviewUrl(data.imageUrl);
+                setPhotoFetchMsg(`Found: ${data.placeName || formData.name}`);
+            } else {
+                setPhotoFetchMsg(data.error || 'No photo found on Google.');
+            }
+        } catch {
+            setPhotoFetchMsg('Failed to fetch photo.');
+        } finally {
+            setFetchingPhoto(false);
+        }
+    };
+
     const showToast = (type: 'success' | 'error', message: string) => {
         setToast({ show: true, type, message });
         setTimeout(() => setToast({ show: false, type: 'success', message: '' }), 4000);
@@ -93,7 +122,7 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
             return;
         }
 
-        let image_url = initialData?.image_url;
+        let image_url = googlePhotoUrl || initialData?.image_url;
 
         // Auto-upload image to Vercel Blob if a file was selected
         if (imageFile && formData.feature_flags.extra_images) {
@@ -300,6 +329,38 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
                                 value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
                         </div>
                         
+                        {/* Google Photo Fetch */}
+                        <div className="md:col-span-2 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <label className="text-sm font-semibold">Business Photo</label>
+                                <button
+                                    type="button"
+                                    onClick={fetchGooglePhoto}
+                                    disabled={fetchingPhoto}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition disabled:opacity-50"
+                                >
+                                    {fetchingPhoto ? <Loader2 size={13} className="animate-spin" /> : <ImageIcon size={13} />}
+                                    {fetchingPhoto ? 'Fetching...' : 'Fetch from Google'}
+                                </button>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                {previewUrl && (
+                                    <img src={previewUrl} alt="Preview" className="w-24 h-24 object-cover rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm shrink-0" />
+                                )}
+                                <div className="text-xs text-slate-500 space-y-1">
+                                    {photoFetchMsg && (
+                                        <p className={googlePhotoUrl ? 'text-emerald-500 font-medium' : 'text-red-400'}>{photoFetchMsg}</p>
+                                    )}
+                                    {!previewUrl && <p>Enter the business name and city above, then click Fetch from Google.</p>}
+                                    {googlePhotoUrl && (
+                                        <button type="button" onClick={() => { setGooglePhotoUrl(null); setPreviewUrl(null); setPhotoFetchMsg(null); }} className="text-slate-400 hover:text-red-400 underline">
+                                            Remove photo
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
                         {formData.feature_flags.extra_images && (
                             <div className="md:col-span-2 border border-primary-500/20 bg-primary-50/50 dark:bg-primary-900/10 p-5 rounded-xl border-dashed">
                                 <label className="block text-sm font-semibold text-primary-800 dark:text-primary-300 mb-2">
