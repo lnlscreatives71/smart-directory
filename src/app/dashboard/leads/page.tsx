@@ -225,6 +225,8 @@ export default function CRMPage() {
     const [logs, setLogs] = useState<string[]>([]);
     const [view, setView] = useState<'list' | 'kanban'>('list');
     const [expandedId, setExpandedId] = useState<number | null>(null);
+    const [batchLimit, setBatchLimit] = useState<string>('20');
+    const [showBatchInput, setShowBatchInput] = useState(false);
 
     const fetchCampaigns = async () => {
         setLoading(true);
@@ -238,13 +240,16 @@ export default function CRMPage() {
 
     useEffect(() => { fetchCampaigns(); }, []);
 
-    const forceSync = async (forceRun = false) => {
+    const forceSync = async (forceRun = false, limit?: number) => {
         setSyncing(true);
+        setShowBatchInput(false);
         try {
+            const body: Record<string, any> = { forceRun };
+            if (limit) body.limit = limit;
             const res = await fetch('/api/cron/outreach', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ forceRun }),
+                body: JSON.stringify(body),
             });
             const data = await res.json();
             setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${data.message}`, ...prev]);
@@ -292,9 +297,36 @@ export default function CRMPage() {
                     <button onClick={() => forceSync(false)} disabled={syncing} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 py-2 px-4 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 disabled:opacity-50">
                         <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} /> Sync
                     </button>
-                    <button onClick={() => forceSync(true)} disabled={syncing} className="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 disabled:opacity-50">
-                        <Send size={14} /> Force Push
-                    </button>
+                    <div className="relative">
+                        <div className="flex rounded-lg overflow-hidden border border-primary-600 shadow-sm">
+                            <button
+                                onClick={() => forceSync(true, parseInt(batchLimit) || undefined)}
+                                disabled={syncing}
+                                className="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 font-medium transition-colors flex items-center gap-2 disabled:opacity-50 text-sm"
+                            >
+                                <Send size={14} /> Send {batchLimit || 'All'}
+                            </button>
+                            <button
+                                onClick={() => setShowBatchInput(v => !v)}
+                                className="bg-primary-700 hover:bg-primary-800 text-white px-2 py-2 transition-colors text-xs"
+                            >
+                                ▾
+                            </button>
+                        </div>
+                        {showBatchInput && (
+                            <div className="absolute right-0 top-full mt-1 z-10 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg p-3 w-44">
+                                <label className="text-xs text-slate-500 mb-1 block">Batch size</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={batchLimit}
+                                    onChange={e => setBatchLimit(e.target.value)}
+                                    className="w-full border border-slate-200 dark:border-slate-600 rounded-md px-2 py-1.5 text-sm dark:bg-slate-900 dark:text-white outline-none focus:border-primary-500"
+                                />
+                                <p className="text-xs text-slate-400 mt-1">Leave blank to send all</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
