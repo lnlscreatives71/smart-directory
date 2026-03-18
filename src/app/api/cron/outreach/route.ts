@@ -13,9 +13,14 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         let forceRun = false;
+        let batchLimit = 1000; // default: send all
         try {
             const body = await request.text();
-            if (body) forceRun = JSON.parse(body)?.forceRun === true;
+            if (body) {
+                const parsed = JSON.parse(body);
+                forceRun = parsed?.forceRun === true;
+                if (parsed?.limit) batchLimit = parseInt(parsed.limit);
+            }
         } catch { }
 
         const intervalDays = forceRun ? '0 days' : '3 days';
@@ -32,6 +37,7 @@ export async function POST(request: Request) {
             WHERE c.status = 'pending'
               AND l.contact_email IS NOT NULL
               AND l.claimed = FALSE
+            LIMIT ${batchLimit}
         `;
 
         for (const c of email1Queue) {
@@ -61,6 +67,7 @@ export async function POST(request: Request) {
             WHERE c.status = 'email_1_sent'
               AND c.email_2_sent_at IS NULL
               AND l.contact_email IS NOT NULL
+              AND l.claimed = FALSE
               AND c.email_1_sent_at < NOW() - ${intervalDays}::interval
         `;
 
