@@ -305,6 +305,34 @@ export default function ImportPage() {
             {/* STEP 2: Map Columns */}
             {step === 'mapping' && (
                 <div className="space-y-5">
+                    {/* Sample data preview */}
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+                            <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Your CSV — first 3 rows</h3>
+                            <p className="text-xs text-slate-400 mt-0.5">Use this to identify which column contains which data.</p>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-xs text-left">
+                                <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800">
+                                    <tr>
+                                        {csvHeaders.map(h => (
+                                            <th key={h} className="px-4 py-2.5 font-mono text-primary-600 dark:text-primary-400 whitespace-nowrap">{h}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                                    {rawRows.slice(0, 3).map((row, i) => (
+                                        <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                                            {csvHeaders.map(h => (
+                                                <td key={h} className="px-4 py-2.5 text-slate-600 dark:text-slate-300 whitespace-nowrap max-w-[180px] truncate">{row[h] || <span className="text-slate-300 dark:text-slate-600">—</span>}</td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
                         <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Match your CSV columns</h3>
                         <p className="text-sm text-slate-400 mb-6">Select which column in your file corresponds to each field. <span className="text-red-500">* Required</span></p>
