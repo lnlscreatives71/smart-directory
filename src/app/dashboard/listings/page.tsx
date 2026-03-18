@@ -9,7 +9,7 @@ import {
 interface Listing {
     id: number; name: string; slug: string; category: string;
     location_city: string; location_state: string;
-    contact_email?: string; contact_phone?: string;
+    contact_email?: string; phone?: string;
     plan_name?: string; plan_price?: number;
     featured: boolean; claimed: boolean;
     created_at: string;
@@ -270,7 +270,7 @@ export default function BusinessesPage() {
                                     <td className="px-6 py-4">
                                         <span className="flex items-center gap-1 text-xs text-gray-500">
                                             <Phone size={11} className="text-gray-400 shrink-0" />
-                                            {l.contact_email?.replace('@', '\n@') || '—'}
+                                            {l.phone || '—'}
                                         </span>
                                     </td>
                                     {/* Active toggle */}

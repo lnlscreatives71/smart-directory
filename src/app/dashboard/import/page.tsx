@@ -139,10 +139,10 @@ export default function ImportPage() {
                     location_city: ['City', 'city', 'Town', 'town'],
                     location_state:['State', 'state', 'Province', 'province'],
                     zip_code:      ['ZIP', 'zip', 'Zip Code', 'zip code', 'ZIP Code', 'Postal Code', 'postal code', 'Postcode'],
-                    contact_name:  ['BUSINESS NAME', 'Owner', 'owner', 'Owner Name', 'owner name', 'Contact', 'First Name', 'Full Name'],
-                    contact_email: ['Email', 'email', 'Email Address', 'email address'],
-                    phone:         ['Phone', 'phone', 'Phone Number', 'phone number', 'Mobile', 'mobile'],
-                    website:       ['Website URL', 'website url', 'Website', 'website', 'URL', 'url', 'Site'],
+                    contact_name:  ['BUSINESS NAME', 'Owner', 'owner', 'Owner Name', 'owner name', 'Contact', 'First Name', 'Full Name', 'Key Decision Maker(s)', 'Key Decision Maker', 'Decision Maker'],
+                    contact_email: ['Email', 'email', 'Email Address', 'email address', 'Email addr'],
+                    phone:         ['Phone', 'phone', 'Phone Number', 'phone number', 'Mobile', 'mobile', 'Tel', 'Telephone'],
+                    website:       ['Website URL', 'website url', 'Website', 'website', 'URL', 'url', 'Site', 'Website Address', 'website address'],
                     rating:        ['Rating', 'rating', 'Score', 'score', 'Stars'],
                 };
                 const headerLower = headers.map(h => h.toLowerCase());
