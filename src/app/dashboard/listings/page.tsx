@@ -40,6 +40,9 @@ export default function BusinessesPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<Listing | null>(null);
+    const [selected, setSelected] = useState<Set<number>>(new Set());
+    const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
+    const [bulkDeleting, setBulkDeleting] = useState(false);
 
     const showToast = (type: 'success' | 'error', msg: string) => {
         setToast({ type, msg }); setTimeout(() => setToast(null), 3200);
@@ -84,14 +87,42 @@ export default function BusinessesPage() {
         setDeleteConfirm(null);
     };
 
+    const bulkDelete = async () => {
+        setBulkDeleting(true);
+        const ids = Array.from(selected);
+        let deleted = 0;
+        for (const id of ids) {
+            const res = await fetch(`/api/listings/${id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) deleted++;
+        }
+        setListings(prev => prev.filter(x => !selected.has(x.id)));
+        setSelected(new Set());
+        setBulkDeleteConfirm(false);
+        setBulkDeleting(false);
+        showToast('success', `${deleted} listing${deleted !== 1 ? 's' : ''} deleted.`);
+    };
+
     // Tab filtering
     const filtered = listings.filter(l => {
         if (tab === 'premium') return l.plan_name && !['free', 'none'].includes(l.plan_name.toLowerCase());
         if (tab === 'free') return !l.plan_name || l.plan_name.toLowerCase() === 'free';
         if (tab === 'claim') return !l.claimed;
         if (tab === 'new') return new Date(l.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        return true; // 'all'
+        return true;
     });
+
+    const allSelected = filtered.length > 0 && filtered.every(l => selected.has(l.id));
+    const toggleSelectAll = () => {
+        if (allSelected) {
+            setSelected(prev => { const n = new Set(prev); filtered.forEach(l => n.delete(l.id)); return n; });
+        } else {
+            setSelected(prev => { const n = new Set(prev); filtered.forEach(l => n.add(l.id)); return n; });
+        }
+    };
+    const toggleSelect = (id: number) => {
+        setSelected(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+    };
 
     const counts = {
         all: listings.length,
@@ -147,7 +178,7 @@ export default function BusinessesPage() {
                     ))}
                 </div>
 
-                {/* Search + filters */}
+                {/* Search + bulk actions */}
                 <div className="flex items-center gap-3 px-5 py-3 border-b border-gray-50 dark:border-slate-800">
                     <div className="relative flex-1 max-w-sm">
                         <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -156,6 +187,12 @@ export default function BusinessesPage() {
                             className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-primary-400 dark:bg-slate-950 dark:border-slate-700 dark:text-white" />
                     </div>
                     <div className="ml-auto flex items-center gap-2">
+                        {selected.size > 0 && (
+                            <button onClick={() => setBulkDeleteConfirm(true)}
+                                className="flex items-center gap-1.5 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold transition">
+                                <Trash2 size={14} /> Delete {selected.size} selected
+                            </button>
+                        )}
                         <Link href="/dashboard/import"
                             className="flex items-center gap-1.5 px-4 py-2 border border-gray-200 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-50 transition">
                             Import CSV
@@ -168,6 +205,10 @@ export default function BusinessesPage() {
                     <table className="w-full text-left text-sm">
                         <thead className="border-b border-gray-100 dark:border-slate-800">
                             <tr className="text-gray-500 dark:text-slate-400 text-xs uppercase tracking-wide">
+                                <th className="px-4 py-3.5">
+                                    <input type="checkbox" checked={allSelected} onChange={toggleSelectAll}
+                                        className="w-4 h-4 rounded border-gray-300 text-primary-600 cursor-pointer" />
+                                </th>
                                 <th className="px-6 py-3.5 font-semibold">Name</th>
                                 <th className="px-6 py-3.5 font-semibold">Type</th>
                                 <th className="px-6 py-3.5 font-semibold">Status</th>
@@ -180,16 +221,21 @@ export default function BusinessesPage() {
                         </thead>
                         <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
                             {isLoading ? (
-                                <tr><td colSpan={8} className="py-16 text-center">
+                                <tr><td colSpan={9} className="py-16 text-center">
                                     <Loader2 size={20} className="animate-spin text-primary-400 mx-auto" />
                                 </td></tr>
                             ) : filtered.length === 0 ? (
-                                <tr><td colSpan={8} className="py-16 text-center text-gray-400 text-sm">
+                                <tr><td colSpan={9} className="py-16 text-center text-gray-400 text-sm">
                                     No businesses in this tab.{' '}
                                     {tab !== 'all' && <button onClick={() => setTab('all')} className="text-primary-500 font-semibold hover:underline">View all</button>}
                                 </td></tr>
                             ) : filtered.map(l => (
-                                <tr key={l.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition-colors group">
+                                <tr key={l.id} className={`transition-colors group ${selected.has(l.id) ? 'bg-primary-50/50 dark:bg-primary-900/10' : 'hover:bg-gray-50 dark:hover:bg-slate-800/40'}`}>
+                                    {/* Checkbox */}
+                                    <td className="px-4 py-4">
+                                        <input type="checkbox" checked={selected.has(l.id)} onChange={() => toggleSelect(l.id)}
+                                            className="w-4 h-4 rounded border-gray-300 text-primary-600 cursor-pointer" />
+                                    </td>
                                     {/* Name */}
                                     <td className="px-6 py-4">
                                         <div className="font-semibold text-gray-900 dark:text-white text-sm">{l.name}</div>
@@ -256,10 +302,15 @@ export default function BusinessesPage() {
                     </table>
                 </div>
 
-                {/* Footer pagination */}
+                {/* Footer */}
                 {filtered.length > 0 && (
                     <div className="flex items-center justify-between px-6 py-4 border-t border-gray-50 dark:border-slate-800 text-sm text-gray-500">
-                        <span>Showing <span className="font-bold text-gray-800 dark:text-white">{filtered.length}</span> of <span className="font-bold text-gray-800 dark:text-white">{listings.length}</span> businesses</span>
+                        <span>
+                            {selected.size > 0
+                                ? <span className="text-primary-600 font-semibold">{selected.size} selected — </span>
+                                : null}
+                            Showing <span className="font-bold text-gray-800 dark:text-white">{filtered.length}</span> of <span className="font-bold text-gray-800 dark:text-white">{listings.length}</span> businesses
+                        </span>
                         <div className="flex items-center gap-2">
                             <button className="px-4 py-2 border border-gray-200 rounded-lg font-medium hover:bg-gray-50 transition disabled:opacity-40" disabled>← Previous</button>
                             <span className="w-8 h-8 flex items-center justify-center bg-slate-900 text-white rounded-lg font-bold text-sm">1</span>
@@ -286,10 +337,10 @@ export default function BusinessesPage() {
                 </div>
             )}
 
-            {/* Delete confirm */}
+            {/* Single delete confirm */}
             {deleteConfirm && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
                         <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Trash2 size={22} className="text-red-500" />
                         </div>
@@ -298,6 +349,25 @@ export default function BusinessesPage() {
                         <div className="flex gap-3">
                             <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50">Cancel</button>
                             <button onClick={() => deleteListing(deleteConfirm)} className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold transition">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Bulk delete confirm */}
+            {bulkDeleteConfirm && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+                        <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Trash2 size={22} className="text-red-500" />
+                        </div>
+                        <h3 className="text-lg font-bold mb-2">Delete {selected.size} listings?</h3>
+                        <p className="text-sm text-gray-500 mb-6">This will permanently remove all selected listings and their outreach data.</p>
+                        <div className="flex gap-3">
+                            <button onClick={() => setBulkDeleteConfirm(false)} disabled={bulkDeleting} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50">Cancel</button>
+                            <button onClick={bulkDelete} disabled={bulkDeleting} className="flex-1 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
+                                {bulkDeleting ? <><Loader2 size={15} className="animate-spin" /> Deleting...</> : 'Delete All'}
+                            </button>
                         </div>
                     </div>
                 </div>
