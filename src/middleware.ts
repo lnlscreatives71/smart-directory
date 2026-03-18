@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
     // Dashboard auth protection (admin)
     const isDashboard = pathname.startsWith('/dashboard');
     if (isDashboard) {
-        const token = await getToken({ req: request });
+        const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
         if (!token) {
             const url = new URL("/login", request.url);
             url.searchParams.set("callbackUrl", encodeURI(request.url));
@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
         !pathname.startsWith('/smb/login') &&
         !pathname.startsWith('/smb/auth-callback');
     if (isSmbPortal) {
-        const token = await getToken({ req: request });
+        const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
         if (!token) {
             return NextResponse.redirect(new URL('/smb/login', request.url));
         }
