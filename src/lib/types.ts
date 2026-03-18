@@ -34,6 +34,7 @@ export interface Listing {
     location_state: string;
     location_region: string;
     street_address?: string;
+    zip_code?: string;
     lat: number;
     lng: number;
     services: string[];
