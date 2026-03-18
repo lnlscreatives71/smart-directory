@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
+import { sendEmail } from '@/lib/email';
+import {
+    email_booking_confirmation,
+    email_booking_business_notification,
+    email_booking_status_update,
+} from '@/lib/email-templates';
 
 export const dynamic = 'force-dynamic';
 
@@ -126,10 +132,58 @@ export async function POST(req: NextRequest) {
             RETURNING *
         `;
 
-        // TODO: Send confirmation email to customer
-        // TODO: Send notification email to business
+        // Fetch listing info for email context
+        const listing = await sql`
+            SELECT name, contact_email FROM listings WHERE id = ${parseInt(listing_id)}
+        `;
+        const businessName = listing[0]?.name ?? 'the business';
+        const businessEmail = listing[0]?.contact_email as string | null;
 
-        return NextResponse.json({ success: true, data: appointment[0] });
+        // Fetch service name if service_id provided
+        let resolvedServiceName: string | null = null;
+        if (service_id) {
+            const svc = await sql`SELECT name FROM business_services WHERE id = ${parseInt(service_id)}`;
+            resolvedServiceName = svc[0]?.name ?? null;
+        }
+
+        const appt = appointment[0];
+
+        // Send confirmation to customer (fire-and-forget)
+        sendEmail({
+            to: customer_email,
+            subject: `Booking Confirmed — ${resolvedServiceName ?? 'Appointment'} at ${businessName}`,
+            html: email_booking_confirmation({
+                customerName: customer_name,
+                businessName,
+                serviceName: resolvedServiceName,
+                appointmentDate: appointment_date,
+                startTime: start_time,
+                endTime: appt.end_time,
+                notes: notes ?? null,
+            }),
+        }).catch((err) => console.error('[Booking] Failed to send customer confirmation:', err));
+
+        // Send notification to business (fire-and-forget)
+        if (businessEmail) {
+            sendEmail({
+                to: businessEmail,
+                subject: `New Booking: ${customer_name} — ${appointment_date} at ${start_time}`,
+                html: email_booking_business_notification({
+                    businessName,
+                    customerName: customer_name,
+                    customerEmail: customer_email,
+                    customerPhone: customer_phone ?? null,
+                    serviceName: resolvedServiceName,
+                    appointmentDate: appointment_date,
+                    startTime: start_time,
+                    endTime: appt.end_time,
+                    notes: notes ?? null,
+                }),
+                replyTo: customer_email,
+            }).catch((err) => console.error('[Booking] Failed to send business notification:', err));
+        }
+
+        return NextResponse.json({ success: true, data: appt });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         return NextResponse.json(
@@ -178,9 +232,27 @@ export async function PUT(req: NextRequest) {
             );
         }
 
-        // TODO: Send status update email if status changed
+        // Send status update email to customer when status changes
+        const updatedAppt = appointment[0];
+        const notifiableStatuses = ['confirmed', 'cancelled', 'completed', 'no-show'];
+        if (status && notifiableStatuses.includes(status) && updatedAppt.customer_email) {
+            // Fetch listing name for the email
+            const listingRow = await sql`SELECT name FROM listings WHERE id = ${updatedAppt.listing_id}`;
+            const bName = listingRow[0]?.name ?? 'the business';
+            sendEmail({
+                to: updatedAppt.customer_email as string,
+                subject: `Appointment Update — ${bName}`,
+                html: email_booking_status_update({
+                    customerName: updatedAppt.customer_name as string,
+                    businessName: bName,
+                    status,
+                    appointmentDate: updatedAppt.appointment_date as string,
+                    startTime: updatedAppt.start_time as string,
+                }),
+            }).catch((err) => console.error('[Booking] Failed to send status update email:', err));
+        }
 
-        return NextResponse.json({ success: true, data: appointment[0] });
+        return NextResponse.json({ success: true, data: updatedAppt });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         return NextResponse.json(

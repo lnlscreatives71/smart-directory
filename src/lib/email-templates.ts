@@ -815,3 +815,179 @@ export function marketingPush_email4(businessName: string, contactName: string |
         </p>
     `);
 }
+
+// ─── Booking: Customer Confirmation ──────────────────────────────────────────
+export function email_booking_confirmation({
+    customerName,
+    businessName,
+    serviceName,
+    appointmentDate,
+    startTime,
+    endTime,
+    notes,
+}: {
+    customerName: string;
+    businessName: string;
+    serviceName?: string | null;
+    appointmentDate: string;
+    startTime: string;
+    endTime?: string | null;
+    notes?: string | null;
+}): string {
+    const timeRange = endTime ? `${startTime} – ${endTime}` : startTime;
+    const dateFormatted = new Date(appointmentDate + 'T00:00:00').toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    });
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Booking Confirmed ✅</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(customerName)}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Your appointment at <strong style="color:#fff;">${businessName}</strong> has been booked successfully.
+            We'll see you soon!
+        </p>
+        <div style="background:#0f172a;border-radius:10px;padding:20px 24px;margin:24px 0;border-left:4px solid ${PRIMARY_COLOR};">
+            <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td style="padding:6px 0;color:#94a3b8;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;width:120px;">Business</td>
+                    <td style="padding:6px 0;color:#fff;font-size:15px;font-weight:600;">${businessName}</td>
+                </tr>
+                ${serviceName ? `<tr>
+                    <td style="padding:6px 0;color:#94a3b8;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Service</td>
+                    <td style="padding:6px 0;color:#fff;font-size:15px;">${serviceName}</td>
+                </tr>` : ''}
+                <tr>
+                    <td style="padding:6px 0;color:#94a3b8;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Date</td>
+                    <td style="padding:6px 0;color:#fff;font-size:15px;">${dateFormatted}</td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 0;color:#94a3b8;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Time</td>
+                    <td style="padding:6px 0;color:#fff;font-size:15px;">${timeRange}</td>
+                </tr>
+                ${notes ? `<tr>
+                    <td style="padding:6px 0;color:#94a3b8;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;vertical-align:top;">Notes</td>
+                    <td style="padding:6px 0;color:#cbd5e1;font-size:14px;">${notes}</td>
+                </tr>` : ''}
+            </table>
+        </div>
+        <p style="color:#64748b;font-size:13px;margin-top:20px;">
+            Need to reschedule or cancel? Contact <strong style="color:#e2e8f0;">${businessName}</strong> directly.
+        </p>
+    `);
+}
+
+// ─── Booking: Business Notification ──────────────────────────────────────────
+export function email_booking_business_notification({
+    businessName,
+    customerName,
+    customerEmail,
+    customerPhone,
+    serviceName,
+    appointmentDate,
+    startTime,
+    endTime,
+    notes,
+}: {
+    businessName: string;
+    customerName: string;
+    customerEmail: string;
+    customerPhone?: string | null;
+    serviceName?: string | null;
+    appointmentDate: string;
+    startTime: string;
+    endTime?: string | null;
+    notes?: string | null;
+}): string {
+    const timeRange = endTime ? `${startTime} – ${endTime}` : startTime;
+    const dateFormatted = new Date(appointmentDate + 'T00:00:00').toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    });
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">New Booking 📅</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">Hi ${businessName} team,</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            A new appointment has been booked through <strong style="color:#6366f1;">${SITE_NAME}</strong>.
+        </p>
+        <div style="background:#0f172a;border-radius:10px;padding:20px 24px;margin:24px 0;border-left:4px solid ${PRIMARY_COLOR};">
+            <p style="margin:0 0 12px;color:#94a3b8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Customer Details</p>
+            <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td style="padding:5px 0;color:#94a3b8;font-size:13px;font-weight:600;width:120px;">Name</td>
+                    <td style="padding:5px 0;color:#fff;font-size:15px;font-weight:600;">${customerName}</td>
+                </tr>
+                <tr>
+                    <td style="padding:5px 0;color:#94a3b8;font-size:13px;font-weight:600;">Email</td>
+                    <td style="padding:5px 0;color:#6366f1;font-size:14px;"><a href="mailto:${customerEmail}" style="color:#6366f1;">${customerEmail}</a></td>
+                </tr>
+                ${customerPhone ? `<tr>
+                    <td style="padding:5px 0;color:#94a3b8;font-size:13px;font-weight:600;">Phone</td>
+                    <td style="padding:5px 0;color:#fff;font-size:14px;"><a href="tel:${customerPhone}" style="color:#6366f1;">${customerPhone}</a></td>
+                </tr>` : ''}
+            </table>
+            <hr style="border:none;border-top:1px solid #1e293b;margin:16px 0;" />
+            <p style="margin:0 0 12px;color:#94a3b8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Appointment Details</p>
+            <table cellpadding="0" cellspacing="0" width="100%">
+                ${serviceName ? `<tr>
+                    <td style="padding:5px 0;color:#94a3b8;font-size:13px;font-weight:600;width:120px;">Service</td>
+                    <td style="padding:5px 0;color:#fff;font-size:14px;">${serviceName}</td>
+                </tr>` : ''}
+                <tr>
+                    <td style="padding:5px 0;color:#94a3b8;font-size:13px;font-weight:600;">Date</td>
+                    <td style="padding:5px 0;color:#fff;font-size:14px;">${dateFormatted}</td>
+                </tr>
+                <tr>
+                    <td style="padding:5px 0;color:#94a3b8;font-size:13px;font-weight:600;">Time</td>
+                    <td style="padding:5px 0;color:#fff;font-size:14px;">${timeRange}</td>
+                </tr>
+                ${notes ? `<tr>
+                    <td style="padding:5px 0;color:#94a3b8;font-size:13px;font-weight:600;vertical-align:top;">Notes</td>
+                    <td style="padding:5px 0;color:#cbd5e1;font-size:13px;">${notes}</td>
+                </tr>` : ''}
+            </table>
+        </div>
+        <p style="color:#64748b;font-size:13px;">
+            Log in to your dashboard to manage this appointment.
+        </p>
+    `);
+}
+
+// ─── Booking: Status Update ───────────────────────────────────────────────────
+export function email_booking_status_update({
+    customerName,
+    businessName,
+    status,
+    appointmentDate,
+    startTime,
+}: {
+    customerName: string;
+    businessName: string;
+    status: string;
+    appointmentDate: string;
+    startTime: string;
+}): string {
+    const dateFormatted = new Date(appointmentDate + 'T00:00:00').toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    });
+    const statusLabels: Record<string, { label: string; color: string }> = {
+        confirmed: { label: 'Confirmed ✅', color: '#22c55e' },
+        cancelled: { label: 'Cancelled ❌', color: '#ef4444' },
+        completed: { label: 'Completed 🎉', color: '#6366f1' },
+        'no-show': { label: 'Marked as No-Show', color: '#f59e0b' },
+    };
+    const { label, color } = statusLabels[status] ?? { label: status, color: '#94a3b8' };
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Appointment Update</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(customerName)}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Your appointment at <strong style="color:#fff;">${businessName}</strong> on
+            <strong style="color:#fff;">${dateFormatted}</strong> at <strong style="color:#fff;">${startTime}</strong>
+            has been updated.
+        </p>
+        <div style="background:#0f172a;border-radius:10px;padding:20px 24px;margin:24px 0;border-left:4px solid ${color};">
+            <p style="margin:0;color:#94a3b8;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">New Status</p>
+            <p style="margin:8px 0 0;color:${color};font-size:20px;font-weight:700;">${label}</p>
+        </div>
+        <p style="color:#64748b;font-size:13px;">
+            Questions? Contact <strong style="color:#e2e8f0;">${businessName}</strong> directly.
+        </p>
+    `);
+}
