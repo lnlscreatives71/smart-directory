@@ -32,7 +32,10 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const isSecure = request.nextUrl.protocol === 'https:';
+    // Derive secureCookie from NEXTAUTH_URL — same logic NextAuth uses to name the cookie.
+    // request.nextUrl.protocol is unreliable on Vercel (SSL terminates at edge).
+    const nextAuthUrl = process.env.NEXTAUTH_URL ?? '';
+    const isSecure = nextAuthUrl.startsWith('https://') || request.headers.get('x-forwarded-proto') === 'https';
     const tokenOptions = {
         req: request,
         secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-local-dev-only",
