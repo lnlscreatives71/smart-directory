@@ -47,7 +47,6 @@ export default async function DashboardPage() {
 
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Quick Actions</h2>
-                <Link href="/api/seed" className="text-xs bg-red-100 text-red-600 px-3 py-1 rounded font-bold hover:bg-red-200 border border-red-200">Reset & Seed DB</Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -98,7 +98,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body>
         <Providers>
           <div className="min-h-screen flex flex-col">
