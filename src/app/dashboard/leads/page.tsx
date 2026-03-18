@@ -229,6 +229,170 @@ function KanbanBoard({ campaigns, onStageChange }: {
     );
 }
 
+// ── Analytics Types ──────────────────────────────────────────────────────────
+interface AnalyticsData {
+    totals: {
+        total_contacts: number;
+        total_sent: number;
+        total_opens: number;
+        total_clicks: number;
+        contacts_opened: number;
+        contacts_clicked: number;
+        completed: number;
+        pending: number;
+    };
+    abStats: { ab_variant: string; sent: number; opens: number; clicks: number; unique_opens: number; unique_clicks: number }[];
+    stepStats: {
+        email1_sent: number; email2_sent: number; email3_sent: number; email4_sent: number;
+        email1_opened: number; email2_opened: number; email3_opened: number; email4_opened: number;
+        email1_clicked: number; email2_clicked: number; email3_clicked: number; email4_clicked: number;
+    };
+    dailySends: { day: string; sent: number; opened: number; clicked: number }[];
+}
+
+function pct(num: number, den: number) {
+    if (!den) return '0%';
+    return `${Math.round((num / den) * 100)}%`;
+}
+
+// ── Analytics Dashboard ───────────────────────────────────────────────────────
+function AnalyticsDashboard() {
+    const [data, setData] = useState<AnalyticsData | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('/api/crm/analytics')
+            .then(r => r.json())
+            .then(d => { if (d.success) setData(d.data); })
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) return (
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 text-center text-slate-400 text-sm">
+            Loading analytics...
+        </div>
+    );
+    if (!data) return null;
+
+    const { totals, abStats, stepStats, dailySends } = data;
+    const openRate = pct(Number(totals.contacts_opened), Number(totals.total_sent));
+    const clickRate = pct(Number(totals.contacts_clicked), Number(totals.total_sent));
+
+    const steps = [
+        { label: 'Email 1', sent: Number(stepStats.email1_sent), opened: Number(stepStats.email1_opened), clicked: Number(stepStats.email1_clicked) },
+        { label: 'Email 2', sent: Number(stepStats.email2_sent), opened: Number(stepStats.email2_opened), clicked: Number(stepStats.email2_clicked) },
+        { label: 'Email 3', sent: Number(stepStats.email3_sent), opened: Number(stepStats.email3_opened), clicked: Number(stepStats.email3_clicked) },
+        { label: 'Email 4', sent: Number(stepStats.email4_sent), opened: Number(stepStats.email4_opened), clicked: Number(stepStats.email4_clicked) },
+    ];
+
+    // Simple bar chart max
+    const maxSent = Math.max(...dailySends.map(d => Number(d.sent)), 1);
+
+    return (
+        <div className="space-y-4">
+            {/* Top KPIs */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                    { label: 'Total Sent', value: totals.total_sent, sub: `${totals.total_contacts} in pipeline`, color: 'text-slate-900 dark:text-white' },
+                    { label: 'Open Rate', value: openRate, sub: `${totals.contacts_opened} unique opens`, color: 'text-amber-500' },
+                    { label: 'Click Rate', value: clickRate, sub: `${totals.contacts_clicked} unique clicks`, color: 'text-green-500' },
+                    { label: 'Sequence Done', value: totals.completed, sub: `${totals.pending} pending`, color: 'text-slate-900 dark:text-white' },
+                ].map(k => (
+                    <div key={k.label} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
+                        <p className="text-xs font-medium text-slate-400 mb-1">{k.label}</p>
+                        <p className={`text-3xl font-bold ${k.color}`}>{k.value}</p>
+                        <p className="text-xs text-slate-400 mt-1">{k.sub}</p>
+                    </div>
+                ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Per-step breakdown */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Email Step Performance</h3>
+                    <div className="space-y-3">
+                        {steps.map(s => (
+                            <div key={s.label}>
+                                <div className="flex items-center justify-between text-xs mb-1">
+                                    <span className="font-medium text-slate-600 dark:text-slate-400">{s.label}</span>
+                                    <div className="flex gap-3 text-slate-400">
+                                        <span>{s.sent} sent</span>
+                                        <span className="text-amber-500">{pct(s.opened, s.sent)} open</span>
+                                        <span className="text-green-500">{pct(s.clicked, s.sent)} click</span>
+                                    </div>
+                                </div>
+                                <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                                    <div className="h-full bg-amber-400 rounded-full" style={{ width: s.sent ? `${(s.opened / s.sent) * 100}%` : '0%' }} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* A/B variant comparison */}
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">A/B Variant Comparison</h3>
+                    {abStats.length === 0 ? (
+                        <p className="text-xs text-slate-400 text-center py-4">No A/B data yet</p>
+                    ) : (
+                        <div className="space-y-4">
+                            {abStats.map(v => (
+                                <div key={v.ab_variant}>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${v.ab_variant === 'A' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'}`}>
+                                            Variant {v.ab_variant}
+                                        </span>
+                                        <span className="text-xs text-slate-400">{v.sent} sent</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <div className="bg-amber-50 dark:bg-amber-900/10 rounded-lg p-3 text-center">
+                                            <p className="text-lg font-bold text-amber-500">{pct(Number(v.unique_opens), Number(v.sent))}</p>
+                                            <p className="text-xs text-slate-400">Open Rate</p>
+                                        </div>
+                                        <div className="bg-green-50 dark:bg-green-900/10 rounded-lg p-3 text-center">
+                                            <p className="text-lg font-bold text-green-500">{pct(Number(v.unique_clicks), Number(v.sent))}</p>
+                                            <p className="text-xs text-slate-400">Click Rate</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Daily sends bar chart */}
+            {dailySends.length > 0 && (
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm">
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">Activity — Last 14 Days</h3>
+                    <div className="flex items-end gap-1 h-24">
+                        {dailySends.map(d => (
+                            <div key={d.day} className="flex-1 flex flex-col items-center gap-0.5" title={`${d.day}: ${d.sent} sent, ${d.opened} opened, ${d.clicked} clicked`}>
+                                <div className="w-full flex flex-col justify-end gap-px" style={{ height: '80px' }}>
+                                    <div className="w-full bg-green-400 rounded-sm" style={{ height: `${(Number(d.clicked) / maxSent) * 80}px` }} />
+                                    <div className="w-full bg-amber-400 rounded-sm" style={{ height: `${(Number(d.opened) / maxSent) * 80}px` }} />
+                                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-sm" style={{ height: `${(Number(d.sent) / maxSent) * 80}px` }} />
+                                </div>
+                                <span className="text-[9px] text-slate-400 whitespace-nowrap">
+                                    {new Date(d.day).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="flex gap-4 mt-2">
+                        {[{ color: 'bg-slate-200 dark:bg-slate-700', label: 'Sent' }, { color: 'bg-amber-400', label: 'Opened' }, { color: 'bg-green-400', label: 'Clicked' }].map(l => (
+                            <div key={l.label} className="flex items-center gap-1.5">
+                                <div className={`w-2.5 h-2.5 rounded-sm ${l.color}`} />
+                                <span className="text-xs text-slate-400">{l.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
 // ── Main Page ────────────────────────────────────────────────────────────────
 export default function CRMPage() {
     const [campaigns, setCampaigns] = useState<OutreachCampaign[]>([]);
@@ -239,6 +403,7 @@ export default function CRMPage() {
     const [expandedId, setExpandedId] = useState<number | null>(null);
     const [batchLimit, setBatchLimit] = useState<string>('20');
     const [showBatchInput, setShowBatchInput] = useState(false);
+    const [showAnalytics, setShowAnalytics] = useState(true);
 
     const fetchCampaigns = async () => {
         setLoading(true);
@@ -342,6 +507,17 @@ export default function CRMPage() {
                         )}
                     </div>
                 </div>
+            </div>
+
+            {/* Analytics toggle + panel */}
+            <div>
+                <button
+                    onClick={() => setShowAnalytics(v => !v)}
+                    className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition mb-3"
+                >
+                    <span>{showAnalytics ? '▾' : '▸'}</span> Email Analytics
+                </button>
+                {showAnalytics && <AnalyticsDashboard />}
             </div>
 
             {/* Metrics */}
