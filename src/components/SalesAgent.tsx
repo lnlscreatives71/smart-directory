@@ -366,7 +366,8 @@ export default function SalesAgent() {
         }
     };
 
-    if (pathname.startsWith('/dashboard') || pathname.startsWith('/smb') || pathname === '/login') return null;
+    const hiddenRoutes = ['/dashboard', '/smb', '/login', '/biz/claim'];
+    if (!pathname || hiddenRoutes.some(r => pathname.startsWith(r))) return null;
 
     return (
         <>
