@@ -324,60 +324,75 @@ export default function ImportPage() {
             {/* STEP 2: Map Columns */}
             {step === 'mapping' && (
                 <div className="space-y-5">
-                    {/* Sample data preview */}
                     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-                        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Your CSV — first 3 rows</h3>
-                            <p className="text-xs text-slate-400 mt-0.5">Use this to identify which column contains which data.</p>
+                        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                            <div>
+                                <h3 className="font-semibold text-slate-800 dark:text-slate-100">Map your columns</h3>
+                                <p className="text-xs text-slate-400 mt-0.5">Match each column in your file to a directory field. <span className="text-red-500">Business Name and Contact Email are required.</span></p>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs font-medium">
+                                <span className="flex items-center gap-1.5 text-secondary-600 dark:text-secondary-400"><CheckCircle2 size={13} /> {Object.values(mapping).filter(Boolean).length} mapped</span>
+                                <span className="flex items-center gap-1.5 text-amber-500">{csvHeaders.length - Object.values(mapping).filter(Boolean).length} pending</span>
+                            </div>
                         </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-xs text-left">
-                                <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800">
-                                    <tr>
-                                        {csvHeaders.map(h => (
-                                            <th key={h} className="px-4 py-2.5 font-mono text-primary-600 dark:text-primary-400 whitespace-nowrap">{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
-                                    {rawRows.slice(0, 3).map((row, i) => (
-                                        <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                                            {csvHeaders.map(h => (
-                                                <td key={h} className="px-4 py-2.5 text-slate-600 dark:text-slate-300 whitespace-nowrap max-w-[180px] truncate">{row[h] || <span className="text-slate-300 dark:text-slate-600">—</span>}</td>
-                                            ))}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
 
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
-                        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Match your CSV columns</h3>
-                        <p className="text-sm text-slate-400 mb-6">Select which column in your file corresponds to each field. <span className="text-red-500">* Required</span></p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {ALL_COLUMNS.map(field => {
-                                const isRequired = REQUIRED_COLUMNS.includes(field) || field === 'contact_email';
+                        {/* Column headers */}
+                        <div className="grid grid-cols-[1fr_2fr_100px_1fr] gap-0 text-xs font-semibold text-slate-400 uppercase tracking-wide bg-slate-50 dark:bg-slate-950 px-6 py-3 border-b border-slate-100 dark:border-slate-800">
+                            <span>Column in your file</span>
+                            <span>Preview</span>
+                            <span>Status</span>
+                            <span>Maps to</span>
+                        </div>
+
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800">
+                            {csvHeaders.map(csvCol => {
+                                // Find which dest field this csvCol is currently mapped to
+                                const mappedTo = Object.entries(mapping).find(([, v]) => v === csvCol)?.[0] ?? '';
+                                const isMapped = !!mappedTo;
+                                const samples = rawRows.slice(0, 3).map(r => r[csvCol]).filter(Boolean);
+
+                                const handleChange = (destField: string) => {
+                                    setMapping(prev => {
+                                        const next = { ...prev };
+                                        // Remove any existing mapping pointing to this csvCol
+                                        Object.keys(next).forEach(k => { if (next[k] === csvCol) delete next[k]; });
+                                        if (destField) next[destField] = csvCol;
+                                        return next;
+                                    });
+                                };
+
                                 return (
-                                    <div key={field}>
-                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-                                            {COLUMN_LABELS[field]} {isRequired && <span className="text-red-500">*</span>}
-                                        </label>
+                                    <div key={csvCol} className={`grid grid-cols-[1fr_2fr_100px_1fr] gap-4 items-center px-6 py-4 transition-colors ${isMapped ? 'hover:bg-slate-50 dark:hover:bg-slate-800/30' : 'bg-amber-50/40 dark:bg-amber-900/5 hover:bg-amber-50 dark:hover:bg-amber-900/10'}`}>
+                                        {/* CSV column name */}
+                                        <span className="font-mono text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{csvCol}</span>
+
+                                        {/* Sample data */}
+                                        <div className="space-y-0.5">
+                                            {samples.length > 0 ? samples.map((s, i) => (
+                                                <p key={i} className="text-xs text-slate-500 dark:text-slate-400 truncate">{s}</p>
+                                            )) : <p className="text-xs text-slate-300 dark:text-slate-600 italic">no data</p>}
+                                        </div>
+
+                                        {/* Status badge */}
+                                        <div>
+                                            {isMapped
+                                                ? <span className="inline-flex items-center gap-1 bg-secondary-100 dark:bg-secondary-900/30 text-secondary-700 dark:text-secondary-400 text-xs font-medium px-2.5 py-1 rounded-full"><CheckCircle2 size={11} /> Mapped</span>
+                                                : <span className="inline-flex items-center gap-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium px-2.5 py-1 rounded-full">Pending</span>
+                                            }
+                                        </div>
+
+                                        {/* Destination dropdown */}
                                         <select
-                                            value={mapping[field] || ''}
-                                            onChange={e => setMapping(m => ({ ...m, [field]: e.target.value }))}
-                                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-300 outline-none focus:border-primary-500 transition"
+                                            value={mappedTo}
+                                            onChange={e => handleChange(e.target.value)}
+                                            className={`w-full bg-white dark:bg-slate-800 border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary-500 transition ${isMapped ? 'border-secondary-300 dark:border-secondary-700 text-slate-700 dark:text-slate-200' : 'border-amber-300 dark:border-amber-700 text-slate-400'}`}
                                         >
-                                            <option value="">— skip this field —</option>
-                                            {csvHeaders.map(h => (
-                                                <option key={h} value={h}>{h}</option>
+                                            <option value="">Please Select</option>
+                                            {ALL_COLUMNS.map(field => (
+                                                <option key={field} value={field}>{COLUMN_LABELS[field]}{(REQUIRED_COLUMNS.includes(field) || field === 'contact_email') ? ' *' : ''}</option>
                                             ))}
+                                            <option value="">— Skip this column —</option>
                                         </select>
-                                        {mapping[field] && rawRows[0]?.[mapping[field]] && (
-                                            <p className="text-xs text-slate-400 mt-1 truncate">
-                                                e.g. <span className="text-slate-600 dark:text-slate-300">{rawRows[0][mapping[field]]}</span>
-                                            </p>
-                                        )}
                                     </div>
                                 );
                             })}
