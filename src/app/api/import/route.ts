@@ -109,9 +109,9 @@ export async function POST(request: Request) {
                 continue;
             }
 
-            if (!row.contact_email) {
+            if (!row.contact_email || !row.contact_email.includes('@')) {
                 results.skipped++;
-                results.errors.push(`Skipped "${row.name}" — missing contact_email (required for outreach)`);
+                results.errors.push(`Skipped "${row.name}" — invalid or missing contact_email`);
                 continue;
             }
 
