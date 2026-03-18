@@ -15,6 +15,7 @@ interface BusinessRow {
     phone?: string;
     contact_name?: string;
     rating?: string;
+    custom_fields?: string; // JSON string
 }
 
 const MAPS_API_KEY = process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
@@ -149,13 +150,18 @@ export async function POST(request: Request) {
                 const imageUrl = googlePhoto || getImageForCategory(row.category || 'Other');
 
                 // Insert the listing
+                let customFieldsJson = '{}';
+                if (row.custom_fields) {
+                    try { JSON.parse(row.custom_fields); customFieldsJson = row.custom_fields; } catch { /* ignore */ }
+                }
+
                 const inserted = await sql`
                     INSERT INTO listings (
                         name, slug, category, description,
                         street_address, location_city, location_state, location_region,
                         lat, lng, services, rating, featured, claimed,
                         plan_id, feature_flags, contact_email,
-                        contact_name, phone, website, image_url
+                        contact_name, phone, website, image_url, custom_fields
                     ) VALUES (
                         ${row.name},
                         ${slug},
@@ -177,7 +183,8 @@ export async function POST(request: Request) {
                         ${row.contact_name || null},
                         ${row.phone || null},
                         ${row.website || null},
-                        ${imageUrl}
+                        ${imageUrl},
+                        ${customFieldsJson}
                     )
                     RETURNING id
                 `;

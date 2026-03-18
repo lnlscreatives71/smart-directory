@@ -53,6 +53,8 @@ export interface Listing {
     created_at: Date;
     updated_at: Date;
 
+    custom_fields?: Record<string, string>;
+
     // Joined fields returned by API
     plan_name?: string;
     plan_price?: number;

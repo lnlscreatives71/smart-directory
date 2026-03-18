@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Upload, FileSpreadsheet, CheckCircle2, XCircle, AlertTriangle, Mail, Loader2, Download, Trash2, ChevronRight } from 'lucide-react';
 
 interface ParsedRow {
     name: string;
     category: string;
     description?: string;
+    street_address?: string;
     location_city?: string;
     location_state?: string;
     contact_name?: string;
@@ -15,6 +16,13 @@ interface ParsedRow {
     website?: string;
     rating?: string;
     [key: string]: string | undefined;
+}
+
+interface CustomField {
+    id: number;
+    field_key: string;
+    field_label: string;
+    field_description: string | null;
 }
 
 interface ImportResult {
@@ -80,6 +88,14 @@ function parseCSV(text: string): ParsedRow[] {
 }
 
 export default function ImportPage() {
+    const [customFields, setCustomFields] = useState<CustomField[]>([]);
+
+    useEffect(() => {
+        fetch('/api/custom-fields').then(r => r.json()).then(d => {
+            if (d?.fields) setCustomFields(d.fields);
+        });
+    }, []);
+
     const [dragging, setDragging] = useState(false);
     const [rawRows, setRawRows] = useState<Record<string, string>[]>([]);
     const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
@@ -183,9 +199,21 @@ export default function ImportPage() {
         setParseError('');
         const mapped = rawRows.map(raw => {
             const row: Record<string, string> = { name: '', category: '' };
+            // Standard fields
             ALL_COLUMNS.forEach(field => {
                 if (mapping[field]) row[field] = raw[mapping[field]] || '';
             });
+            // Custom fields — packed as JSON string in custom_fields key
+            const customData: Record<string, string> = {};
+            Object.entries(mapping).forEach(([dest, src]) => {
+                if (dest.startsWith('custom:') && src) {
+                    const key = dest.slice(7);
+                    customData[key] = raw[src] || '';
+                }
+            });
+            if (Object.keys(customData).length > 0) {
+                row['custom_fields'] = JSON.stringify(customData);
+            }
             return row as ParsedRow;
         });
         setRows(mapped);
@@ -390,9 +418,18 @@ export default function ImportPage() {
                                             className={`w-full bg-white dark:bg-slate-800 border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary-500 transition ${isMapped ? 'border-secondary-300 dark:border-secondary-700 text-slate-700 dark:text-slate-200' : 'border-amber-300 dark:border-amber-700 text-slate-400'}`}
                                         >
                                             <option value="">Please Select</option>
-                                            {ALL_COLUMNS.map(field => (
-                                                <option key={field} value={field}>{COLUMN_LABELS[field]}{(REQUIRED_COLUMNS.includes(field) || field === 'contact_email') ? ' *' : ''}</option>
-                                            ))}
+                                            <optgroup label="Standard Fields">
+                                                {ALL_COLUMNS.map(field => (
+                                                    <option key={field} value={field}>{COLUMN_LABELS[field]}{(REQUIRED_COLUMNS.includes(field) || field === 'contact_email') ? ' *' : ''}</option>
+                                                ))}
+                                            </optgroup>
+                                            {customFields.length > 0 && (
+                                                <optgroup label="Custom Fields">
+                                                    {customFields.map(cf => (
+                                                        <option key={cf.field_key} value={`custom:${cf.field_key}`}>{cf.field_label}</option>
+                                                    ))}
+                                                </optgroup>
+                                            )}
                                             <option value="">— Skip this column —</option>
                                         </select>
                                     </div>

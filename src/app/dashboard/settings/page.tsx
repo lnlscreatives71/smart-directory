@@ -1,12 +1,26 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Save, Loader2, AlertCircle, Palette, Type, Globe } from 'lucide-react';
+import { Save, Loader2, AlertCircle, Palette, Type, Globe, PlusCircle, Trash2, TableProperties } from 'lucide-react';
+
+interface CustomField {
+    id: number;
+    field_key: string;
+    field_label: string;
+    field_description: string | null;
+}
 
 export default function AgencySettingsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [msg, setMsg] = useState({ type: '', text: '' });
+
+    // Custom import fields
+    const [customFields, setCustomFields] = useState<CustomField[]>([]);
+    const [newFieldLabel, setNewFieldLabel] = useState('');
+    const [newFieldDesc, setNewFieldDesc] = useState('');
+    const [addingField, setAddingField] = useState(false);
+    const [fieldError, setFieldError] = useState('');
     
     const [formData, setFormData] = useState({
         site_name: '',
@@ -21,19 +35,47 @@ export default function AgencySettingsPage() {
     });
 
     useEffect(() => {
-        fetch('/api/settings')
-            .then(res => res.json())
-            .then(data => {
-                if (data && !data.error) {
-                    setFormData(data);
-                }
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
+        Promise.all([
+            fetch('/api/settings').then(r => r.json()),
+            fetch('/api/custom-fields').then(r => r.json()),
+        ]).then(([settings, cf]) => {
+            if (settings && !settings.error) setFormData(settings);
+            if (cf?.fields) setCustomFields(cf.fields);
+            setLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setLoading(false);
+        });
     }, []);
+
+    const addCustomField = async () => {
+        if (!newFieldLabel.trim()) return;
+        setAddingField(true);
+        setFieldError('');
+        const res = await fetch('/api/custom-fields', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ label: newFieldLabel, description: newFieldDesc }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            setFieldError(data.error);
+        } else {
+            setCustomFields(prev => [...prev, data.field]);
+            setNewFieldLabel('');
+            setNewFieldDesc('');
+        }
+        setAddingField(false);
+    };
+
+    const deleteCustomField = async (key: string) => {
+        await fetch('/api/custom-fields', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key }),
+        });
+        setCustomFields(prev => prev.filter(f => f.field_key !== key));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -135,6 +177,67 @@ export default function AgencySettingsPage() {
                     </button>
                 </div>
             </form>
+
+            {/* Custom Import Fields */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-5">
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                        <TableProperties size={18} className="text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div>
+                        <h2 className="text-base font-semibold text-slate-800 dark:text-slate-100">Custom Import Fields</h2>
+                        <p className="text-xs text-slate-400 mt-0.5">Define extra fields for your directory (e.g. "Recommended Services", "Specialties"). They appear as mapping options when importing CSVs.</p>
+                    </div>
+                </div>
+
+                {/* Existing fields */}
+                {customFields.length > 0 && (
+                    <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        {customFields.map(f => (
+                            <div key={f.field_key} className="flex items-center justify-between px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                                <div>
+                                    <span className="text-sm font-medium text-slate-800 dark:text-slate-100">{f.field_label}</span>
+                                    <span className="ml-2 font-mono text-xs text-slate-400">({f.field_key})</span>
+                                    {f.field_description && <p className="text-xs text-slate-400 mt-0.5">{f.field_description}</p>}
+                                </div>
+                                <button onClick={() => deleteCustomField(f.field_key)} className="text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 transition ml-4">
+                                    <Trash2 size={15} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Add new field */}
+                <div className="space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input
+                            type="text"
+                            placeholder="Field label (e.g. Recommended Services)"
+                            value={newFieldLabel}
+                            onChange={e => setNewFieldLabel(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && addCustomField()}
+                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-700 dark:text-slate-200 outline-none focus:border-primary-500 transition"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Description (optional)"
+                            value={newFieldDesc}
+                            onChange={e => setNewFieldDesc(e.target.value)}
+                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm text-slate-700 dark:text-slate-200 outline-none focus:border-primary-500 transition"
+                        />
+                    </div>
+                    {fieldError && <p className="text-xs text-red-500">{fieldError}</p>}
+                    <button
+                        onClick={addCustomField}
+                        disabled={addingField || !newFieldLabel.trim()}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
+                    >
+                        {addingField ? <Loader2 size={15} className="animate-spin" /> : <PlusCircle size={15} />}
+                        Add Field
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }
