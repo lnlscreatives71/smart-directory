@@ -30,6 +30,19 @@ const REQUIRED_COLUMNS = ['name'];
 const OPTIONAL_COLUMNS = ['category', 'description', 'location_city', 'location_state', 'contact_name', 'contact_email', 'phone', 'website', 'rating'];
 const ALL_COLUMNS = [...REQUIRED_COLUMNS, ...OPTIONAL_COLUMNS];
 
+const COLUMN_LABELS: Record<string, string> = {
+    name: 'Business Name',
+    category: 'Category',
+    description: 'Description',
+    location_city: 'City',
+    location_state: 'State',
+    contact_name: 'Contact Name',
+    contact_email: 'Contact Email',
+    phone: 'Phone',
+    website: 'Website',
+    rating: 'Rating',
+};
+
 const SAMPLE_CSV = `name,category,description,location_city,location_state,contact_name,contact_email,phone,website,rating
 Triangle Wellness Spa,Med Spa,Premier wellness and med spa services in Raleigh,Raleigh,NC,Jane Doe,hello@trianglewellness.com,350-777-2961,https://trianglewellness.com,4.8
 Oak City Plumbing,Plumbing,Residential and commercial plumbing services,Durham,NC,John Smith,info@oakcityplumbing.com,350-777-2961,,4.5
@@ -40,7 +53,7 @@ function parseCSV(text: string): ParsedRow[] {
     const lines = text.trim().split('\n').map(l => l.replace(/\r/g, ''));
     if (lines.length < 2) return [];
 
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, '_'));
+    const headers = lines[0].split(',').map(h => h.trim());
     const rows: ParsedRow[] = [];
 
     for (let i = 1; i < lines.length; i++) {
@@ -56,20 +69,23 @@ function parseCSV(text: string): ParsedRow[] {
         }
         values.push(current.trim());
 
-        const row: ParsedRow = { name: '', category: '' };
+        const row: Record<string, string> = {};
         headers.forEach((h, idx) => {
             row[h] = values[idx] || '';
         });
-        rows.push(row);
+        rows.push(row as ParsedRow);
     }
     return rows;
 }
 
 export default function ImportPage() {
     const [dragging, setDragging] = useState(false);
+    const [rawRows, setRawRows] = useState<Record<string, string>[]>([]);
+    const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+    const [mapping, setMapping] = useState<Record<string, string>>({});
     const [rows, setRows] = useState<ParsedRow[]>([]);
     const [fileName, setFileName] = useState('');
-    const [step, setStep] = useState<'upload' | 'preview' | 'result'>('upload');
+    const [step, setStep] = useState<'upload' | 'mapping' | 'preview' | 'result'>('upload');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<ImportResult | null>(null);
     const [parseError, setParseError] = useState('');
@@ -91,13 +107,16 @@ export default function ImportPage() {
                     setParseError('No data rows found. Make sure your CSV has a header row and at least one data row.');
                     return;
                 }
-                const missing = REQUIRED_COLUMNS.filter(col => !Object.keys(parsed[0]).includes(col));
-                if (missing.length > 0) {
-                    setParseError(`Missing required columns: ${missing.join(', ')}. Please check your CSV headers.`);
-                    return;
-                }
-                setRows(parsed);
-                setStep('preview');
+                const headers = Object.keys(parsed[0]);
+                setCsvHeaders(headers);
+                setRawRows(parsed as Record<string, string>[]);
+                // Auto-map where header exactly matches a field
+                const autoMap: Record<string, string> = {};
+                ALL_COLUMNS.forEach(field => {
+                    if (headers.includes(field)) autoMap[field] = field;
+                });
+                setMapping(autoMap);
+                setStep('mapping');
             } catch {
                 setParseError('Failed to parse CSV. Please check the file format.');
             }
@@ -131,8 +150,32 @@ export default function ImportPage() {
         }
     };
 
+    const applyMapping = () => {
+        if (!mapping['name']) {
+            setParseError('You must map the Business Name field before continuing.');
+            return;
+        }
+        if (!mapping['contact_email']) {
+            setParseError('You must map the Contact Email field before continuing.');
+            return;
+        }
+        setParseError('');
+        const mapped = rawRows.map(raw => {
+            const row: Record<string, string> = { name: '', category: '' };
+            ALL_COLUMNS.forEach(field => {
+                if (mapping[field]) row[field] = raw[mapping[field]] || '';
+            });
+            return row as ParsedRow;
+        });
+        setRows(mapped);
+        setStep('preview');
+    };
+
     const reset = () => {
         setRows([]);
+        setRawRows([]);
+        setCsvHeaders([]);
+        setMapping({});
         setFileName('');
         setStep('upload');
         setResult(null);
@@ -175,10 +218,10 @@ export default function ImportPage() {
 
             {/* Progress Steps */}
             <div className="flex items-center gap-2 text-sm font-medium">
-                {['upload', 'preview', 'result'].map((s, i) => {
-                    const labels = ['Upload File', 'Review & Confirm', 'Import Complete'];
+                {['upload', 'mapping', 'preview', 'result'].map((s, i) => {
+                    const labels = ['Upload File', 'Map Columns', 'Review & Confirm', 'Import Complete'];
                     const isActive = step === s;
-                    const isPast = ['upload', 'preview', 'result'].indexOf(step) > i;
+                    const isPast = ['upload', 'mapping', 'preview', 'result'].indexOf(step) > i;
                     return (
                         <div key={s} className="flex items-center gap-2">
                             {i > 0 && <ChevronRight size={16} className="text-slate-300 dark:text-slate-600" />}
@@ -259,7 +302,60 @@ export default function ImportPage() {
                 </div>
             )}
 
-            {/* STEP 2: Preview */}
+            {/* STEP 2: Map Columns */}
+            {step === 'mapping' && (
+                <div className="space-y-5">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-1">Match your CSV columns</h3>
+                        <p className="text-sm text-slate-400 mb-6">Select which column in your file corresponds to each field. <span className="text-red-500">* Required</span></p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {ALL_COLUMNS.map(field => {
+                                const isRequired = REQUIRED_COLUMNS.includes(field) || field === 'contact_email';
+                                return (
+                                    <div key={field}>
+                                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                                            {COLUMN_LABELS[field]} {isRequired && <span className="text-red-500">*</span>}
+                                        </label>
+                                        <select
+                                            value={mapping[field] || ''}
+                                            onChange={e => setMapping(m => ({ ...m, [field]: e.target.value }))}
+                                            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-300 outline-none focus:border-primary-500 transition"
+                                        >
+                                            <option value="">— skip this field —</option>
+                                            {csvHeaders.map(h => (
+                                                <option key={h} value={h}>{h}</option>
+                                            ))}
+                                        </select>
+                                        {mapping[field] && rawRows[0]?.[mapping[field]] && (
+                                            <p className="text-xs text-slate-400 mt-1 truncate">
+                                                e.g. <span className="text-slate-600 dark:text-slate-300">{rawRows[0][mapping[field]]}</span>
+                                            </p>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {parseError && (
+                        <div className="flex items-start gap-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 p-4 rounded-xl text-sm">
+                            <XCircle size={18} className="shrink-0 mt-0.5" />
+                            <span>{parseError}</span>
+                        </div>
+                    )}
+
+                    <div className="flex gap-3">
+                        <button onClick={reset} className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-sm font-medium transition hover:bg-slate-50">
+                            Back
+                        </button>
+                        <button onClick={applyMapping} className="flex items-center px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-bold transition">
+                            Continue to Preview <ChevronRight size={15} className="ml-1" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* STEP 3: Preview */}
             {step === 'preview' && (
                 <div className="space-y-5">
                     {/* Summary bar */}

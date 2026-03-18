@@ -105,6 +105,12 @@ export async function POST(request: Request) {
                 continue;
             }
 
+            if (!row.contact_email) {
+                results.skipped++;
+                results.errors.push(`Skipped "${row.name}" — missing contact_email (required for outreach)`);
+                continue;
+            }
+
             // Generate a unique slug
             let baseSlug = slugify(row.name);
             let slug = baseSlug;
