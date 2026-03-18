@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 2: Why Premium Listings Get More Attention (+2 days) ────────
         const email2Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name, l.plan_id
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name, l.plan_id
             FROM premium_upgrade_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_1_sent'
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 3: More Visibility. More Control. (+2 days after E2) ────────
         const email3Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name, l.plan_id
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name, l.plan_id
             FROM premium_upgrade_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_2_sent'
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 4: Want to Do More With Your Listing? (+2 days after E3) ───
         const email4Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name, l.plan_id
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name, l.plan_id
             FROM premium_upgrade_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_3_sent'

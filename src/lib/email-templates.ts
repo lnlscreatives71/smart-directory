@@ -4,7 +4,7 @@ const UPGRADE_URL = `${SITE_URL}/pricing`;
 const LOGO_URL = `${SITE_URL}/triangle-hub-logo-dark.png`;
 const PRIMARY_COLOR = '#6366f1';
 
-function baseTemplate(content: string): string {
+function baseTemplate(content: string, preheader?: string): string {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -14,6 +14,7 @@ function baseTemplate(content: string): string {
   <title>${SITE_NAME}</title>
 </head>
 <body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;color:#e2e8f0;">
+  ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌</div>` : ''}
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 20px;">
     <tr><td align="center">
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
@@ -524,7 +525,7 @@ export function premiumUpgrade_email1(businessName: string, contactName: string 
         </table>
         ${ctaButton('Upgrade to Premium — $29/mo →', UPGRADE_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">Cancel anytime. No contracts.</p>
-    `);
+    `, 'See what Premium unlocks — priority placement, AI chat, online booking, and more.');
 }
 
 export function premiumUpgrade_email2(businessName: string, contactName: string | null): string {
@@ -559,7 +560,7 @@ export function premiumUpgrade_email2(businessName: string, contactName: string 
         </p>
         ${ctaButton('Get Premium Placement — $29/mo →', UPGRADE_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">Cancel anytime. Takes 2 minutes to set up.</p>
-    `);
+    `, 'Premium listings rank above free ones — less than $1/day to stay ahead of competitors.');
 }
 
 export function premiumUpgrade_email3(businessName: string, contactName: string | null): string {
@@ -586,7 +587,7 @@ export function premiumUpgrade_email3(businessName: string, contactName: string 
         </div>
         ${ctaButton('Unlock All Premium Features →', UPGRADE_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">$29/month · Cancel anytime · No long-term contract</p>
-    `);
+    `, 'Photo gallery, live booking, AI chat, and priority ranking — all in one upgrade.');
 }
 
 export function premiumUpgrade_email4(businessName: string, contactName: string | null): string {
@@ -608,7 +609,7 @@ export function premiumUpgrade_email4(businessName: string, contactName: string 
         </p>
         <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
         <p style="color:#64748b;font-size:13px;">Reply to this email anytime — happy to help figure out what's right for your business.</p>
-    `);
+    `, 'Not ready to upgrade yet? Here are some bigger ways we can help your business grow.');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -638,7 +639,7 @@ export function saasPush_email1(businessName: string, contactName: string | null
         </p>
         ${ctaButton('See How It Works →', STRATEGY_CALL_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">No pressure — just a 20-minute conversation about your goals.</p>
-    `);
+    `, 'AI handles your leads, follow-ups, and bookings automatically — while you focus on the work.');
 }
 
 export function saasPush_email2(businessName: string, contactName: string | null): string {
@@ -661,7 +662,7 @@ export function saasPush_email2(businessName: string, contactName: string | null
         </p>
         ${ctaButton('Stop Losing Leads — Book a Call →', STRATEGY_CALL_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">Free 20-min strategy call. No commitment.</p>
-    `);
+    `, 'Missing just 5 leads/month at $200 avg = $12,000/year lost. Here\'s how to stop it.');
 }
 
 export function saasPush_email3(businessName: string, contactName: string | null): string {
@@ -686,7 +687,7 @@ export function saasPush_email3(businessName: string, contactName: string | null
         </p>
         ${ctaButton("See If It's a Fit for Your Business →", STRATEGY_CALL_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">20 minutes. We'll show you exactly what it would look like for your business.</p>
-    `);
+    `, 'Other local businesses are already using this — here\'s what changed for them.');
 }
 
 export function saasPush_email4(businessName: string, contactName: string | null): string {
@@ -708,7 +709,7 @@ export function saasPush_email4(businessName: string, contactName: string | null
         ${ctaButton('Book My Free Strategy Session →', STRATEGY_CALL_URL)}
         <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
         <p style="color:#64748b;font-size:13px;">Reply to this email if you have questions or want to learn more first.</p>
-    `);
+    `, 'A free custom audit of your lead flow + a live demo built for your business. No charge.');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -736,7 +737,7 @@ export function marketingPush_email1(businessName: string, contactName: string |
         </p>
         ${ctaButton('Get a Free Website Audit →', STRATEGY_CALL_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">We'll show you exactly what's holding your site back — at no charge.</p>
-    `);
+    `, 'Your website is your #1 salesperson — is it actually converting visitors into customers?');
 }
 
 export function marketingPush_email2(businessName: string, contactName: string | null): string {
@@ -760,7 +761,7 @@ export function marketingPush_email2(businessName: string, contactName: string |
         </p>
         ${ctaButton('Get My Free SEO Analysis →', STRATEGY_CALL_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">We'll show you where you rank today and what it'll take to get to #1.</p>
-    `);
+    `, '76% of local searchers visit a business within 24 hours — are they finding you first?');
 }
 
 export function marketingPush_email3(businessName: string, contactName: string | null): string {
@@ -785,7 +786,7 @@ export function marketingPush_email3(businessName: string, contactName: string |
         </p>
         ${ctaButton('See What PPC Can Do for My Business →', STRATEGY_CALL_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">Free strategy call — we'll model out your potential ROI before you spend a dollar.</p>
-    `);
+    `, 'Only pay when someone clicks. Target your exact market. Full tracking on every dollar.');
 }
 
 export function marketingPush_email4(businessName: string, contactName: string | null): string {
@@ -813,7 +814,7 @@ export function marketingPush_email4(businessName: string, contactName: string |
         <p style="color:#64748b;font-size:13px;">
             This is our last email in this series. If the timing is not right, no worries — reply anytime and we will be here.
         </p>
-    `);
+    `, 'One free call. A custom growth plan built for your business. No obligation.');
 }
 
 // ─── Booking: Customer Confirmation ──────────────────────────────────────────

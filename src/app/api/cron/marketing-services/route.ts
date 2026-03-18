@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 1: Your Website Might Be Costing You Customers ─────────────
         const email1Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM marketing_services_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'pending'
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 2: Want to Show Up First on Google? (+2 days) ──────────────
         const email2Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM marketing_services_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_1_sent'
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 3: Get More Leads Instantly with Google Ads (+2 days) ──────
         const email3Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM marketing_services_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_2_sent'
@@ -99,7 +99,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 4: Let's Make a Plan for Your Business Growth (+2 days) ────
         const email4Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM marketing_services_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_3_sent'

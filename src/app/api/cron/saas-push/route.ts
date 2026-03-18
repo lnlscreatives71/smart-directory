@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 1: What If Your Business Could Run Itself? ──────────────────
         const email1Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM saas_push_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'pending'
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 2: How Many Leads Are You Losing? (+2 days) ────────────────
         const email2Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM saas_push_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_1_sent'
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 3: Why More Local Businesses Are Using This (+2 days) ───────
         const email3Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM saas_push_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_2_sent'
@@ -99,7 +99,7 @@ export async function POST(request: Request) {
 
         // ── EMAIL 4: Want to Test It Out for Free? (+2 days) ─────────────────
         const email4Queue = await sql`
-            SELECT c.id, c.contact_email, c.contact_name, l.name
+            SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM saas_push_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE c.status = 'email_3_sent'
