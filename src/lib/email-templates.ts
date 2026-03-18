@@ -37,6 +37,10 @@ function baseTemplate(content: string, preheader?: string): string {
           <td align="center" style="padding-top:24px;font-size:12px;color:#475569;">
             <p style="margin:0;">© ${new Date().getFullYear()} ${SITE_NAME} · Raleigh, NC</p>
             <p style="margin:4px 0 0;"><a href="${SITE_URL}" style="color:#6366f1;text-decoration:none;">thetrianglehub.online</a></p>
+            <p style="margin:16px 0 0;padding-top:16px;border-top:1px solid #1e293b;color:#334155;">
+              Brought to you by <a href="https://www.lnlaiagency.com/" target="_blank" style="color:#6366f1;text-decoration:none;font-weight:600;">LNL AI Agency</a>
+              &nbsp;·&nbsp; AI marketing &amp; automation for local service businesses
+            </p>
           </td>
         </tr>
       </table>
