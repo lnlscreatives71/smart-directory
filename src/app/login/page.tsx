@@ -33,11 +33,10 @@ export default function LoginPage() {
                     ? "Login is temporarily unavailable. Please contact support."
                     : "Invalid email or password");
                 setLoading(false);
-            } else if (res?.url) {
-                // Successfully logged in, redirect to callback URL
-                window.location.href = res.url;
+            } else if (res?.ok) {
+                window.location.replace('/dashboard');
             } else {
-                setError("Login succeeded but no redirect URL was provided");
+                setError("Login failed. Please try again.");
                 setLoading(false);
             }
         } catch (err) {
