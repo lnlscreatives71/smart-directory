@@ -89,6 +89,10 @@ export interface OutreachCampaign {
     email_2_sent_at: Date | null;
     email_3_sent_at: Date | null;
     email_4_sent_at: Date | null;
+    opens: number;
+    clicks: number;
+    last_opened_at: Date | null;
+    last_clicked_at: Date | null;
     created_at: Date;
     updated_at: Date;
 

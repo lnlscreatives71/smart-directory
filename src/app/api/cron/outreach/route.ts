@@ -48,14 +48,15 @@ export async function POST(request: Request) {
             const subject = typeof emails.subjects.email1 === 'function'
                 ? emails.subjects.email1(c.name as string)
                 : emails.subjects.email1;
-            await sendEmail({
+            const { messageId } = await sendEmail({
                 to: c.contact_email as string,
                 subject,
                 html: emails.email1(c.name as string, c.contact_name as string | null, c.listing_id as number),
             });
             await sql`
                 UPDATE outreach_campaigns
-                SET status = 'email_1_sent', email_1_sent_at = NOW(), ab_variant = ${variant}
+                SET status = 'email_1_sent', email_1_sent_at = NOW(), ab_variant = ${variant},
+                    email_1_resend_id = ${messageId || null}
                 WHERE id = ${c.id}
             `;
             emailsSent++;
@@ -79,14 +80,15 @@ export async function POST(request: Request) {
             const subject = typeof emails.subjects.email2 === 'function'
                 ? emails.subjects.email2(c.name as string)
                 : emails.subjects.email2;
-            await sendEmail({
+            const { messageId: mid2 } = await sendEmail({
                 to: c.contact_email as string,
                 subject,
                 html: emails.email2(c.name as string, c.contact_name as string | null),
             });
             await sql`
                 UPDATE outreach_campaigns
-                SET status = 'email_2_sent', email_2_sent_at = NOW()
+                SET status = 'email_2_sent', email_2_sent_at = NOW(),
+                    email_2_resend_id = ${mid2 || null}
                 WHERE id = ${c.id}
             `;
             emailsSent++;
@@ -110,14 +112,15 @@ export async function POST(request: Request) {
             const subject = typeof emails.subjects.email3 === 'function'
                 ? emails.subjects.email3(c.name as string)
                 : emails.subjects.email3;
-            await sendEmail({
+            const { messageId: mid3 } = await sendEmail({
                 to: c.contact_email as string,
                 subject,
                 html: emails.email3(c.name as string, c.contact_name as string | null, c.listing_id as number),
             });
             await sql`
                 UPDATE outreach_campaigns
-                SET status = 'email_3_sent', email_3_sent_at = NOW()
+                SET status = 'email_3_sent', email_3_sent_at = NOW(),
+                    email_3_resend_id = ${mid3 || null}
                 WHERE id = ${c.id}
             `;
             emailsSent++;
@@ -141,14 +144,15 @@ export async function POST(request: Request) {
             const subject = typeof emails.subjects.email4 === 'function'
                 ? (emails.subjects.email4 as (n: string) => string)(c.name as string)
                 : emails.subjects.email4;
-            await sendEmail({
+            const { messageId: mid4 } = await sendEmail({
                 to: c.contact_email as string,
                 subject,
                 html: emails.email4(c.name as string, c.contact_name as string | null, c.listing_id as number),
             });
             await sql`
                 UPDATE outreach_campaigns
-                SET status = 'completed', email_4_sent_at = NOW()
+                SET status = 'completed', email_4_sent_at = NOW(),
+                    email_4_resend_id = ${mid4 || null}
                 WHERE id = ${c.id}
             `;
             emailsSent++;

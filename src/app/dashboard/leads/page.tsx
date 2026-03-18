@@ -4,7 +4,7 @@ import { OutreachCampaign, ContactNote } from '@/lib/types';
 import {
     Mail, Clock, CheckCircle2, RefreshCw, Send, Building2,
     Phone, MessageSquare, StickyNote, Trash2, ChevronDown, ChevronUp,
-    KanbanSquare, ListFilter, Tag
+    KanbanSquare, ListFilter, Tag, Eye, MousePointerClick
 } from 'lucide-react';
 
 // ── Pipeline Stages ────────────────────────────────────────────────────────
@@ -197,11 +197,23 @@ function KanbanBoard({ campaigns, onStageChange }: {
                                     <span className="text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-0.5 rounded">
                                         {statusLabel(c.status)}
                                     </span>
-                                    {c.ab_variant && (
-                                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${c.ab_variant === 'A' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'}`}>
-                                            {c.ab_variant}
-                                        </span>
-                                    )}
+                                    <div className="flex items-center gap-1">
+                                        {c.opens > 0 && (
+                                            <span className="flex items-center gap-0.5 text-[10px] font-medium text-amber-500">
+                                                <Eye size={9} /> {c.opens}
+                                            </span>
+                                        )}
+                                        {c.clicks > 0 && (
+                                            <span className="flex items-center gap-0.5 text-[10px] font-medium text-green-500">
+                                                <MousePointerClick size={9} /> {c.clicks}
+                                            </span>
+                                        )}
+                                        {c.ab_variant && (
+                                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${c.ab_variant === 'A' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'}`}>
+                                                {c.ab_variant}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -270,9 +282,11 @@ export default function CRMPage() {
 
     // Metrics
     const metrics = [
-        { label: 'Pending Verification', value: campaigns.filter(c => c.status === 'pending').length, icon: Clock, accent: '' },
+        { label: 'Pending', value: campaigns.filter(c => c.status === 'pending').length, icon: Clock, accent: '' },
         { label: 'Active Sequences', value: campaigns.filter(c => ['email_1_sent', 'email_2_sent', 'email_3_sent'].includes(c.status)).length, icon: Mail, accent: 'border-b-4 border-b-primary-500' },
-        { label: 'Profiles Claimed', value: campaigns.filter(c => c.claimed).length, icon: CheckCircle2, accent: 'border-b-4 border-b-emerald-500' },
+        { label: 'Opened Email', value: campaigns.filter(c => c.opens > 0).length, icon: Eye, accent: 'border-b-4 border-b-amber-500' },
+        { label: 'Clicked Link', value: campaigns.filter(c => c.clicks > 0).length, icon: MousePointerClick, accent: 'border-b-4 border-b-green-500' },
+        { label: 'Claimed', value: campaigns.filter(c => c.claimed).length, icon: CheckCircle2, accent: 'border-b-4 border-b-emerald-500' },
         { label: 'Sequence Done', value: campaigns.filter(c => c.status === 'completed').length, icon: CheckCircle2, accent: '' },
     ];
 
@@ -331,7 +345,7 @@ export default function CRMPage() {
             </div>
 
             {/* Metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {metrics.map(m => (
                     <div key={m.label} className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm ${m.accent}`}>
                         <div className="flex items-center text-slate-500 mb-2 font-medium text-sm gap-2">
@@ -412,6 +426,20 @@ export default function CRMPage() {
                                         {camp.ab_variant && (
                                             <span className={`text-[10px] font-bold px-2 py-1 rounded flex-shrink-0 ${camp.ab_variant === 'A' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'}`}>
                                                 Variant {camp.ab_variant}
+                                            </span>
+                                        )}
+
+                                        {/* Opens */}
+                                        {(camp.opens > 0) && (
+                                            <span className="hidden sm:flex items-center gap-1 text-[10px] font-medium bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 px-2 py-1 rounded flex-shrink-0">
+                                                <Eye size={10} /> {camp.opens}
+                                            </span>
+                                        )}
+
+                                        {/* Clicks */}
+                                        {(camp.clicks > 0) && (
+                                            <span className="hidden sm:flex items-center gap-1 text-[10px] font-medium bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 px-2 py-1 rounded flex-shrink-0">
+                                                <MousePointerClick size={10} /> {camp.clicks}
                                             </span>
                                         )}
 

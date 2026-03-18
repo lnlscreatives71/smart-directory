@@ -6,9 +6,10 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
     try {
         const campaigns = await sql`
-            SELECT 
+            SELECT
                 c.id, c.listing_id, c.status, c.pipeline_stage, c.ab_variant,
                 c.email_1_sent_at, c.email_2_sent_at, c.email_3_sent_at, c.email_4_sent_at,
+                c.opens, c.clicks, c.last_opened_at, c.last_clicked_at,
                 c.created_at, c.updated_at,
                 l.name AS listing_name,
                 l.contact_email AS listing_email,
