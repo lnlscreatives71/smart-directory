@@ -406,3 +406,64 @@ export function welcomeEmail(businessName: string, contactName: string | null, s
         <p style="color:#64748b;font-size:13px;">Questions? Reply to this email and we'll help you out.</p>
     `);
 }
+
+// ─── Admin: New Business Request Notification ─────────────────────────────────
+export function adminNewBusinessNotification(businessName: string, contactName: string, contactEmail: string, requestId: number): string {
+    const reviewUrl = `${SITE_URL}/dashboard/claims?tab=new-requests`;
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">📋 New Business Request</h1>
+        <p style="color:#94a3b8;font-size:15px;margin:0 0 24px;">A new business has been submitted for review on ${SITE_NAME}.</p>
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:0 0 24px;border-left:4px solid #6366f1;">
+            <p style="margin:0 0 8px;color:#a5b4fc;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Business Submitted</p>
+            <p style="margin:0 0 16px;color:#fff;font-size:18px;font-weight:700;">${businessName}</p>
+            <p style="margin:0 0 4px;color:#94a3b8;font-size:13px;"><strong style="color:#cbd5e1;">Contact:</strong> ${contactName}</p>
+            <p style="margin:0 0 4px;color:#94a3b8;font-size:13px;"><strong style="color:#cbd5e1;">Email:</strong> ${contactEmail}</p>
+            <p style="margin:0;color:#94a3b8;font-size:13px;"><strong style="color:#cbd5e1;">Request ID:</strong> #${requestId}</p>
+        </div>
+        ${ctaButton('Review in Dashboard →', reviewUrl)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">Go to Dashboard → Business → New Business Requests to approve or reject.</p>
+    `);
+}
+
+// ─── SMB: New Business Approved ───────────────────────────────────────────────
+export function newBusinessApproved(businessName: string, contactName: string, slug: string, loginUrl: string): string {
+    const profileUrl = `${SITE_URL}/biz/${slug}`;
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">🎉 Your business is now live!</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">Hi ${contactName},</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Great news — <strong style="color:#fff;">${businessName}</strong> has been approved and is now listed on
+            <strong style="color:#6366f1;">${SITE_NAME}</strong>. Local customers can already find you.
+        </p>
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid #10b981;">
+            <p style="margin:0 0 4px;color:#6ee7b7;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">✅ Your listing is live at</p>
+            <a href="${profileUrl}" style="color:#6366f1;font-size:16px;font-weight:700;text-decoration:none;">${profileUrl}</a>
+        </div>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">Log in to your dashboard to update photos, add your hours, edit your description, and more.</p>
+        ${ctaButton('Go to My Dashboard →', loginUrl)}
+        <div style="background:#1e3a5f;border-radius:12px;padding:16px 20px;margin:24px 0;">
+            <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;">⭐ Want more visibility?</p>
+            <p style="margin:0 0 12px;color:#cbd5e1;font-size:13px;">Upgrade to Premium for priority placement, AI chat, online booking, and 4x more leads.</p>
+            <a href="${UPGRADE_URL}" style="display:inline-block;padding:10px 24px;background:#6366f1;color:#fff;font-weight:600;font-size:13px;text-decoration:none;border-radius:8px;">Explore Premium</a>
+        </div>
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">Questions? Reply to this email and we'll help you out.</p>
+    `);
+}
+
+// ─── SMB: New Business Rejected ───────────────────────────────────────────────
+export function newBusinessRejected(businessName: string, contactName: string): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Update on your submission</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">Hi ${contactName},</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Thank you for submitting <strong style="color:#fff;">${businessName}</strong> to ${SITE_NAME}.
+            After review, we were unable to approve this listing at this time.
+        </p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            If you believe this is an error or would like more information, please reply to this email and we'll be happy to help.
+        </p>
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">Reply to this email if you have questions.</p>
+    `);
+}
