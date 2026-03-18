@@ -27,13 +27,14 @@ interface ImportResult {
 }
 
 const REQUIRED_COLUMNS = ['name'];
-const OPTIONAL_COLUMNS = ['category', 'description', 'location_city', 'location_state', 'contact_name', 'contact_email', 'phone', 'website', 'rating'];
+const OPTIONAL_COLUMNS = ['category', 'description', 'street_address', 'location_city', 'location_state', 'contact_name', 'contact_email', 'phone', 'website', 'rating'];
 const ALL_COLUMNS = [...REQUIRED_COLUMNS, ...OPTIONAL_COLUMNS];
 
 const COLUMN_LABELS: Record<string, string> = {
     name: 'Business Name',
     category: 'Category',
     description: 'Description',
+    street_address: 'Street Address',
     location_city: 'City',
     location_state: 'State',
     contact_name: 'Contact Name',
@@ -115,6 +116,7 @@ export default function ImportPage() {
                     name:          ['CONTACT NAME', 'contact name', 'company', 'company name', 'business name', 'Business Name', 'Name'],
                     category:      ['Industry', 'industry', 'Category', 'type', 'Type', 'niche'],
                     description:   ['Notes', 'notes', 'Description', 'About', 'about', 'Bio', 'bio'],
+                    street_address: ['Street Address', 'street address', 'Address', 'address', 'Street', 'street'],
                     location_city: ['City', 'city', 'Town', 'town'],
                     location_state:['State', 'state', 'Province', 'province'],
                     contact_name:  ['BUSINESS NAME', 'Owner', 'owner', 'Owner Name', 'owner name', 'Contact', 'First Name', 'Full Name'],
