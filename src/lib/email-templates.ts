@@ -654,15 +654,15 @@ export function saasPush_email2(businessName: string, contactName: string | null
         </p>
         <div style="background:#7f1d1d30;border:1px solid #ef444460;border-radius:10px;padding:16px 20px;margin:20px 0;">
             <p style="margin:0;color:#fca5a5;font-size:14px;">
-                ⚠️ <strong>The cost of slow response:</strong> Missing just 5 leads/month at $200 average job value = $12,000/year lost.
+                ⚠️ <strong>The cost of slow response:</strong> Every unanswered inquiry after hours is a potential job that goes to a competitor who responded faster.
             </p>
         </div>
         <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
             Our AI responds instantly, 24/7. We set it up. You just show up for the jobs.
         </p>
-        ${ctaButton('Stop Losing Leads — Book a Call →', STRATEGY_CALL_URL)}
+        ${ctaButton('See How It Works — Book a Call →', STRATEGY_CALL_URL)}
         <p style="margin-top:16px;color:#64748b;font-size:13px;">Free 20-min strategy call. No commitment.</p>
-    `, 'Missing just 5 leads/month at $200 avg = $12,000/year lost. Here\'s how to stop it.');
+    `, 'Every unanswered after-hours inquiry is a job that goes to whoever responded first.');
 }
 
 export function saasPush_email3(businessName: string, contactName: string | null): string {
@@ -673,12 +673,12 @@ export function saasPush_email3(businessName: string, contactName: string | null
             Local service businesses in the Triangle are quietly getting a big edge on their competition — and most competitors have no idea.
         </p>
         <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;border-left:4px solid #10b981;">
-            <p style="margin:0 0 4px;color:#6ee7b7;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">What our clients are seeing</p>
+            <p style="margin:0 0 4px;color:#6ee7b7;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">What businesses are using it for</p>
             <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:8px 0 0;">
-                <li>2-3x more booked appointments within 60 days</li>
-                <li>Zero missed leads — AI handles after-hours inquiries</li>
-                <li>Google rankings climbing without managing it themselves</li>
-                <li>More 5-star reviews from an automated follow-up system</li>
+                <li>Responding to after-hours inquiries automatically</li>
+                <li>Booking appointments without picking up the phone</li>
+                <li>Following up with customers without lifting a finger</li>
+                <li>Reclaiming hours every week spent on repetitive tasks</li>
             </ul>
         </div>
         <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
@@ -700,9 +700,9 @@ export function saasPush_email4(businessName: string, contactName: string | null
         <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid #6366f1;">
             <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;">🎁 Free Strategy Session Includes:</p>
             <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:8px 0 0;">
-                <li>A custom audit of your current lead flow</li>
-                <li>A live demo of your AI assistant built for your business</li>
-                <li>A roadmap showing exactly how we'd grow your revenue</li>
+                <li>A look at where you're spending the most time in your business</li>
+                <li>A live demo of what AI automation would look like for your business</li>
+                <li>A clear picture of what you could hand off — and reclaim every week</li>
             </ul>
             <p style="margin:12px 0 0;color:#64748b;font-size:13px;">No charge. No pitch. Just real strategy.</p>
         </div>
