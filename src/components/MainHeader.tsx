@@ -45,7 +45,7 @@ export default function MainHeader({ phone, phoneRaw }: Props) {
                         <UserCircle size={18} />
                         Login
                     </Link>
-                    <Link href="/pricing" className="btn-primary flex items-center gap-1.5 px-5 py-2.5 text-sm whitespace-nowrap">
+                    <Link href="/list-your-business" className="btn-primary flex items-center gap-1.5 px-5 py-2.5 text-sm whitespace-nowrap">
                         Add Business <ArrowUpRight size={16} />
                     </Link>
                 </div>

@@ -135,7 +135,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <ul className="space-y-2 text-sm text-slate-300">
                   <li><Link href="/category/dining" className="hover:text-white transition">Dining</Link></li>
                   <li><Link href="/category/services" className="hover:text-white transition">Services</Link></li>
-                  <li><Link href="/pricing" className="hover:text-white transition">List Your Business</Link></li>
+                  <li><Link href="/list-your-business" className="hover:text-white transition">List Your Business</Link></li>
                   <li><Link href="/login" className="hover:text-white transition">Admin Login</Link></li>
                 </ul>
               </div>

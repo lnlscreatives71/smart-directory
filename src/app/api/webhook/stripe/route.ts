@@ -49,8 +49,9 @@ export async function POST(req: Request) {
                 };
 
                 await sql`
-                    UPDATE listings 
-                    SET plan_id = ${targetPlanId}, feature_flags = ${JSON.stringify(premiumFlags)}
+                    UPDATE listings
+                    SET plan_id = ${targetPlanId}, feature_flags = ${JSON.stringify(premiumFlags)},
+                        claim_status = 'approved', claimed = TRUE, claimed_at = NOW()
                     WHERE id = ${Number(listingId)}
                 `;
                 console.log(`Listing ${listingId} successfully upgraded in database via Webhook.`);

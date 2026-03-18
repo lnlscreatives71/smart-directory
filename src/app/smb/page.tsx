@@ -66,8 +66,8 @@ export default function SmbDashboardPage() {
         );
     }
 
-    // Pending approval — show holding screen
-    if ((listing as any).claim_status === 'pending') {
+    // Pending approval — show holding screen (bypass if already premium/paid)
+    if ((listing as any).claim_status === 'pending' && !isPremium) {
         return (
             <div className="max-w-lg mx-auto text-center py-16">
                 <div className="w-20 h-20 bg-amber-100 dark:bg-amber-900/30 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6">
