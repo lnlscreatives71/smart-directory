@@ -110,10 +110,29 @@ export default function ImportPage() {
                 const headers = Object.keys(parsed[0]);
                 setCsvHeaders(headers);
                 setRawRows(parsed as Record<string, string>[]);
-                // Auto-map where header exactly matches a field
+                // Auto-map: exact match + common aliases (incl. GHL export format)
+                const ALIASES: Record<string, string[]> = {
+                    name:          ['CONTACT NAME', 'contact name', 'company', 'company name', 'business name', 'Business Name', 'Name'],
+                    category:      ['Industry', 'industry', 'Category', 'type', 'Type', 'niche'],
+                    description:   ['Notes', 'notes', 'Description', 'About', 'about', 'Bio', 'bio'],
+                    location_city: ['City', 'city', 'Town', 'town'],
+                    location_state:['State', 'state', 'Province', 'province'],
+                    contact_name:  ['BUSINESS NAME', 'Owner', 'owner', 'Owner Name', 'owner name', 'Contact', 'First Name', 'Full Name'],
+                    contact_email: ['Email', 'email', 'Email Address', 'email address'],
+                    phone:         ['Phone', 'phone', 'Phone Number', 'phone number', 'Mobile', 'mobile'],
+                    website:       ['Website URL', 'website url', 'Website', 'website', 'URL', 'url', 'Site'],
+                    rating:        ['Rating', 'rating', 'Score', 'score', 'Stars'],
+                };
+                const headerLower = headers.map(h => h.toLowerCase());
                 const autoMap: Record<string, string> = {};
                 ALL_COLUMNS.forEach(field => {
-                    if (headers.includes(field)) autoMap[field] = field;
+                    // Exact match first
+                    if (headers.includes(field)) { autoMap[field] = field; return; }
+                    // Alias match (case-insensitive)
+                    const aliases = ALIASES[field] ?? [];
+                    const match = aliases.find(a => headers.includes(a))
+                        ?? headers.find(h => aliases.map(a => a.toLowerCase()).includes(h.toLowerCase()));
+                    if (match) autoMap[field] = match;
                 });
                 setMapping(autoMap);
                 setStep('mapping');
