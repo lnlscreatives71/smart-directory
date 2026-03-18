@@ -32,10 +32,17 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
+    const isSecure = request.nextUrl.protocol === 'https:';
+    const tokenOptions = {
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-local-dev-only",
+        secureCookie: isSecure,
+    };
+
     // Dashboard auth protection (admin)
     const isDashboard = pathname.startsWith('/dashboard');
     if (isDashboard) {
-        const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+        const token = await getToken(tokenOptions);
         if (!token) {
             const url = new URL("/login", request.url);
             url.searchParams.set("callbackUrl", encodeURI(request.url));
@@ -48,7 +55,7 @@ export async function middleware(request: NextRequest) {
         !pathname.startsWith('/smb/login') &&
         !pathname.startsWith('/smb/auth-callback');
     if (isSmbPortal) {
-        const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+        const token = await getToken(tokenOptions);
         if (!token) {
             return NextResponse.redirect(new URL('/smb/login', request.url));
         }
