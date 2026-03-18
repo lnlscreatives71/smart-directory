@@ -33,6 +33,7 @@ export interface Listing {
     location_city: string;
     location_state: string;
     location_region: string;
+    recommended_services?: string;
     street_address?: string;
     zip_code?: string;
     lat: number;

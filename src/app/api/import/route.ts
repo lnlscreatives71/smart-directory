@@ -7,6 +7,7 @@ interface BusinessRow {
     name: string;
     category: string;
     description?: string;
+    recommended_services?: string;
     street_address?: string;
     zip_code?: string;
     location_city?: string;
@@ -158,7 +159,7 @@ export async function POST(request: Request) {
 
                 const inserted = await sql`
                     INSERT INTO listings (
-                        name, slug, category, description,
+                        name, slug, category, description, recommended_services,
                         street_address, zip_code, location_city, location_state, location_region,
                         lat, lng, services, rating, featured, claimed,
                         plan_id, feature_flags, contact_email,
@@ -168,6 +169,7 @@ export async function POST(request: Request) {
                         ${slug},
                         ${row.category || 'Other'},
                         ${row.description || `${row.name} is a trusted local business serving the Triangle area.`},
+                        ${row.recommended_services || null},
                         ${row.street_address || null},
                         ${row.zip_code || null},
                         ${row.location_city || 'Raleigh'},
