@@ -113,8 +113,7 @@ export default function LNLFooter() {
                 {/* Social Proof */}
                 <div className="mt-6 text-center">
                     <p className="text-xs text-slate-500">
-                        Trusted by businesses generating <strong className="text-slate-400">$8M+ in verified revenue</strong> -
-                        <strong className="text-slate-400"> 94% client retention</strong>
+                        <strong className="text-slate-400">94% client retention</strong> · AI marketing &amp; automation for local service businesses
                     </p>
                 </div>
             </div>
