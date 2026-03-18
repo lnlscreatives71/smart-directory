@@ -10,9 +10,24 @@ interface Props {
     phoneRaw: string;
 }
 
+const HIDDEN_ROUTES = ['/smb', '/dashboard'];
+
+function isHiddenRoute(pathname: string) {
+    return HIDDEN_ROUTES.some(r => pathname.startsWith(r));
+}
+
+export function MainBody({ children }: { children: React.ReactNode }) {
+    const pathname = usePathname();
+    return (
+        <main className={`flex-1 ${isHiddenRoute(pathname) ? '' : 'pt-16'}`}>
+            {children}
+        </main>
+    );
+}
+
 export default function MainHeader({ phone, phoneRaw }: Props) {
     const pathname = usePathname();
-    if (pathname.startsWith('/smb')) return null;
+    if (isHiddenRoute(pathname)) return null;
 
     return (
         <header className="fixed top-0 z-50 w-full glass-nav">

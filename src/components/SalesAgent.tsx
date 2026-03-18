@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { Bot, X, Send, TrendingUp, Calendar, DollarSign, MessageSquare, Zap, ChevronRight, Phone } from 'lucide-react';
 
 interface Message {
@@ -22,6 +23,7 @@ interface LeadData {
 }
 
 export default function SalesAgent() {
+    const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
@@ -363,6 +365,8 @@ export default function SalesAgent() {
             processStep('greeting');
         }
     };
+
+    if (pathname.startsWith('/dashboard') || pathname.startsWith('/smb') || pathname === '/login') return null;
 
     return (
         <>

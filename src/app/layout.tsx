@@ -12,7 +12,7 @@ import ChatwootWidget from '@/components/ChatwootWidget';
 import SalesAgent from '@/components/SalesAgent';
 import LNLFooter from '@/components/LNLFooter';
 import DynamicMenu from '@/components/DynamicMenu';
-import MainHeader from '@/components/MainHeader';
+import MainHeader, { MainBody } from '@/components/MainHeader';
 
 export const dynamic = 'force-dynamic';
 
@@ -107,9 +107,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <MainHeader phone={settings.contact.phone} phoneRaw={settings.contact.phoneRaw} />
 
           {/* ── BODY ─────────────────────────────────────── */}
-          <main className="flex-1 pt-16">
+          <MainBody>
             {children}
-          </main>
+          </MainBody>
 
           {/* ── FOOTER ───────────────────────────────────── */}
           <footer className="glass-nav relative z-10">
@@ -149,24 +149,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </footer>
           
-          {/* LNL AI Agency Upsell Footer - Temporarily disabled */}
-          {/* <LNLFooter /> */}
+          {/* AI Sales Agent */}
+          <SalesAgent />
+          {/* LNL AI Agency Upsell Footer */}
+          <LNLFooter />
         </div>
       </Providers>
       <Analytics />
       <SpeedInsights />
-      
-      {/* Chatwoot Customer Support Widget */}
       <ChatwootWidget config={{
         websiteToken: process.env.NEXT_PUBLIC_CHATWOOT_TOKEN || '',
         baseUrl: process.env.NEXT_PUBLIC_CHATWOOT_URL || 'https://app.chatwoot.com'
       }} />
-      
-      {/* AI Sales Agent - Revenue Generating Funnel */}
-      <SalesAgent />
-      
-      {/* LNL AI Agency Upsell Footer */}
-      <LNLFooter />
       </body>
     </html>
   );

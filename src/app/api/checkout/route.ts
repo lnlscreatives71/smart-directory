@@ -34,7 +34,8 @@ export async function POST(request: Request) {
             }, { status: 500 });
         }
 
-        const amount = plan === 'premium' ? (billing === 'monthly' ? 2900 : 29900) : 0;
+        const amount = plan === 'premium' ? (billing === 'yearly' ? 29900 : 2900) : 0;
+        const interval = billing === 'yearly' ? 'year' : 'month';
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -43,20 +44,21 @@ export async function POST(request: Request) {
                     price_data: {
                         currency: 'usd',
                         product_data: {
-                            name: `Smart Directory ${plan.toUpperCase()} Plan (${billing})`,
+                            name: `Premium Directory Listing`,
                         },
                         unit_amount: amount,
+                        recurring: { interval },
                     },
                     quantity: 1,
                 },
             ],
-            mode: 'payment',
+            mode: 'subscription',
             metadata: {
                 listing_id: listing_id || 'unknown_or_new',
                 plan_tier: plan
             },
-            success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/dashboard/listings?checkout=success`,
-            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/pricing?checkout=cancel`,
+            success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/smb?upgraded=true`,
+            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/smb`,
         });
 
         return NextResponse.json({ url: session.url });
