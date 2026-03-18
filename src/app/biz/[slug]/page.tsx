@@ -20,7 +20,7 @@ export default async function BusinessDetail({
     let jobs: Job[] = [];
     
     try {
-        listings = (await sql`SELECT * FROM listings WHERE slug = ${slug} LIMIT 1`) as Listing[];
+        listings = (await sql`SELECT * FROM listings WHERE slug = ${slug} AND active = TRUE LIMIT 1`) as Listing[];
         if (listings.length > 0) {
             const bizId = listings[0].id;
             events = (await sql`SELECT * FROM events WHERE listing_id = ${bizId} ORDER BY date DESC LIMIT 4`) as Event[];

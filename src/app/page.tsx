@@ -18,17 +18,19 @@ export default async function Home({
     if (query) {
       const q = `%${query}%`;
       listings = (await sql`
-        SELECT * FROM listings 
-        WHERE name ILIKE ${q} OR category ILIKE ${q} OR location_city ILIKE ${q} OR description ILIKE ${q}
+        SELECT * FROM listings
+        WHERE active = TRUE
+          AND (name ILIKE ${q} OR category ILIKE ${q} OR location_city ILIKE ${q} OR description ILIKE ${q})
         ORDER BY CASE WHEN feature_flags->>'priority_ranking' = 'true' THEN 1 ELSE 0 END DESC,
-                 CASE WHEN featured = true THEN 1 ELSE 0 END DESC, rating DESC 
+                 CASE WHEN featured = true THEN 1 ELSE 0 END DESC, rating DESC
         LIMIT 12
       `) as Listing[];
     } else {
       listings = (await sql`
-        SELECT * FROM listings 
+        SELECT * FROM listings
+        WHERE active = TRUE
         ORDER BY CASE WHEN feature_flags->>'priority_ranking' = 'true' THEN 1 ELSE 0 END DESC,
-                 CASE WHEN featured = true THEN 1 ELSE 0 END DESC, rating DESC 
+                 CASE WHEN featured = true THEN 1 ELSE 0 END DESC, rating DESC
         LIMIT 12
       `) as Listing[];
     }

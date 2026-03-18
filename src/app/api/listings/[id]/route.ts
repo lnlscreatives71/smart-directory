@@ -110,7 +110,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         const body = await request.json();
 
         if ('active' in body) {
-            await sql`UPDATE listings SET featured = ${body.active}, updated_at = NOW() WHERE id = ${id}`;
+            await sql`UPDATE listings SET active = ${body.active}, updated_at = NOW() WHERE id = ${id}`;
+        }
+        if ('featured' in body) {
+            await sql`UPDATE listings SET featured = ${body.featured}, updated_at = NOW() WHERE id = ${id}`;
         }
         if ('claimed' in body) {
             await sql`UPDATE listings SET claimed = ${body.claimed}, updated_at = NOW() WHERE id = ${id}`;

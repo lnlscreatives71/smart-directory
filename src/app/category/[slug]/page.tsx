@@ -17,7 +17,7 @@ export default async function CategoryPage({
     const titleCaseCategory = categoryStr.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     
     // Build query with filters
-    let query = sql`SELECT * FROM listings WHERE category ILIKE ${`%${categoryStr}%`}`;
+    let query = sql`SELECT * FROM listings WHERE active = TRUE AND category ILIKE ${`%${categoryStr}%`}`;
     
     if (searchParams.city) {
         query = sql`${query} AND location_city = ${searchParams.city}`;

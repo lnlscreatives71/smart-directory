@@ -11,7 +11,7 @@ interface Listing {
     location_city: string; location_state: string;
     contact_email?: string; phone?: string;
     plan_name?: string; plan_price?: number;
-    featured: boolean; claimed: boolean;
+    active: boolean; featured: boolean; claimed: boolean;
     created_at: string;
 }
 
@@ -68,11 +68,12 @@ export default function BusinessesPage() {
     }, [q, fetchListings]);
 
     const toggleActive = async (l: Listing) => {
+        const newVal = !l.active;
+        setListings(prev => prev.map(x => x.id === l.id ? { ...x, active: newVal } : x));
         await fetch(`/api/listings/${l.id}`, {
             method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ active: !l.featured }),
+            body: JSON.stringify({ active: newVal }),
         });
-        setListings(prev => prev.map(x => x.id === l.id ? { ...x, featured: !x.featured } : x));
     };
 
     const deleteListing = async (l: Listing) => {
@@ -249,8 +250,8 @@ export default function BusinessesPage() {
                                     </td>
                                     {/* Status */}
                                     <td className="px-6 py-4">
-                                        <span className={`text-xs font-semibold ${l.featured ? 'text-secondary-600' : 'text-gray-400'}`}>
-                                            {l.featured ? 'active' : 'inactive'}
+                                        <span className={`text-xs font-semibold ${l.active ? 'text-secondary-600' : 'text-gray-400'}`}>
+                                            {l.active ? 'published' : 'unpublished'}
                                         </span>
                                     </td>
                                     {/* Reason */}
@@ -276,7 +277,7 @@ export default function BusinessesPage() {
                                     {/* Active toggle */}
                                     <td className="px-6 py-4 text-center">
                                         <div className="flex justify-center">
-                                            <Toggle checked={l.featured} onChange={() => toggleActive(l)} />
+                                            <Toggle checked={l.active} onChange={() => toggleActive(l)} />
                                         </div>
                                     </td>
                                     {/* Actions */}
