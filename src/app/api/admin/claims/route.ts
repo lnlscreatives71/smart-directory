@@ -79,6 +79,15 @@ export async function POST(req: NextRequest) {
             });
         }
 
+        // Enqueue Premium Upgrade Push
+        if (emailTo) {
+            await sql`
+                INSERT INTO premium_upgrade_campaigns (listing_id, contact_email, contact_name)
+                VALUES (${listingId}, ${emailTo}, ${listing.claimant_name || listing.contact_email})
+                ON CONFLICT DO NOTHING
+            `;
+        }
+
         return NextResponse.json({ success: true, message: 'Claim approved' });
     }
 

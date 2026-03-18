@@ -488,3 +488,330 @@ export function newBusinessRejected(businessName: string, contactName: string): 
         <p style="color:#64748b;font-size:13px;">Reply to this email if you have questions.</p>
     `);
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ─── PREMIUM UPGRADE PUSH (4 emails, +2 days cadence) ──────────────────────
+// Triggered: claim approved or new business approved
+// ═══════════════════════════════════════════════════════════════════════════
+
+const STRATEGY_CALL_URL = 'https://www.lnlaiagency.com/contact';
+
+export function premiumUpgrade_email1(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Your listing is live — here's how to get more leads 🚀</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            <strong style="color:#fff;">${businessName}</strong> is now live on ${SITE_NAME} and local customers can find you.
+            But here's the thing — free listings get buried. <strong style="color:#6366f1;">Premium listings get seen first.</strong>
+        </p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">For just <strong style="color:#6366f1;">$29/month</strong>, Premium unlocks:</p>
+        <table cellpadding="0" cellspacing="0" style="margin:16px 0;width:100%;">
+            ${[
+                ['🔝', 'Priority placement', 'Appear above free listings in every search'],
+                ['⭐', 'Featured badge', 'Stand out on homepage and category pages'],
+                ['🤖', 'AI Chat widget', 'Capture leads and answer questions 24/7'],
+                ['📅', 'Online booking', 'Let customers book directly from your profile'],
+            ].map(([icon, title, desc]) => `
+            <tr>
+                <td style="padding:10px 12px;background:#0f172a;border-radius:8px;vertical-align:top;width:36px;font-size:20px;">${icon}</td>
+                <td style="width:8px;"></td>
+                <td style="padding:10px 0;vertical-align:top;">
+                    <strong style="color:#fff;font-size:14px;display:block;">${title}</strong>
+                    <span style="color:#94a3b8;font-size:13px;">${desc}</span>
+                </td>
+            </tr>
+            <tr><td colspan="3" style="height:8px;"></td></tr>`).join('')}
+        </table>
+        ${ctaButton('Upgrade to Premium — $29/mo →', UPGRADE_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">Cancel anytime. No contracts.</p>
+    `);
+}
+
+export function premiumUpgrade_email2(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Why Premium listings get more attention 📈</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Here's something eye-opening about how visitors interact with listings on ${SITE_NAME}.
+        </p>
+        <div style="background:#0f172a;border-radius:12px;padding:24px;margin:20px 0;text-align:center;">
+            <p style="margin:0 0 16px;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:0.1em;">Premium vs. Free</p>
+            <table cellpadding="0" cellspacing="0" style="width:100%;">
+                <tr>
+                    <td style="text-align:center;padding:0 8px;">
+                        <p style="margin:0;color:#6366f1;font-size:36px;font-weight:800;">4x</p>
+                        <p style="margin:4px 0 0;color:#94a3b8;font-size:13px;">more profile clicks</p>
+                    </td>
+                    <td style="text-align:center;padding:0 8px;">
+                        <p style="margin:0;color:#10b981;font-size:36px;font-weight:800;">3x</p>
+                        <p style="margin:4px 0 0;color:#94a3b8;font-size:13px;">more leads captured</p>
+                    </td>
+                    <td style="text-align:center;padding:0 8px;">
+                        <p style="margin:0;color:#f59e0b;font-size:36px;font-weight:800;">#1</p>
+                        <p style="margin:4px 0 0;color:#94a3b8;font-size:13px;">search position</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Right now, <strong style="color:#fff;">${businessName}</strong> is competing against Premium businesses
+            ranked above you. For less than a dollar a day, you can level the playing field — or get ahead.
+        </p>
+        ${ctaButton('Get Premium Placement — $29/mo →', UPGRADE_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">Cancel anytime. Takes 2 minutes to set up.</p>
+    `);
+}
+
+export function premiumUpgrade_email3(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">More visibility. More control. 🎛️</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Quick question — when a potential customer finds <strong style="color:#fff;">${businessName}</strong> online,
+            what do they see? With Premium, you control every detail of that first impression.
+        </p>
+        <div style="margin:20px 0;">
+            ${[
+                ['📷', 'Photo gallery', "Showcase your work with multiple photos"],
+                ['📅', 'Live booking calendar', "Turn profile views into booked appointments automatically"],
+                ['🤖', 'AI Chat widget', "24/7 lead capture — answers questions even when you're closed"],
+                ['📰', 'News & promotions', "Post special offers and announcements on your profile"],
+                ['🔝', 'Priority ranking', "Always appear above free listings in local searches"],
+            ].map(([icon, title, desc]) => `
+            <div style="padding:12px 0;border-bottom:1px solid #1e293b;">
+                <span style="font-size:18px;">${icon}</span>
+                <strong style="color:#fff;font-size:14px;margin-left:10px;">${title}</strong>
+                <p style="margin:4px 0 0 28px;color:#94a3b8;font-size:13px;">${desc}</p>
+            </div>`).join('')}
+        </div>
+        ${ctaButton('Unlock All Premium Features →', UPGRADE_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">$29/month · Cancel anytime · No long-term contract</p>
+    `);
+}
+
+export function premiumUpgrade_email4(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Want to do more with your listing? 🤝</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            We've been rooting for <strong style="color:#fff;">${businessName}</strong> since you joined ${SITE_NAME}.
+            We want to make sure you're getting real value — whether that's a Premium listing or something bigger.
+        </p>
+        <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;">
+            <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;">💡 Two ways we can help:</p>
+            <p style="margin:0 0 10px;color:#cbd5e1;font-size:14px;"><strong style="color:#fff;">Option 1 — Premium listing ($29/mo):</strong> Priority ranking, AI Chat, booking calendar, and 4x more leads from the directory.</p>
+            <p style="margin:0;color:#cbd5e1;font-size:14px;"><strong style="color:#fff;">Option 2 — Done-for-you marketing:</strong> Let our team handle your SEO, ads, and AI automation so you can focus on running your business.</p>
+        </div>
+        ${ctaButton('Upgrade to Premium →', UPGRADE_URL)}
+        <p style="margin:16px 0 0;text-align:center;">
+            <a href="${STRATEGY_CALL_URL}" style="color:#94a3b8;font-size:14px;text-decoration:underline;">Or book a free strategy call →</a>
+        </p>
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">Reply to this email anytime — happy to help figure out what's right for your business.</p>
+    `);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ─── SAAS PUSH (4 emails, +2 days cadence) ─────────────────────────────────
+// Triggered: after premium conversion (listing upgraded to premium)
+// ═══════════════════════════════════════════════════════════════════════════
+
+export function saasPush_email1(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">What if your business could run itself? 🤖</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Congrats on going Premium — your listing is already working harder for you. But there's a level beyond that.
+        </p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Imagine <strong style="color:#fff;">${businessName}</strong> with a system that automatically:
+        </p>
+        <ul style="color:#cbd5e1;font-size:15px;line-height:2.2;padding-left:20px;margin:0 0 24px;">
+            <li>🤖 Answers leads instantly — even at 2am</li>
+            <li>📅 Books appointments without you lifting a finger</li>
+            <li>🔄 Follows up with prospects who didn't convert</li>
+            <li>📊 Reports on what's working every week</li>
+        </ul>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            That's exactly what we build for local businesses at <strong style="color:#6366f1;">LNL AI Agency</strong>.
+            AI-powered marketing and automation — done for you, not by you.
+        </p>
+        ${ctaButton('See How It Works →', STRATEGY_CALL_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">No pressure — just a 20-minute conversation about your goals.</p>
+    `);
+}
+
+export function saasPush_email2(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">How many leads are you actually losing? 📉</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Here's a stat that surprises most local business owners: <strong style="color:#fff;">78% of customers go with the first business that responds to their inquiry.</strong>
+        </p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            If someone finds <strong style="color:#fff;">${businessName}</strong> at 9pm on a Tuesday and you don't respond until Wednesday morning — chances are they've already booked someone else.
+        </p>
+        <div style="background:#7f1d1d30;border:1px solid #ef444460;border-radius:10px;padding:16px 20px;margin:20px 0;">
+            <p style="margin:0;color:#fca5a5;font-size:14px;">
+                ⚠️ <strong>The cost of slow response:</strong> Missing just 5 leads/month at $200 average job value = $12,000/year lost.
+            </p>
+        </div>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Our AI responds instantly, 24/7. We set it up. You just show up for the jobs.
+        </p>
+        ${ctaButton('Stop Losing Leads — Book a Call →', STRATEGY_CALL_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">Free 20-min strategy call. No commitment.</p>
+    `);
+}
+
+export function saasPush_email3(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Why more local businesses are using this 👥</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Local service businesses in the Triangle are quietly getting a big edge on their competition — and most competitors have no idea.
+        </p>
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;border-left:4px solid #10b981;">
+            <p style="margin:0 0 4px;color:#6ee7b7;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">What our clients are seeing</p>
+            <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:8px 0 0;">
+                <li>2-3x more booked appointments within 60 days</li>
+                <li>Zero missed leads — AI handles after-hours inquiries</li>
+                <li>Google rankings climbing without managing it themselves</li>
+                <li>More 5-star reviews from an automated follow-up system</li>
+            </ul>
+        </div>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            For <strong style="color:#fff;">${businessName}</strong>, a system like this could run quietly in the background
+            while you focus on the work you're actually good at.
+        </p>
+        ${ctaButton("See If It's a Fit for Your Business →", STRATEGY_CALL_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">20 minutes. We'll show you exactly what it would look like for your business.</p>
+    `);
+}
+
+export function saasPush_email4(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Want to test it out for free? 🎁</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            The best way to see if AI automation is right for <strong style="color:#fff;">${businessName}</strong> is to actually experience it.
+        </p>
+        <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid #6366f1;">
+            <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;">🎁 Free Strategy Session Includes:</p>
+            <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:8px 0 0;">
+                <li>A custom audit of your current lead flow</li>
+                <li>A live demo of your AI assistant built for your business</li>
+                <li>A roadmap showing exactly how we'd grow your revenue</li>
+            </ul>
+            <p style="margin:12px 0 0;color:#64748b;font-size:13px;">No charge. No pitch. Just real strategy.</p>
+        </div>
+        ${ctaButton('Book My Free Strategy Session →', STRATEGY_CALL_URL)}
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">Reply to this email if you have questions or want to learn more first.</p>
+    `);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ─── MARKETING SERVICES PUSH (4 emails, +2 days cadence) ───────────────────
+// Triggered: after SAAS push completes
+// ═══════════════════════════════════════════════════════════════════════════
+
+export function marketingPush_email1(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Your website might be costing you customers 😬</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Quick question about <strong style="color:#fff;">${businessName}</strong>: when a potential customer visits your website,
+            what happens? If it loads slow, looks outdated, or doesn't clearly tell them how to book — they leave.
+        </p>
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;">
+            <p style="margin:0 0 8px;color:#94a3b8;font-size:13px;font-weight:700;text-transform:uppercase;">The 3-second rule</p>
+            <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                53% of visitors leave a website that takes more than 3 seconds to load.
+                And 75% judge a company's credibility by design alone.
+            </p>
+        </div>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            We build high-converting websites for local businesses — fast, mobile-optimized, and designed to turn visitors into booked appointments.
+        </p>
+        ${ctaButton('Get a Free Website Audit →', STRATEGY_CALL_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">We'll show you exactly what's holding your site back — at no charge.</p>
+    `);
+}
+
+export function marketingPush_email2(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Want to show up first on Google? 🔍</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            When someone in the Triangle searches for what <strong style="color:#fff;">${businessName}</strong> does,
+            do you show up? If you're not in the top 3 Google results, you're invisible to most potential customers.
+        </p>
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;border-left:4px solid #6366f1;">
+            <p style="margin:0 0 8px;color:#a5b4fc;font-size:12px;font-weight:700;text-transform:uppercase;">Local SEO stats</p>
+            <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:0;">
+                <li>46% of all Google searches are looking for local info</li>
+                <li>76% of people who search locally visit a business within a day</li>
+                <li>The top 3 local results capture 75% of all clicks</li>
+            </ul>
+        </div>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Our Local SEO service gets you ranking for the searches your customers are already doing — more visibility, more calls, more booked jobs. No ads required.
+        </p>
+        ${ctaButton('Get My Free SEO Analysis →', STRATEGY_CALL_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">We'll show you where you rank today and what it'll take to get to #1.</p>
+    `);
+}
+
+export function marketingPush_email3(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Get more leads instantly with Google Ads 💰</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            SEO builds long-term momentum. But if you need leads <em>now</em>, Google Ads is the fastest way to get
+            <strong style="color:#fff;">${businessName}</strong> in front of high-intent buyers who are ready to hire.
+        </p>
+        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;">
+            <p style="margin:0 0 12px;color:#94a3b8;font-size:13px;font-weight:700;text-transform:uppercase;">Why local PPC works</p>
+            ${[
+                ['🎯', 'Only pay when someone clicks — no wasted budget'],
+                ['📍', 'Target by zip code, city, or radius — reach your exact market'],
+                ['📞', 'Call-only ads send leads straight to your phone'],
+                ['📊', 'Full tracking — you know exactly what every dollar produces'],
+            ].map(([icon, text]) => `<p style="margin:0 0 8px;color:#cbd5e1;font-size:14px;">${icon} ${text}</p>`).join('')}
+        </div>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            We manage everything — campaign setup, ad copy, targeting, and monthly optimization — so you just take the calls.
+        </p>
+        ${ctaButton('See What PPC Can Do for My Business →', STRATEGY_CALL_URL)}
+        <p style="margin-top:16px;color:#64748b;font-size:13px;">Free strategy call — we'll model out your potential ROI before you spend a dollar.</p>
+    `);
+}
+
+export function marketingPush_email4(businessName: string, contactName: string | null): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Let's make a plan for your business growth 📋</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            You've built something real with <strong style="color:#fff;">${businessName}</strong>. Let's talk about how to scale it.
+        </p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Over the past few weeks we've shared how we help local businesses with AI automation, SEO, and paid ads.
+            The most valuable thing we offer is a clear, honest growth strategy — customized for your market and goals.
+        </p>
+        <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;">
+            <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;">🗓️ On our strategy call, we'll cover:</p>
+            <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:0;">
+                <li>Your current marketing gaps and quick wins</li>
+                <li>The #1 channel to invest in for your industry right now</li>
+                <li>A 90-day roadmap with realistic revenue projections</li>
+                <li>Whether done-for-you or coaching makes more sense for you</li>
+            </ul>
+        </div>
+        ${ctaButton('Book My Free Growth Strategy Call →', STRATEGY_CALL_URL)}
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">
+            This is our last email in this series. If the timing is not right, no worries — reply anytime and we will be here.
+        </p>
+    `);
+}

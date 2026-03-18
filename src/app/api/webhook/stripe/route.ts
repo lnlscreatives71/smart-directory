@@ -54,6 +54,24 @@ export async function POST(req: Request) {
                     WHERE id = ${Number(listingId)}
                 `;
                 console.log(`Listing ${listingId} successfully upgraded in database via Webhook.`);
+
+                // Mark premium upgrade campaign as converted, enqueue SAAS Push
+                await sql`
+                    UPDATE premium_upgrade_campaigns
+                    SET status = 'converted', converted_at = NOW(), updated_at = NOW()
+                    WHERE listing_id = ${Number(listingId)}
+                      AND status NOT IN ('converted', 'opted_out')
+                `;
+                const [listing] = await sql`
+                    SELECT contact_email, contact_name FROM listings WHERE id = ${Number(listingId)} LIMIT 1
+                `;
+                if (listing?.contact_email) {
+                    await sql`
+                        INSERT INTO saas_push_campaigns (listing_id, contact_email, contact_name)
+                        VALUES (${Number(listingId)}, ${listing.contact_email}, ${listing.contact_name || null})
+                        ON CONFLICT DO NOTHING
+                    `;
+                }
                 
             } catch (dbError) {
                 console.error('Database Error upgarding listing:', dbError);

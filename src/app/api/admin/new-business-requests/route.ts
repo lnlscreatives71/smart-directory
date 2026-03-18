@@ -111,6 +111,13 @@ export async function POST(req: NextRequest) {
             html: newBusinessApproved(nbr.name as string, nbr.contact_name as string, listing.slug as string, magicLink),
         });
 
+        // Enqueue Premium Upgrade Push
+        await sql`
+            INSERT INTO premium_upgrade_campaigns (listing_id, contact_email, contact_name)
+            VALUES (${listing.id}, ${nbr.contact_email}, ${nbr.contact_name})
+            ON CONFLICT DO NOTHING
+        `;
+
         return NextResponse.json({ success: true, message: 'Approved and listing created.' });
     }
 
