@@ -71,6 +71,16 @@ function getImageForCategory(category: string): string {
     return `https://images.unsplash.com/${imageId}?w=800&h=600&fit=crop&q=80`;
 }
 
+// Extract first name only from values like "Amanda (Owner)" or "Bob Sweet (President)"
+function extractFirstName(raw: string | undefined | null): string | null {
+    if (!raw) return null;
+    // Remove anything in parentheses
+    const cleaned = raw.replace(/\(.*?\)/g, '').trim();
+    // Return just the first word
+    const first = cleaned.split(/\s+/)[0];
+    return first || null;
+}
+
 function slugify(name: string): string {
     return name
         .toLowerCase()
@@ -184,7 +194,7 @@ export async function POST(request: Request) {
                         ${freePlanId},
                         ${'{}'},
                         ${row.contact_email || null},
-                        ${row.contact_name || null},
+                        ${extractFirstName(row.contact_name)},
                         ${row.phone || null},
                         ${row.website || null},
                         ${imageUrl},
