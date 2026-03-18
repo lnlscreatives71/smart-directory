@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { sendEmail } from '@/lib/email';
 import { newBusinessApproved, newBusinessRejected } from '@/lib/email-templates';
+import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,12 +82,33 @@ export async function POST(req: NextRequest) {
             WHERE id = ${requestId}
         `;
 
-        // Notify SMB
-        const loginUrl = `${SITE_URL}/smb/login`;
+        // Link listing to the SMB user account (find by user_id or fall back to email)
+        const userIdFromRequest = nbr.user_id as number | null;
+        const magicToken = crypto.randomBytes(48).toString('hex');
+        const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000);
+
+        if (userIdFromRequest) {
+            await sql`
+                UPDATE users
+                SET listing_id = ${listing.id}, magic_token = ${magicToken}, magic_token_expires_at = ${expiresAt.toISOString()}
+                WHERE id = ${userIdFromRequest}
+            `;
+        } else {
+            // Fallback: user was created without user_id on request (legacy)
+            await sql`
+                UPDATE users
+                SET listing_id = ${listing.id}, magic_token = ${magicToken}, magic_token_expires_at = ${expiresAt.toISOString()}
+                WHERE email = ${nbr.contact_email} AND role = 'smb'
+            `;
+        }
+
+        const magicLink = `${SITE_URL}/api/smb/magic-login?token=${magicToken}`;
+
+        // Notify SMB with magic login link
         await sendEmail({
             to: nbr.contact_email as string,
             subject: `🎉 Your business "${nbr.name}" is now live on The Triangle Hub!`,
-            html: newBusinessApproved(nbr.name as string, nbr.contact_name as string, listing.slug as string, loginUrl),
+            html: newBusinessApproved(nbr.name as string, nbr.contact_name as string, listing.slug as string, magicLink),
         });
 
         return NextResponse.json({ success: true, message: 'Approved and listing created.' });

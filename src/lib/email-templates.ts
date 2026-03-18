@@ -407,6 +407,27 @@ export function welcomeEmail(businessName: string, contactName: string | null, s
     `);
 }
 
+// ─── SMB: New Business Submission Received ────────────────────────────────────
+export function newBusinessSubmitted(businessName: string, contactName: string, magicLink: string): string {
+    return baseTemplate(`
+        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">We've received your submission! 📋</h1>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">Hi ${contactName},</p>
+        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+            Thanks for submitting <strong style="color:#fff;">${businessName}</strong> to
+            <strong style="color:#6366f1;">${SITE_NAME}</strong>. We're reviewing your request and will
+            notify you once it's been approved — usually within 1 business day.
+        </p>
+        <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid #6366f1;">
+            <p style="margin:0 0 6px;color:#a5b4fc;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">🔑 Your Account is Ready</p>
+            <p style="margin:0 0 14px;color:#cbd5e1;font-size:14px;">Your business portal account has been created. Click below to log in and get ready to manage your listing once it's approved.</p>
+            ${ctaButton('Access My Business Portal →', magicLink)}
+            <p style="margin:12px 0 0;color:#64748b;font-size:12px;">This login link expires in 72 hours. You can request a new one from the login page anytime.</p>
+        </div>
+        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+        <p style="color:#64748b;font-size:13px;">Questions? Reply to this email and we'll help you out.</p>
+    `);
+}
+
 // ─── Admin: New Business Request Notification ─────────────────────────────────
 export function adminNewBusinessNotification(businessName: string, contactName: string, contactEmail: string, requestId: number): string {
     const reviewUrl = `${SITE_URL}/dashboard/claims?tab=new-requests`;
