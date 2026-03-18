@@ -46,6 +46,7 @@ export async function POST(request: Request) {
                 SET status = 'email_1_sent', email_1_sent_at = NOW(), updated_at = NOW()
                 WHERE id = ${c.id}
             `;
+            await sql`UPDATE listings SET funnel_step = 1 WHERE id = ${c.listing_id}`;
             emailsSent++;
         }
 
@@ -70,6 +71,7 @@ export async function POST(request: Request) {
                 SET status = 'email_2_sent', email_2_sent_at = NOW(), updated_at = NOW()
                 WHERE id = ${c.id}
             `;
+            await sql`UPDATE listings SET funnel_step = 2 WHERE id = ${c.listing_id}`;
             emailsSent++;
         }
 
@@ -94,6 +96,7 @@ export async function POST(request: Request) {
                 SET status = 'email_3_sent', email_3_sent_at = NOW(), updated_at = NOW()
                 WHERE id = ${c.id}
             `;
+            await sql`UPDATE listings SET funnel_step = 3 WHERE id = ${c.listing_id}`;
             emailsSent++;
         }
 
@@ -118,6 +121,7 @@ export async function POST(request: Request) {
                 SET status = 'email_4_sent', email_4_sent_at = NOW(), updated_at = NOW()
                 WHERE id = ${c.id}
             `;
+            await sql`UPDATE listings SET funnel_step = 4 WHERE id = ${c.listing_id}`;
             emailsSent++;
         }
 

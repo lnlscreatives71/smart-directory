@@ -45,6 +45,7 @@ export async function POST(request: Request) {
                 SET status = 'email_1_sent', email_1_sent_at = NOW(), updated_at = NOW()
                 WHERE id = ${c.id}
             `;
+            await sql`UPDATE listings SET funnel_step = 1 WHERE id = ${c.listing_id}`;
             emailsSent++;
         }
 
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
                 SET status = 'email_2_sent', email_2_sent_at = NOW(), updated_at = NOW()
                 WHERE id = ${c.id}
             `;
+            await sql`UPDATE listings SET funnel_step = 2 WHERE id = ${c.listing_id}`;
             emailsSent++;
         }
 
@@ -91,6 +93,7 @@ export async function POST(request: Request) {
                 SET status = 'email_3_sent', email_3_sent_at = NOW(), updated_at = NOW()
                 WHERE id = ${c.id}
             `;
+            await sql`UPDATE listings SET funnel_step = 3 WHERE id = ${c.listing_id}`;
             emailsSent++;
         }
 
@@ -114,16 +117,21 @@ export async function POST(request: Request) {
                 SET status = 'email_4_sent', email_4_sent_at = NOW(), updated_at = NOW()
                 WHERE id = ${c.id}
             `;
+            await sql`UPDATE listings SET funnel_step = 4 WHERE id = ${c.listing_id}`;
             emailsSent++;
 
             // Enqueue into Marketing Services Push after final email
             await sql`
                 INSERT INTO marketing_services_campaigns (listing_id, contact_email, contact_name)
-                SELECT ${c.id}, ${c.contact_email}, ${c.contact_name}
+                SELECT ${c.listing_id}, ${c.contact_email}, ${c.contact_name}
                 WHERE NOT EXISTS (
                     SELECT 1 FROM marketing_services_campaigns
-                    WHERE listing_id = ${c.id}
+                    WHERE listing_id = ${c.listing_id}
                 )
+            `;
+            await sql`
+                UPDATE listings SET funnel_status = 'marketing_services', funnel_step = 0
+                WHERE id = ${c.listing_id}
             `;
         }
 

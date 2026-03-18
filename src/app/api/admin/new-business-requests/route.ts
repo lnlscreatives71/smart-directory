@@ -111,11 +111,15 @@ export async function POST(req: NextRequest) {
             html: newBusinessApproved(nbr.name as string, nbr.contact_name as string, listing.slug as string, magicLink),
         });
 
-        // Enqueue Premium Upgrade Push
+        // Enqueue Premium Upgrade Push + set funnel status
         await sql`
             INSERT INTO premium_upgrade_campaigns (listing_id, contact_email, contact_name)
             VALUES (${listing.id}, ${nbr.contact_email}, ${nbr.contact_name})
             ON CONFLICT DO NOTHING
+        `;
+        await sql`
+            UPDATE listings SET funnel_status = 'premium_upgrade', funnel_step = 0
+            WHERE id = ${listing.id}
         `;
 
         return NextResponse.json({ success: true, message: 'Approved and listing created.' });

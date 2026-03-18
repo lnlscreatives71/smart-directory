@@ -79,12 +79,16 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        // Enqueue Premium Upgrade Push
+        // Enqueue Premium Upgrade Push + set funnel status
         if (emailTo) {
             await sql`
                 INSERT INTO premium_upgrade_campaigns (listing_id, contact_email, contact_name)
                 VALUES (${listingId}, ${emailTo}, ${listing.claimant_name || listing.contact_email})
                 ON CONFLICT DO NOTHING
+            `;
+            await sql`
+                UPDATE listings SET funnel_status = 'premium_upgrade', funnel_step = 0
+                WHERE id = ${listingId}
             `;
         }
 

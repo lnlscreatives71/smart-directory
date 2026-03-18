@@ -71,6 +71,10 @@ export async function POST(req: Request) {
                         VALUES (${Number(listingId)}, ${listing.contact_email}, ${listing.contact_name || null})
                         ON CONFLICT DO NOTHING
                     `;
+                    await sql`
+                        UPDATE listings SET funnel_status = 'saas_push', funnel_step = 0
+                        WHERE id = ${Number(listingId)}
+                    `;
                 }
                 
             } catch (dbError) {
