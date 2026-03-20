@@ -85,7 +85,9 @@ export default function MenuBuilderPage() {
             const res = await fetch('/api/agencies');
             if (res.ok) {
                 const data = await res.json();
-                if (data.data && data.data.id) {
+                if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                    setAgencyId(data.data[0].id);
+                } else if (data.data && data.data.id) {
                     setAgencyId(data.data.id);
                 }
             }

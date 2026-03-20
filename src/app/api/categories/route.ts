@@ -3,11 +3,17 @@ import { sql } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-// GET all categories
+// GET all categories — derived from distinct listing categories
 export async function GET() {
     try {
         const categories = await sql`
-            SELECT * FROM categories ORDER BY order_index ASC
+            SELECT DISTINCT
+                category AS name,
+                LOWER(REPLACE(REPLACE(category, ' ', '-'), '/', '-')) AS slug,
+                NULL AS icon
+            FROM listings
+            WHERE category IS NOT NULL AND category != ''
+            ORDER BY category ASC
         `;
         return NextResponse.json({ success: true, data: categories });
     } catch (error: unknown) {
