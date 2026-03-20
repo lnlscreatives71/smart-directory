@@ -82,9 +82,16 @@ export default async function BusinessDetail({
                         </div>
 
                         <div className="flex gap-3">
-                            <button className="bg-white text-slate-900 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold flex items-center shadow-lg transition">
-                                <ExternalLink size={18} className="mr-2" /> Visit Website
-                            </button>
+                            {biz.website ? (
+                                <a
+                                    href={biz.website.startsWith('http') ? biz.website : `https://${biz.website}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-white text-slate-900 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold flex items-center shadow-lg transition"
+                                >
+                                    <ExternalLink size={18} className="mr-2" /> Visit Website
+                                </a>
+                            ) : null}
                         </div>
                     </div>
                 </div>
