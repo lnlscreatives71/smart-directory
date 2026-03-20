@@ -101,6 +101,11 @@ export default function DynamicMenu({ agencyId }: { agencyId?: number }) {
         return (
             <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center">
                 <div className="relative group">
+                    <Link href="/" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all">
+                        Home
+                    </Link>
+                </div>
+                <div className="relative group">
                     <Link href="/category/dining" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all">
                         Dining
                     </Link>
@@ -183,6 +188,11 @@ export default function DynamicMenu({ agencyId }: { agencyId?: number }) {
 
     return (
         <nav className="hidden lg:flex items-center gap-6 flex-1 justify-center">
+            <div className="relative group">
+                <Link href="/" className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-slate-300 hover:text-white transition-all whitespace-nowrap tracking-wide">
+                    Home
+                </Link>
+            </div>
             {menu.map((item) => renderMenuItem(item))}
         </nav>
     );
