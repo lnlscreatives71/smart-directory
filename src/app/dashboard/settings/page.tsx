@@ -31,7 +31,11 @@ export default function AgencySettingsPage() {
         secondary_color: '#10b981',
         contact_email: '',
         contact_phone: '',
-        location_region: ''
+        location_region: '',
+        logo_url: '',
+        favicon_url: '',
+        premium_price: '29',
+        strategy_call_url: '',
     });
 
     useEffect(() => {
@@ -166,6 +170,38 @@ export default function AgencySettingsPage() {
                         <div className="space-y-1">
                             <label className="text-sm font-semibold text-slate-300">Phone Number</label>
                             <input type="text" value={formData.contact_phone} onChange={e => setFormData({ ...formData, contact_phone: e.target.value })} className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-primary-500 transition-colors" />
+                        </div>
+                    </div>
+                </section>
+
+                {/* Branding assets */}
+                <section className="space-y-4">
+                    <h2 className="text-lg font-bold text-slate-100">Branding</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                            <label className="text-sm font-semibold text-slate-300">Logo URL</label>
+                            <input type="url" placeholder="https://yourdomain.com/logo.png" value={formData.logo_url} onChange={e => setFormData({ ...formData, logo_url: e.target.value })} className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-primary-500 transition-colors" />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-sm font-semibold text-slate-300">Favicon URL</label>
+                            <input type="url" placeholder="https://yourdomain.com/favicon.ico" value={formData.favicon_url} onChange={e => setFormData({ ...formData, favicon_url: e.target.value })} className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-primary-500 transition-colors" />
+                        </div>
+                    </div>
+                </section>
+
+                {/* Pricing & email config */}
+                <section className="space-y-4">
+                    <h2 className="text-lg font-bold text-slate-100">Pricing &amp; Outreach</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                            <label className="text-sm font-semibold text-slate-300">Premium listing price ($/mo)</label>
+                            <input type="number" min="0" step="1" value={formData.premium_price} onChange={e => setFormData({ ...formData, premium_price: e.target.value })} className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-primary-500 transition-colors" />
+                            <p className="text-xs text-slate-500">Default is $29/mo. This appears on your pricing page and in outreach emails.</p>
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-sm font-semibold text-slate-300">Strategy call URL</label>
+                            <input type="url" placeholder="https://calendly.com/you/30min" value={formData.strategy_call_url} onChange={e => setFormData({ ...formData, strategy_call_url: e.target.value })} className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-primary-500 transition-colors" />
+                            <p className="text-xs text-slate-500">CTA link used in outreach emails (Email 3 &amp; 4). Set your Calendly or booking link here.</p>
                         </div>
                     </div>
                 </section>

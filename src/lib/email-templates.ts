@@ -1,8 +1,11 @@
-const SITE_NAME = 'The Triangle Hub';
-const SITE_URL = 'https://thetrianglehub.online';
-const UPGRADE_URL = `${SITE_URL}/pricing`;
-const LOGO_URL = `${SITE_URL}/triangle-hub-logo-dark.png`;
-const PRIMARY_COLOR = '#6366f1';
+// White-label config — set these env vars in Vercel for each agency deployment.
+// Falls back to Triangle Hub values so the existing deployment is unaffected.
+const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'The Triangle Hub';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://thetrianglehub.online';
+const UPGRADE_URL = process.env.NEXT_PUBLIC_UPGRADE_URL || `${SITE_URL}/pricing`;
+const LOGO_URL = process.env.NEXT_PUBLIC_LOGO_URL || `${SITE_URL}/triangle-hub-logo-dark.png`;
+const PRIMARY_COLOR = process.env.NEXT_PUBLIC_PRIMARY_COLOR || '#6366f1';
+const STRATEGY_CALL_URL = process.env.STRATEGY_CALL_URL || `${SITE_URL}/contact`;
 
 function baseTemplate(content: string, preheader?: string): string {
     return `
@@ -498,8 +501,6 @@ export function newBusinessRejected(businessName: string, contactName: string): 
 // ─── PREMIUM UPGRADE PUSH (4 emails, +2 days cadence) ──────────────────────
 // Triggered: claim approved or new business approved
 // ═══════════════════════════════════════════════════════════════════════════
-
-const STRATEGY_CALL_URL = 'https://www.lnlaiagency.com/contact';
 
 export function premiumUpgrade_email1(businessName: string, contactName: string | null): string {
     return baseTemplate(`

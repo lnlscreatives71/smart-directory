@@ -42,6 +42,11 @@ export async function middleware(request: NextRequest) {
         secureCookie: isSecure,
     };
 
+    // First-time setup page — allow unauthenticated access
+    if (pathname.startsWith('/setup')) {
+        return NextResponse.next({ request: { headers: requestHeaders } });
+    }
+
     // Dashboard auth protection (admin)
     const isDashboard = pathname.startsWith('/dashboard');
     if (isDashboard) {

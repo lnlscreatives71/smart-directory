@@ -25,12 +25,16 @@ export async function PUT(req: Request) {
             secondary_color,
             contact_email,
             contact_phone,
-            location_region
+            location_region,
+            logo_url,
+            favicon_url,
+            premium_price,
+            strategy_call_url,
         } = body;
 
         await sql`
-            UPDATE agency_settings 
-            SET 
+            UPDATE agency_settings
+            SET
                 site_name = ${site_name},
                 site_description = ${site_description},
                 hero_headline = ${hero_headline},
@@ -40,6 +44,10 @@ export async function PUT(req: Request) {
                 contact_email = ${contact_email},
                 contact_phone = ${contact_phone},
                 location_region = ${location_region},
+                logo_url = ${logo_url ?? null},
+                favicon_url = ${favicon_url ?? null},
+                premium_price = ${premium_price ?? 29},
+                strategy_call_url = ${strategy_call_url ?? null},
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = 1
         `;
