@@ -190,7 +190,7 @@ export async function POST(request: Request) {
                         ${row.name},
                         ${slug},
                         ${row.category || 'Other'},
-                        ${row.description || `${row.name} is a trusted local business serving the Triangle area.`},
+                        ${(row.description ? row.description.replace(/^\d+\.\s*/, '') : null) || `${row.name} is a trusted local business serving the Triangle area.`},
                         ${row.recommended_services || null},
                         ${row.street_address || null},
                         ${row.zip_code || null},
