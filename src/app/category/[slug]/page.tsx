@@ -14,10 +14,11 @@ export default async function CategoryPage({
 }) {
     const { slug } = await params;
     const categoryStr = slug.replace(/-/g, ' ');
+    const categoryHyphen = slug; // e.g. "med-spa"
     const titleCaseCategory = categoryStr.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    
-    // Build query with filters
-    let query = sql`SELECT * FROM listings WHERE active = TRUE AND category ILIKE ${`%${categoryStr}%`}`;
+
+    // Build query with filters — match both spaced and hyphenated variants (e.g. "Med Spa" and "Med-Spa")
+    let query = sql`SELECT * FROM listings WHERE active = TRUE AND (category ILIKE ${`%${categoryStr}%`} OR category ILIKE ${`%${categoryHyphen}%`})`;
     
     if (searchParams.city) {
         query = sql`${query} AND location_city = ${searchParams.city}`;
