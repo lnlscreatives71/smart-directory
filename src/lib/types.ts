@@ -99,6 +99,18 @@ export interface OutreachCampaign {
     // joined fields
     listing_name?: string;
     listing_email?: string;
+    contact_name?: string;
+    phone?: string;
+    website?: string;
+    street_address?: string;
+    zip_code?: string;
+    location_city?: string;
+    location_state?: string;
+    category?: string;
+    recommended_services?: string;
+    social_media?: SocialMediaLinks;
+    custom_fields?: Record<string, string>;
+    image_url?: string;
     claimed?: boolean;
 }
 

@@ -4,7 +4,8 @@ import { OutreachCampaign, ContactNote } from '@/lib/types';
 import {
     Mail, Clock, CheckCircle2, RefreshCw, Send, Building2,
     Phone, MessageSquare, StickyNote, Trash2, ChevronDown, ChevronUp,
-    KanbanSquare, ListFilter, Tag, Eye, MousePointerClick
+    KanbanSquare, ListFilter, Tag, Eye, MousePointerClick,
+    MapPin, Globe, User, Instagram, Facebook, Linkedin, Twitter, ExternalLink
 } from 'lucide-react';
 
 // ── Pipeline Stages ────────────────────────────────────────────────────────
@@ -625,8 +626,144 @@ export default function CRMPage() {
                                         </button>
                                     </div>
 
-                                    {/* Notes Panel */}
-                                    {isOpen && <NotesPanel campaign={camp} />}
+                                    {/* Contact Detail + Notes */}
+                                    {isOpen && (
+                                        <div className="border-t border-slate-100 dark:border-slate-800">
+                                            {/* Contact detail header */}
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x divide-slate-100 dark:divide-slate-800 bg-slate-50/50 dark:bg-slate-950/30">
+                                                {/* Col 1: Identity */}
+                                                <div className="p-5 space-y-3">
+                                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Contact Info</p>
+                                                    {camp.contact_name && (
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <User size={13} className="text-slate-400 flex-shrink-0" />
+                                                            <span className="text-slate-700 dark:text-slate-300">{camp.contact_name}</span>
+                                                        </div>
+                                                    )}
+                                                    {camp.listing_email && (
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <Mail size={13} className="text-slate-400 flex-shrink-0" />
+                                                            <a href={`mailto:${camp.listing_email}`} className="text-primary-600 dark:text-primary-400 hover:underline truncate">{camp.listing_email}</a>
+                                                        </div>
+                                                    )}
+                                                    {camp.phone && (
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <Phone size={13} className="text-slate-400 flex-shrink-0" />
+                                                            <a href={`tel:${camp.phone}`} className="text-slate-700 dark:text-slate-300 hover:text-primary-600">{camp.phone}</a>
+                                                        </div>
+                                                    )}
+                                                    {camp.website && (
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <Globe size={13} className="text-slate-400 flex-shrink-0" />
+                                                            <a href={camp.website} target="_blank" rel="noopener noreferrer" className="text-primary-600 dark:text-primary-400 hover:underline truncate flex items-center gap-1">
+                                                                {camp.website.replace(/^https?:\/\//, '')} <ExternalLink size={10} />
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                    {(camp.street_address || camp.location_city) && (
+                                                        <div className="flex items-start gap-2 text-sm">
+                                                            <MapPin size={13} className="text-slate-400 flex-shrink-0 mt-0.5" />
+                                                            <span className="text-slate-700 dark:text-slate-300">
+                                                                {[camp.street_address, camp.location_city, camp.location_state, camp.zip_code].filter(Boolean).join(', ')}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Col 2: Social + Category */}
+                                                <div className="p-5 space-y-3">
+                                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Business</p>
+                                                    {camp.category && (
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <Tag size={13} className="text-slate-400 flex-shrink-0" />
+                                                            <span className="text-slate-700 dark:text-slate-300">{camp.category}</span>
+                                                        </div>
+                                                    )}
+                                                    {camp.recommended_services && (
+                                                        <div>
+                                                            <p className="text-xs text-slate-400 mb-1">Recommended Services</p>
+                                                            <p className="text-sm text-slate-700 dark:text-slate-300 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-lg px-3 py-2">{camp.recommended_services}</p>
+                                                        </div>
+                                                    )}
+                                                    {camp.social_media && Object.keys(camp.social_media).length > 0 && (
+                                                        <div>
+                                                            <p className="text-xs text-slate-400 mb-2">Social Media</p>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {Object.entries(camp.social_media).filter(([, v]) => v).map(([platform, url]) => (
+                                                                    <a key={platform} href={url as string} target="_blank" rel="noopener noreferrer"
+                                                                        className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 transition capitalize">
+                                                                        <ExternalLink size={10} /> {platform}
+                                                                    </a>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {camp.custom_fields && Object.keys(camp.custom_fields).length > 0 && (
+                                                        <div>
+                                                            <p className="text-xs text-slate-400 mb-2">Custom Fields</p>
+                                                            <div className="space-y-1">
+                                                                {Object.entries(camp.custom_fields).filter(([, v]) => v).map(([key, val]) => (
+                                                                    <div key={key} className="text-xs">
+                                                                        <span className="text-slate-400 capitalize">{key.replace(/_/g, ' ')}: </span>
+                                                                        <span className="text-slate-700 dark:text-slate-300">{val as string}</span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Col 3: Email timeline */}
+                                                <div className="p-5">
+                                                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Email Timeline</p>
+                                                    <div className="space-y-2">
+                                                        {([
+                                                            { label: 'Email 1', date: camp.email_1_sent_at },
+                                                            { label: 'Email 2', date: camp.email_2_sent_at },
+                                                            { label: 'Email 3', date: camp.email_3_sent_at },
+                                                            { label: 'Email 4', date: camp.email_4_sent_at },
+                                                        ] as { label: string; date: Date | null }[]).map(e => (
+                                                            <div key={e.label} className="flex items-center gap-2">
+                                                                <span className={`w-2 h-2 rounded-full flex-shrink-0 ${e.date ? 'bg-emerald-400' : 'bg-slate-200 dark:bg-slate-700'}`} />
+                                                                <span className="text-xs text-slate-600 dark:text-slate-400">{e.label}</span>
+                                                                {e.date ? (
+                                                                    <span className="text-xs text-slate-400 ml-auto">{new Date(e.date).toLocaleDateString()}</span>
+                                                                ) : (
+                                                                    <span className="text-xs text-slate-300 dark:text-slate-600 ml-auto">not sent</span>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    {(camp.opens > 0 || camp.clicks > 0) && (
+                                                        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex gap-4">
+                                                            <div className="text-center">
+                                                                <p className="text-lg font-bold text-amber-500">{camp.opens}</p>
+                                                                <p className="text-xs text-slate-400">Opens</p>
+                                                            </div>
+                                                            <div className="text-center">
+                                                                <p className="text-lg font-bold text-green-500">{camp.clicks}</p>
+                                                                <p className="text-xs text-slate-400">Clicks</p>
+                                                            </div>
+                                                            {camp.last_opened_at && (
+                                                                <div className="text-center ml-auto">
+                                                                    <p className="text-xs text-slate-400">Last opened</p>
+                                                                    <p className="text-xs font-medium text-slate-600 dark:text-slate-400">{new Date(camp.last_opened_at).toLocaleDateString()}</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                    <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                                                        <a href={`/dashboard/listings/${camp.listing_id}`} className="text-xs text-primary-600 dark:text-primary-400 hover:underline flex items-center gap-1">
+                                                            <ExternalLink size={11} /> Edit listing
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Notes Panel */}
+                                            <NotesPanel campaign={camp} />
+                                        </div>
+                                    )}
                                 </div>
                             );
                         })}

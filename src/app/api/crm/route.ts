@@ -13,7 +13,19 @@ export async function GET() {
                 c.created_at, c.updated_at,
                 l.name AS listing_name,
                 l.contact_email AS listing_email,
-                l.claimed
+                l.contact_name,
+                l.phone,
+                l.website,
+                l.street_address,
+                l.zip_code,
+                l.location_city,
+                l.location_state,
+                l.category,
+                l.recommended_services,
+                l.social_media,
+                l.custom_fields,
+                l.claimed,
+                l.image_url
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE l.claimed = false

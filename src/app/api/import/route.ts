@@ -129,7 +129,8 @@ export async function POST(request: Request) {
             }
 
             // Deduplicate within the batch itself (catches repeated rows in the same CSV)
-            const batchKey = `${row.name.toLowerCase().trim()}|${row.contact_email.toLowerCase().trim()}`;
+            const normName = row.name.toLowerCase().trim().replace(/[^a-z0-9\s&]/g, '').replace(/\s+/g, ' ');
+            const batchKey = `${normName}|${row.contact_email.toLowerCase().trim()}`;
             if (seenInBatch.has(batchKey)) {
                 results.skipped++;
                 results.errors.push(`Skipped "${row.name}" — duplicate row in this import file`);
@@ -137,11 +138,15 @@ export async function POST(request: Request) {
             }
             seenInBatch.add(batchKey);
 
-            // Check DB for existing listing by name + email (most reliable match)
+            // Check DB for existing listing by normalized name (strips punctuation) OR email
+            // Normalizes "Allen Kelly & Co." == "Allen Kelly & Co" by removing non-alphanumeric trailing chars
+            const normalizedName = row.name.toLowerCase().trim().replace(/[^a-z0-9\s&]/g, '').replace(/\s+/g, ' ');
             const dupCheck = await sql`
                 SELECT id FROM listings
-                WHERE LOWER(name) = LOWER(${row.name})
-                AND LOWER(contact_email) = LOWER(${row.contact_email})
+                WHERE (
+                    REGEXP_REPLACE(LOWER(name), '[^a-z0-9\\s&]', '', 'g') = ${normalizedName}
+                    OR LOWER(contact_email) = LOWER(${row.contact_email})
+                )
                 LIMIT 1
             `;
             if (dupCheck.length > 0) {

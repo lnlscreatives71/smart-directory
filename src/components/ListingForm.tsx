@@ -41,10 +41,14 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
         location_city: initialData?.location_city || '',
         location_state: initialData?.location_state || 'NC',
         location_region: initialData?.location_region || 'Triangle',
+        street_address: (initialData as any)?.street_address || '',
+        zip_code: (initialData as any)?.zip_code || '',
+        recommended_services: (initialData as any)?.recommended_services || '',
         services: initialData?.services?.join(', ') || '',
         plan_id: initialData?.plan_id || 1,
         featured: initialData?.featured || false,
         claimed: initialData?.claimed || false,
+        social_media: initialData?.social_media || {} as Record<string, string>,
         feature_flags: initialData?.feature_flags || {
             highlight_on_home: false,
             priority_ranking: false,
@@ -150,6 +154,9 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
             ...formData,
             image_url,
             services: formData.services.split(',').map(s => s.trim()).filter(Boolean),
+            social_media: Object.fromEntries(
+                Object.entries(formData.social_media).filter(([, v]) => v && (v as string).trim())
+            ),
         };
 
         try {
@@ -323,6 +330,18 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
                                     value={formData.location_state} onChange={e => setFormData({ ...formData, location_state: e.target.value })} />
                             </div>
                         </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Street Address</label>
+                            <input type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
+                                placeholder="123 Main St"
+                                value={formData.street_address} onChange={e => setFormData({ ...formData, street_address: e.target.value })} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Zip Code</label>
+                            <input type="text" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
+                                placeholder="27601"
+                                value={formData.zip_code} onChange={e => setFormData({ ...formData, zip_code: e.target.value })} />
+                        </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-semibold mb-1.5">Description <span className="text-red-500">*</span></label>
                             <textarea required rows={4} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none resize-y"
@@ -493,6 +512,29 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
                             </div>
                         </div>
                     )}
+                </section>
+
+                {/* Section 2b: Additional CRM Data */}
+                <section className="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <SectionHeading title="CRM Data" subtitle="Social media links, recommended services, and other imported data visible in the CRM." />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-semibold mb-1.5">Recommended Services</label>
+                            <textarea rows={2} className="w-full p-3 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none resize-y"
+                                placeholder="e.g. AI Marketing, Lead Generation, SEO"
+                                value={formData.recommended_services} onChange={e => setFormData({ ...formData, recommended_services: e.target.value })} />
+                            <p className="text-xs text-slate-500 mt-1">Imported from your CSV — used for targeted sales outreach.</p>
+                        </div>
+                        {(['facebook','instagram','linkedin','twitter','tiktok','youtube'] as const).map(platform => (
+                            <div key={platform}>
+                                <label className="block text-sm font-semibold mb-1.5 capitalize">{platform}</label>
+                                <input type="url" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
+                                    placeholder={`https://${platform}.com/...`}
+                                    value={(formData.social_media as any)?.[platform] || ''}
+                                    onChange={e => setFormData({ ...formData, social_media: { ...formData.social_media, [platform]: e.target.value } })} />
+                            </div>
+                        ))}
+                    </div>
                 </section>
 
                 {/* Section 3: Plan & Features */}
