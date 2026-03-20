@@ -6,7 +6,7 @@ import { authOptions } from '@/lib/authOptions';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-const MAPS_API_KEY = process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
+const MAPS_API_KEY = process.env.MAPS_SERVER_API_KEY || process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
 
 async function fetchGoogleData(name: string, city: string, state: string): Promise<{ photo: string | null; rating: number | null; debug?: unknown }> {
     if (!MAPS_API_KEY) return { photo: null, rating: null };

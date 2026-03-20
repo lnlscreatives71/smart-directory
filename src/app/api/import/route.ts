@@ -20,7 +20,7 @@ interface BusinessRow {
     custom_fields?: string; // JSON string
 }
 
-const MAPS_API_KEY = process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
+const MAPS_API_KEY = process.env.MAPS_SERVER_API_KEY || process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
 
 async function fetchGooglePhoto(name: string, city: string, state: string): Promise<string | null> {
     if (!MAPS_API_KEY) return null;
