@@ -1,20 +1,8 @@
 {
     "crons": [
         {
-            "path": "/api/cron/outreach",
+            "path": "/api/cron/all",
             "schedule": "0 13 * * *"
-        },
-        {
-            "path": "/api/cron/premium-upsell",
-            "schedule": "0 14 * * *"
-        },
-        {
-            "path": "/api/cron/saas-push",
-            "schedule": "0 15 * * *"
-        },
-        {
-            "path": "/api/cron/marketing-services",
-            "schedule": "0 16 * * *"
         }
     ]
 }
