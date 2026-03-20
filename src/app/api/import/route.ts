@@ -111,11 +111,14 @@ export async function POST(request: Request) {
             listings: [] as { name: string; slug: string; hadEmail: boolean }[],
         };
 
+        // Build an in-batch seen set to catch duplicates within the same CSV
+        const seenInBatch = new Set<string>();
+
         for (const row of rows) {
             // Validation
             if (!row.name) {
                 results.skipped++;
-                results.errors.push(`Skipped row: missing name (row: "${row.name || 'unknown'}")`);
+                results.errors.push(`Skipped row: missing name`);
                 continue;
             }
 
@@ -125,7 +128,29 @@ export async function POST(request: Request) {
                 continue;
             }
 
-            // Generate a unique slug
+            // Deduplicate within the batch itself (catches repeated rows in the same CSV)
+            const batchKey = `${row.name.toLowerCase().trim()}|${row.contact_email.toLowerCase().trim()}`;
+            if (seenInBatch.has(batchKey)) {
+                results.skipped++;
+                results.errors.push(`Skipped "${row.name}" — duplicate row in this import file`);
+                continue;
+            }
+            seenInBatch.add(batchKey);
+
+            // Check DB for existing listing by name + email (most reliable match)
+            const dupCheck = await sql`
+                SELECT id FROM listings
+                WHERE LOWER(name) = LOWER(${row.name})
+                AND LOWER(contact_email) = LOWER(${row.contact_email})
+                LIMIT 1
+            `;
+            if (dupCheck.length > 0) {
+                results.skipped++;
+                results.errors.push(`Skipped "${row.name}" — already exists (${row.contact_email})`);
+                continue;
+            }
+
+            // Generate a unique slug (only after dup check passes)
             let baseSlug = slugify(row.name);
             let slug = baseSlug;
             let attempt = 0;
@@ -134,19 +159,6 @@ export async function POST(request: Request) {
                 if (existing.length === 0) break;
                 attempt++;
                 slug = `${baseSlug}-${attempt}`;
-            }
-
-            // Check for duplicate by name + city
-            const dupCheck = await sql`
-                SELECT id FROM listings 
-                WHERE LOWER(name) = LOWER(${row.name}) 
-                AND LOWER(location_city) = LOWER(${row.location_city || ''})
-                LIMIT 1
-            `;
-            if (dupCheck.length > 0) {
-                results.skipped++;
-                results.errors.push(`Skipped "${row.name}" — already exists in ${row.location_city || 'unknown city'}`);
-                continue;
             }
 
             const rating = parseFloat(row.rating || '4.0');
