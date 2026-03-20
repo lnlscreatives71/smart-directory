@@ -150,8 +150,8 @@ export default function BusinessesPage() {
     });
 
     const sorted = [...filtered].sort((a, b) => {
-        const av = (a as Record<string, unknown>)[sortKey] ?? '';
-        const bv = (b as Record<string, unknown>)[sortKey] ?? '';
+        const av = (a as unknown as Record<string, unknown>)[sortKey] ?? '';
+        const bv = (b as unknown as Record<string, unknown>)[sortKey] ?? '';
         const cmp = String(av).localeCompare(String(bv), undefined, { numeric: true });
         return sortDir === 'asc' ? cmp : -cmp;
     });
