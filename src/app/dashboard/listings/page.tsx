@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
     Search, Edit, Eye, Plus, Loader2, MapPin, Phone,
-    CheckCircle2, XCircle, AlertTriangle, Trash2, ImageIcon, ChevronUp, ChevronDown as ChevronDownIcon
+    CheckCircle2, XCircle, AlertTriangle, Trash2, ImageIcon, ChevronUp, ChevronDown as ChevronDownIcon, Download
 } from 'lucide-react';
 
 interface Listing {
@@ -89,6 +89,23 @@ export default function BusinessesPage() {
             showToast('error', data.error || 'Delete failed.');
         }
         setDeleteConfirm(null);
+    };
+
+    const exportCSV = () => {
+        const headers = ['id','name','slug','category','location_city','location_state','contact_email','contact_name','phone','website','plan_name','active','featured','claimed','created_at'];
+        const rows = listings.map(l => headers.map(h => {
+            const val = (l as Record<string, unknown>)[h] ?? '';
+            const str = String(val).replace(/"/g, '""');
+            return `"${str}"`;
+        }).join(','));
+        const csv = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `listings-${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
     };
 
     const refreshPhotos = async () => {
@@ -188,6 +205,12 @@ export default function BusinessesPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
+                    <button
+                        onClick={exportCSV}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-bold transition shadow-sm"
+                    >
+                        <Download size={15} /> Export CSV
+                    </button>
                     <button
                         onClick={refreshPhotos}
                         disabled={refreshingPhotos}
