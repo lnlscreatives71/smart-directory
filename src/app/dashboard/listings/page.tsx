@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
     Search, Edit, Eye, Plus, Loader2, MapPin, Phone,
-    CheckCircle2, XCircle, AlertTriangle, Trash2
+    CheckCircle2, XCircle, AlertTriangle, Trash2, ImageIcon
 } from 'lucide-react';
 
 interface Listing {
@@ -43,6 +43,7 @@ export default function BusinessesPage() {
     const [selected, setSelected] = useState<Set<number>>(new Set());
     const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
     const [bulkDeleting, setBulkDeleting] = useState(false);
+    const [refreshingPhotos, setRefreshingPhotos] = useState(false);
 
     const showToast = (type: 'success' | 'error', msg: string) => {
         setToast({ type, msg }); setTimeout(() => setToast(null), 3200);
@@ -86,6 +87,22 @@ export default function BusinessesPage() {
             showToast('error', data.error || 'Delete failed.');
         }
         setDeleteConfirm(null);
+    };
+
+    const refreshPhotos = async () => {
+        setRefreshingPhotos(true);
+        try {
+            const res = await fetch('/api/admin/refresh-photos', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                showToast('success', data.message);
+            } else {
+                showToast('error', data.error || 'Photo refresh failed.');
+            }
+        } catch {
+            showToast('error', 'Photo refresh failed.');
+        }
+        setRefreshingPhotos(false);
     };
 
     const bulkDelete = async () => {
@@ -152,10 +169,20 @@ export default function BusinessesPage() {
                         Manage all directory business listings, plans, and claim status.
                     </p>
                 </div>
-                <Link href="/dashboard/listings/new"
-                    className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white rounded-xl text-sm font-bold transition shadow-sm">
-                    <Plus size={15} /> Add Business
-                </Link>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={refreshPhotos}
+                        disabled={refreshingPhotos}
+                        className="flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-bold transition shadow-sm disabled:opacity-50"
+                    >
+                        {refreshingPhotos ? <Loader2 size={15} className="animate-spin" /> : <ImageIcon size={15} />}
+                        {refreshingPhotos ? 'Refreshing...' : 'Refresh Photos'}
+                    </button>
+                    <Link href="/dashboard/listings/new"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white rounded-xl text-sm font-bold transition shadow-sm">
+                        <Plus size={15} /> Add Business
+                    </Link>
+                </div>
             </div>
 
             {/* Toast */}
