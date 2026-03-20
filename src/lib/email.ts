@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'directory@mail.thetrianglehub.online';
+const REPLY_TO = process.env.RESEND_REPLY_TO_EMAIL || 'lainiem@lnlaiagency.com';
 const SITE_NAME = 'The Triangle Hub';
 
 export async function sendEmail({
@@ -27,7 +28,7 @@ export async function sendEmail({
             to,
             subject,
             html,
-            replyTo: replyTo || FROM,
+            replyTo: replyTo || REPLY_TO,
         });
 
         if (error) {
