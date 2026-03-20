@@ -8,7 +8,7 @@ export const maxDuration = 60;
 
 const MAPS_API_KEY = process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
 
-async function fetchGoogleData(name: string, city: string, state: string): Promise<{ photo: string | null; rating: number | null }> {
+async function fetchGoogleData(name: string, city: string, state: string): Promise<{ photo: string | null; rating: number | null; debug?: unknown }> {
     if (!MAPS_API_KEY) return { photo: null, rating: null };
     try {
         const query = `${name} ${city} ${state}`;
@@ -22,9 +22,9 @@ async function fetchGoogleData(name: string, city: string, state: string): Promi
             ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${MAPS_API_KEY}`
             : null;
         const rating = typeof candidate?.rating === 'number' ? candidate.rating : null;
-        return { photo, rating };
-    } catch {
-        return { photo: null, rating: null };
+        return { photo, rating, debug: { status: data?.status, candidateCount: data?.candidates?.length ?? 0 } };
+    } catch (e) {
+        return { photo: null, rating: null, debug: { error: String(e) } };
     }
 }
 
@@ -47,13 +47,19 @@ export async function POST() {
 
     let updated = 0;
     let failed = 0;
+    const debugSample: unknown[] = [];
 
     for (const l of listings) {
-        const { photo, rating } = await fetchGoogleData(
+        const { photo, rating, debug } = await fetchGoogleData(
             l.name as string,
             (l.location_city as string) || 'Raleigh',
             (l.location_state as string) || 'NC'
         );
+
+        // Capture first 3 results for debugging
+        if (debugSample.length < 3) {
+            debugSample.push({ name: l.name, photo: !!photo, rating, debug });
+        }
 
         if (photo || rating !== null) {
             await sql`
@@ -73,5 +79,6 @@ export async function POST() {
         message: `${updated} listings updated with Google data, ${failed} not found.`,
         updated,
         failed,
+        debugSample,
     });
 }
