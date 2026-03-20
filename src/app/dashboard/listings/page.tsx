@@ -144,7 +144,7 @@ export default function BusinessesPage() {
         else { setSortKey(key); setSortDir('asc'); }
     };
 
-    const SortIcon = ({ col }: { col: string }) => sortKey === col
+    const sortIcon = (col: string) => sortKey === col
         ? (sortDir === 'asc' ? <ChevronUp size={13} className="inline ml-1" /> : <ChevronDownIcon size={13} className="inline ml-1" />)
         : <ChevronUp size={13} className="inline ml-1 opacity-20" />;
 
@@ -265,7 +265,7 @@ export default function BusinessesPage() {
                                 ].map(col => (
                                     <th key={col.key} onClick={() => toggleSort(col.key)}
                                         className="px-6 py-3.5 font-semibold cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none whitespace-nowrap">
-                                        {col.label}<SortIcon col={col.key} />
+                                        {col.label}{sortIcon(col.key)}
                                     </th>
                                 ))}
                                 <th className="px-6 py-3.5 font-semibold text-center">Active</th>
@@ -277,7 +277,7 @@ export default function BusinessesPage() {
                                 <tr><td colSpan={9} className="py-16 text-center">
                                     <Loader2 size={20} className="animate-spin text-primary-400 mx-auto" />
                                 </td></tr>
-                            ) : filtered.length === 0 ? (
+                            ) : sorted.length === 0 ? (
                                 <tr><td colSpan={9} className="py-16 text-center text-gray-400 text-sm">
                                     No businesses in this tab.{' '}
                                     {tab !== 'all' && <button onClick={() => setTab('all')} className="text-primary-500 font-semibold hover:underline">View all</button>}
