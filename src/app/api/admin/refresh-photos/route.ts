@@ -1,7 +1,7 @@
 import { sql } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { authOptions } from '@/lib/authOptions';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
