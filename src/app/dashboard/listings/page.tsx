@@ -94,7 +94,7 @@ export default function BusinessesPage() {
     const exportCSV = () => {
         const headers = ['id','name','slug','category','location_city','location_state','contact_email','contact_name','phone','website','plan_name','active','featured','claimed','created_at'];
         const rows = listings.map(l => headers.map(h => {
-            const val = (l as Record<string, unknown>)[h] ?? '';
+            const val = (l as unknown as Record<string, unknown>)[h] ?? '';
             const str = String(val).replace(/"/g, '""');
             return `"${str}"`;
         }).join(','));
