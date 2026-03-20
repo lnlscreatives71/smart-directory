@@ -8,19 +8,23 @@ export const maxDuration = 60;
 
 const MAPS_API_KEY = process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
 
-async function fetchGooglePhoto(name: string, city: string, state: string): Promise<string | null> {
-    if (!MAPS_API_KEY) return null;
+async function fetchGoogleData(name: string, city: string, state: string): Promise<{ photo: string | null; rating: number | null }> {
+    if (!MAPS_API_KEY) return { photo: null, rating: null };
     try {
         const query = `${name} ${city} ${state}`;
         const res = await fetch(
-            `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,photos&key=${MAPS_API_KEY}`
+            `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,photos,rating&key=${MAPS_API_KEY}`
         );
         const data = await res.json();
-        const photoRef = data?.candidates?.[0]?.photos?.[0]?.photo_reference;
-        if (!photoRef) return null;
-        return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${MAPS_API_KEY}`;
+        const candidate = data?.candidates?.[0];
+        const photoRef = candidate?.photos?.[0]?.photo_reference;
+        const photo = photoRef
+            ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${MAPS_API_KEY}`
+            : null;
+        const rating = typeof candidate?.rating === 'number' ? candidate.rating : null;
+        return { photo, rating };
     } catch {
-        return null;
+        return { photo: null, rating: null };
     }
 }
 
@@ -45,13 +49,19 @@ export async function POST() {
     let failed = 0;
 
     for (const l of listings) {
-        const photo = await fetchGooglePhoto(
+        const { photo, rating } = await fetchGoogleData(
             l.name as string,
-            l.location_city as string || 'Raleigh',
-            l.location_state as string || 'NC'
+            (l.location_city as string) || 'Raleigh',
+            (l.location_state as string) || 'NC'
         );
-        if (photo) {
-            await sql`UPDATE listings SET image_url = ${photo} WHERE id = ${l.id}`;
+
+        if (photo || rating !== null) {
+            await sql`
+                UPDATE listings SET
+                    image_url = COALESCE(${photo}, image_url),
+                    rating = COALESCE(${rating}, rating)
+                WHERE id = ${l.id}
+            `;
             updated++;
         } else {
             failed++;
@@ -60,7 +70,7 @@ export async function POST() {
 
     return NextResponse.json({
         success: true,
-        message: `${updated} photos updated, ${failed} not found on Google Places.`,
+        message: `${updated} listings updated with Google data, ${failed} not found.`,
         updated,
         failed,
     });
