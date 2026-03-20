@@ -11,7 +11,11 @@ const MAPS_API_KEY = process.env.MAPS_SERVER_API_KEY || process.env.NEXT_PUBLIC_
 async function fetchGoogleData(name: string, city: string, state: string): Promise<{ photo: string | null; rating: number | null; debug?: unknown }> {
     if (!MAPS_API_KEY) return { photo: null, rating: null };
     try {
-        const query = `${name} ${city} ${state}`;
+        // Strip parenthetical suffixes e.g. "Peak Seasons HVAC (Plumbing)" → "Peak Seasons HVAC"
+        const cleanName = name.replace(/\s*\(.*?\)\s*$/, '').trim();
+        // Use Raleigh as fallback if city is a state abbreviation or too short
+        const cleanCity = city.length <= 2 ? 'Raleigh' : city;
+        const query = `${cleanName} ${cleanCity} ${state}`;
         const res = await fetch(
             `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(query)}&inputtype=textquery&fields=place_id,photos,rating&key=${MAPS_API_KEY}`
         );
