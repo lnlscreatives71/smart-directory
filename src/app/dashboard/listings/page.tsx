@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
     Search, Edit, Eye, Plus, Loader2, MapPin, Phone,
-    CheckCircle2, XCircle, AlertTriangle, Trash2, ImageIcon
+    CheckCircle2, XCircle, AlertTriangle, Trash2, ImageIcon, ChevronUp, ChevronDown as ChevronDownIcon
 } from 'lucide-react';
 
 interface Listing {
@@ -44,6 +44,8 @@ export default function BusinessesPage() {
     const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
     const [bulkDeleting, setBulkDeleting] = useState(false);
     const [refreshingPhotos, setRefreshingPhotos] = useState(false);
+    const [sortKey, setSortKey] = useState<string>('name');
+    const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
     const showToast = (type: 'success' | 'error', msg: string) => {
         setToast({ type, msg }); setTimeout(() => setToast(null), 3200);
@@ -130,12 +132,28 @@ export default function BusinessesPage() {
         return true;
     });
 
-    const allSelected = filtered.length > 0 && filtered.every(l => selected.has(l.id));
+    const sorted = [...filtered].sort((a, b) => {
+        const av = (a as Record<string, unknown>)[sortKey] ?? '';
+        const bv = (b as Record<string, unknown>)[sortKey] ?? '';
+        const cmp = String(av).localeCompare(String(bv), undefined, { numeric: true });
+        return sortDir === 'asc' ? cmp : -cmp;
+    });
+
+    const toggleSort = (key: string) => {
+        if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+        else { setSortKey(key); setSortDir('asc'); }
+    };
+
+    const SortIcon = ({ col }: { col: string }) => sortKey === col
+        ? (sortDir === 'asc' ? <ChevronUp size={13} className="inline ml-1" /> : <ChevronDownIcon size={13} className="inline ml-1" />)
+        : <ChevronUp size={13} className="inline ml-1 opacity-20" />;
+
+    const allSelected = sorted.length > 0 && sorted.every(l => selected.has(l.id));
     const toggleSelectAll = () => {
         if (allSelected) {
-            setSelected(prev => { const n = new Set(prev); filtered.forEach(l => n.delete(l.id)); return n; });
+            setSelected(prev => { const n = new Set(prev); sorted.forEach(l => n.delete(l.id)); return n; });
         } else {
-            setSelected(prev => { const n = new Set(prev); filtered.forEach(l => n.add(l.id)); return n; });
+            setSelected(prev => { const n = new Set(prev); sorted.forEach(l => n.add(l.id)); return n; });
         }
     };
     const toggleSelect = (id: number) => {
@@ -237,12 +255,19 @@ export default function BusinessesPage() {
                                     <input type="checkbox" checked={allSelected} onChange={toggleSelectAll}
                                         className="w-4 h-4 rounded border-gray-300 text-primary-600 cursor-pointer" />
                                 </th>
-                                <th className="px-6 py-3.5 font-semibold">Name</th>
-                                <th className="px-6 py-3.5 font-semibold">Type</th>
-                                <th className="px-6 py-3.5 font-semibold">Status</th>
-                                <th className="px-6 py-3.5 font-semibold">Reason</th>
-                                <th className="px-6 py-3.5 font-semibold">Address</th>
-                                <th className="px-6 py-3.5 font-semibold">Phone #</th>
+                                {[
+                                    { label: 'Name', key: 'name' },
+                                    { label: 'Type', key: 'plan_name' },
+                                    { label: 'Status', key: 'active' },
+                                    { label: 'Reason', key: 'claimed' },
+                                    { label: 'Address', key: 'location_city' },
+                                    { label: 'Phone #', key: 'phone' },
+                                ].map(col => (
+                                    <th key={col.key} onClick={() => toggleSort(col.key)}
+                                        className="px-6 py-3.5 font-semibold cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none whitespace-nowrap">
+                                        {col.label}<SortIcon col={col.key} />
+                                    </th>
+                                ))}
                                 <th className="px-6 py-3.5 font-semibold text-center">Active</th>
                                 <th className="px-6 py-3.5 font-semibold text-right">Actions</th>
                             </tr>
@@ -257,7 +282,7 @@ export default function BusinessesPage() {
                                     No businesses in this tab.{' '}
                                     {tab !== 'all' && <button onClick={() => setTab('all')} className="text-primary-500 font-semibold hover:underline">View all</button>}
                                 </td></tr>
-                            ) : filtered.map(l => (
+                            ) : sorted.map(l => (
                                 <tr key={l.id} className={`transition-colors group ${selected.has(l.id) ? 'bg-primary-50/50 dark:bg-primary-900/10' : 'hover:bg-gray-50 dark:hover:bg-slate-800/40'}`}>
                                     {/* Checkbox */}
                                     <td className="px-4 py-4">
