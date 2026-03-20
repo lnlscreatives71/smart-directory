@@ -11,10 +11,16 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+    // Accept limit from query param (Vercel GET crons) or JSON body
+    const url = new URL(request.url);
+    const queryLimit = url.searchParams.get('limit');
     const body = await request.text().catch(() => '');
+    const bodyLimit = body ? (() => { try { return JSON.parse(body)?.limit; } catch { return null; } })() : null;
+    const limit = queryLimit || bodyLimit || 20; // default batch of 20
+
     const makeRequest = () => new Request(request.url, {
         method: 'POST',
-        body: body || undefined,
+        body: JSON.stringify({ limit }),
         headers: { 'content-type': 'application/json' },
     });
 
