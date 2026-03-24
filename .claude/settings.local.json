@@ -61,7 +61,17 @@
       "Bash(curl -s --max-time 30 -X POST http://localhost:3000/api/cron/saas-push -H \"Content-Type: application/json\" -d '{\"\"forceRun\"\":true}')",
       "Bash(npm list:*)",
       "Bash(node -e \"require\\(''''lucide-react''''\\)\")",
-      "Bash(node -e \"const {Loader2} = require\\(''lucide-react''\\); console.log\\(!!Loader2\\)\")"
+      "Bash(node -e \"const {Loader2} = require\\(''lucide-react''\\); console.log\\(!!Loader2\\)\")",
+      "Bash(grep -n \"MAPS\\\\|map\\\\|image_url\\\\|photo\" src/app/biz/[slug]/page.tsx)",
+      "WebFetch(domain:www.lnlaiagency.com)",
+      "Bash(node -e \"const bcrypt = require\\(''bcryptjs''\\); bcrypt.hash\\(''Admin123!'', 10\\).then\\(h => console.log\\(h\\)\\)\")",
+      "Bash(mkdir -p \"c:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\Antigravity Projects\\\\smart-directory-nc\\\\migrations\")",
+      "Bash(mkdir -p \"c:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\Antigravity Projects\\\\smart-directory-nc\\\\scripts\")",
+      "Bash(ls \"c:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\Antigravity Projects\\\\smart-directory-nc\\\\scripts\"\" 2>/dev/null || echo \"empty \")",
+      "Bash(curl -s \"https://www.thetrianglehub.online/api/cron/all?limit=20\")",
+      "Bash(node -e \":*)",
+      "Bash(cp \"C:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\LNL Group Other Revenue Streams\\\\sitemap.xml\" \"C:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\Antigravity Projects\\\\smart-directory-nc\\\\.claude\\\\worktrees\\\\zealous-shamir\\\\public\\\\sitemap.xml\")",
+      "Bash(cp \"C:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\LNL Group Other Revenue Streams\\\\robots.txt\" \"C:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\Antigravity Projects\\\\smart-directory-nc\\\\.claude\\\\worktrees\\\\zealous-shamir\\\\public\\\\robots.txt\")"
     ]
   }
 }

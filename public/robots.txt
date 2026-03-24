@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block dashboard/admin areas from crawling
+Disallow: /dashboard
+Disallow: /login
+
+Sitemap: https://www.thetrianglehub.online/sitemap.xml
