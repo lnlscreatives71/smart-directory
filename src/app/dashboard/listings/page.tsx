@@ -3,8 +3,21 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
     Search, Edit, Eye, Plus, Loader2, MapPin, Phone,
-    CheckCircle2, XCircle, AlertTriangle, Trash2, ImageIcon, ChevronUp, ChevronDown as ChevronDownIcon, Download
+    CheckCircle2, XCircle, AlertTriangle, Trash2, ImageIcon, ChevronUp, ChevronDown as ChevronDownIcon, Download, Mail
 } from 'lucide-react';
+
+function outreachLabel(status?: string) {
+    if (!status) return null;
+    const map: Record<string, { label: string; color: string }> = {
+        pending: { label: 'Queued', color: 'text-slate-400' },
+        email_1_sent: { label: 'Email 1', color: 'text-blue-500' },
+        email_2_sent: { label: 'Email 2', color: 'text-indigo-500' },
+        email_3_sent: { label: 'Email 3', color: 'text-violet-500' },
+        email_4_sent: { label: 'Email 4', color: 'text-purple-500' },
+        completed: { label: 'Done', color: 'text-emerald-500' },
+    };
+    return map[status] || { label: status, color: 'text-slate-400' };
+}
 
 interface Listing {
     id: number; name: string; slug: string; category: string;
@@ -12,10 +25,14 @@ interface Listing {
     contact_email?: string; phone?: string;
     plan_name?: string; plan_price?: number;
     active: boolean; featured: boolean; claimed: boolean;
+    claim_status?: string;
+    outreach_status?: string;
+    outreach_opens?: number;
+    outreach_clicks?: number;
     created_at: string;
 }
 
-type TabKey = 'all' | 'premium' | 'free' | 'claim' | 'new';
+type TabKey = 'all' | 'premium' | 'free' | 'unclaimed' | 'outreach' | 'new';
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
     return (
@@ -144,7 +161,8 @@ export default function BusinessesPage() {
     const filtered = listings.filter(l => {
         if (tab === 'premium') return l.plan_name && !['free', 'none'].includes(l.plan_name.toLowerCase());
         if (tab === 'free') return !l.plan_name || l.plan_name.toLowerCase() === 'free';
-        if (tab === 'claim') return !l.claimed;
+        if (tab === 'unclaimed') return !l.claimed;
+        if (tab === 'outreach') return !!l.outreach_status;
         if (tab === 'new') return new Date(l.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         return true;
     });
@@ -181,16 +199,18 @@ export default function BusinessesPage() {
         all: listings.length,
         premium: listings.filter(l => l.plan_name && !['free', 'none'].includes(l.plan_name.toLowerCase())).length,
         free: listings.filter(l => !l.plan_name || l.plan_name.toLowerCase() === 'free').length,
-        claim: listings.filter(l => !l.claimed).length,
+        unclaimed: listings.filter(l => !l.claimed).length,
+        outreach: listings.filter(l => !!l.outreach_status).length,
         new: listings.filter(l => new Date(l.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length,
     };
 
     const TABS: { key: TabKey; label: string }[] = [
-        { key: 'all', label: `All Accounts (${counts.all})` },
-        { key: 'premium', label: `Premium Accounts (${counts.premium})` },
-        { key: 'free', label: `Free Accounts (${counts.free})` },
-        { key: 'claim', label: 'Claim Request' },
-        { key: 'new', label: `New Business Requests (${counts.new})` },
+        { key: 'all', label: `All (${counts.all})` },
+        { key: 'premium', label: `Premium (${counts.premium})` },
+        { key: 'free', label: `Free (${counts.free})` },
+        { key: 'unclaimed', label: `Unclaimed (${counts.unclaimed})` },
+        { key: 'outreach', label: `In Outreach (${counts.outreach})` },
+        { key: 'new', label: `New (${counts.new})` },
     ];
 
     return (
@@ -280,11 +300,12 @@ export default function BusinessesPage() {
                                 </th>
                                 {[
                                     { label: 'Name', key: 'name' },
-                                    { label: 'Type', key: 'plan_name' },
+                                    { label: 'Plan', key: 'plan_name' },
                                     { label: 'Status', key: 'active' },
-                                    { label: 'Reason', key: 'claimed' },
+                                    { label: 'Claimed', key: 'claimed' },
+                                    { label: 'Outreach', key: 'outreach_status' },
                                     { label: 'Address', key: 'location_city' },
-                                    { label: 'Phone #', key: 'phone' },
+                                    { label: 'Phone', key: 'phone' },
                                 ].map(col => (
                                     <th key={col.key} onClick={() => toggleSort(col.key)}
                                         className="px-6 py-3.5 font-semibold cursor-pointer hover:text-slate-700 dark:hover:text-slate-200 select-none whitespace-nowrap">
@@ -329,11 +350,26 @@ export default function BusinessesPage() {
                                             {l.active ? 'published' : 'unpublished'}
                                         </span>
                                     </td>
-                                    {/* Reason */}
+                                    {/* Claimed */}
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center gap-1 text-xs font-medium ${l.claimed ? 'text-secondary-600' : 'text-amber-600'}`}>
                                             {l.claimed ? <><CheckCircle2 size={12} /> Claimed</> : <><XCircle size={12} /> Unclaimed</>}
                                         </span>
+                                    </td>
+                                    {/* Outreach */}
+                                    <td className="px-6 py-4">
+                                        {(() => {
+                                            const info = outreachLabel(l.outreach_status);
+                                            if (!info) return <span className="text-xs text-slate-300 dark:text-slate-600">—</span>;
+                                            return (
+                                                <span className={`inline-flex items-center gap-1 text-xs font-semibold ${info.color}`}>
+                                                    <Mail size={11} />
+                                                    {info.label}
+                                                    {(l.outreach_opens ?? 0) > 0 && <span className="text-amber-500 ml-1">👁 {l.outreach_opens}</span>}
+                                                    {(l.outreach_clicks ?? 0) > 0 && <span className="text-green-500">↗ {l.outreach_clicks}</span>}
+                                                </span>
+                                            );
+                                        })()}
                                     </td>
                                     {/* Address */}
                                     <td className="px-6 py-4">

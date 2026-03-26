@@ -10,17 +10,19 @@ export async function GET(request: Request) {
         const plan = searchParams.get('plan') || '';
 
         const listings = await sql`
-      SELECT l.*, p.name as plan_name, p.monthly_price as plan_price
+      SELECT l.*, p.name as plan_name, p.monthly_price as plan_price,
+             oc.status as outreach_status, oc.opens as outreach_opens, oc.clicks as outreach_clicks
       FROM listings l
       LEFT JOIN plans p ON l.plan_id = p.id
+      LEFT JOIN outreach_campaigns oc ON oc.listing_id = l.id
       WHERE (
-        ${q} = '' OR 
-        l.name ILIKE ${`%${q}%`} OR 
-        l.category ILIKE ${`%${q}%`} OR 
+        ${q} = '' OR
+        l.name ILIKE ${`%${q}%`} OR
+        l.category ILIKE ${`%${q}%`} OR
         l.location_city ILIKE ${`%${q}%`}
       )
       AND (
-        ${plan} = '' OR 
+        ${plan} = '' OR
         p.name = ${plan}
       )
       ORDER BY l.created_at DESC
