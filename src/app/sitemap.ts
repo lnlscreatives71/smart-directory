@@ -16,12 +16,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Fetch all active listing slugs
     let listingPages: MetadataRoute.Sitemap = [];
     try {
-        const listings = await sql<{ slug: string; updated_at: string }[]>`
+        const listings = (await sql`
             SELECT slug, updated_at
             FROM listings
             WHERE active = TRUE AND slug IS NOT NULL
             ORDER BY updated_at DESC
-        `;
+        `) as { slug: string; updated_at: string }[];
         listingPages = listings.map((l) => ({
             url: `${BASE_URL}/biz/${l.slug}`,
             lastModified: new Date(l.updated_at),
@@ -35,14 +35,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Fetch distinct categories and slugify for category pages
     let categoryPages: MetadataRoute.Sitemap = [];
     try {
-        const categories = await sql<{ category: string; count: string }[]>`
+        const categories = (await sql`
             SELECT category, COUNT(*) as count
             FROM listings
             WHERE active = TRUE AND category IS NOT NULL
             GROUP BY category
             HAVING COUNT(*) >= 3
             ORDER BY COUNT(*) DESC
-        `;
+        `) as { category: string; count: string }[];
         categoryPages = categories.map((c) => {
             const slug = c.category
                 .toLowerCase()
