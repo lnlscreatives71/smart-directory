@@ -29,6 +29,9 @@ export async function sendEmail({
             subject,
             html,
             replyTo: replyTo || REPLY_TO,
+            headers: {
+                'X-Entity-Ref-ID': Math.random().toString(36).slice(2), // unique per email for open tracking
+            },
         });
 
         if (error) {

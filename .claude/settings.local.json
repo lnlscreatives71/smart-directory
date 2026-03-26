@@ -70,8 +70,8 @@
       "Bash(ls \"c:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\Antigravity Projects\\\\smart-directory-nc\\\\scripts\"\" 2>/dev/null || echo \"empty \")",
       "Bash(curl -s \"https://www.thetrianglehub.online/api/cron/all?limit=20\")",
       "Bash(node -e \":*)",
-      "Bash(cp \"C:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\LNL Group Other Revenue Streams\\\\sitemap.xml\" \"C:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\Antigravity Projects\\\\smart-directory-nc\\\\.claude\\\\worktrees\\\\zealous-shamir\\\\public\\\\sitemap.xml\")",
-      "Bash(cp \"C:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\LNL Group Other Revenue Streams\\\\robots.txt\" \"C:\\\\Users\\\\laini\\\\OneDrive\\\\Documents\\\\Antigravity Projects\\\\smart-directory-nc\\\\.claude\\\\worktrees\\\\zealous-shamir\\\\public\\\\robots.txt\")"
+      "Bash(node -e \"const { Twitter, Facebook, Instagram, Linkedin } = require\\(''lucide-react''\\); console.log\\(''Twitter:'', !!Twitter, ''Facebook:'', !!Facebook, ''Instagram:'', !!Instagram, ''Linkedin:'', !!Linkedin\\);\")",
+      "Bash(find '/c/Users/laini/OneDrive/Documents/Antigravity Projects/smart-directory-nc/src/app/api' -name *.ts)"
     ]
   }
 }
