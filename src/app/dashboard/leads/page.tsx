@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { OutreachCampaign, ContactNote } from '@/lib/types';
 import {
     Mail, Clock, CheckCircle2, RefreshCw, Send, Building2,
@@ -610,7 +611,13 @@ export default function CRMPage() {
                                         {/* Business */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2">
-                                                <span className="font-semibold text-slate-900 dark:text-slate-100 truncate">{camp.listing_name}</span>
+                                                <Link
+                                                    href={`/dashboard/leads/contact?id=${camp.id}`}
+                                                    onClick={e => e.stopPropagation()}
+                                                    className="font-semibold text-slate-900 dark:text-slate-100 truncate hover:text-primary-600 dark:hover:text-primary-400 transition"
+                                                >
+                                                    {camp.listing_name}
+                                                </Link>
                                                 {camp.claimed && <span className="text-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-2 py-0.5 rounded-full font-bold flex-shrink-0">CLAIMED</span>}
                                             </div>
                                             <span className="text-xs text-slate-400">{camp.listing_email || 'No email'}</span>
