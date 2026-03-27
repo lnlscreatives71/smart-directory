@@ -71,7 +71,8 @@
       "Bash(curl -s \"https://www.thetrianglehub.online/api/cron/all?limit=20\")",
       "Bash(node -e \":*)",
       "Bash(node -e \"const { Twitter, Facebook, Instagram, Linkedin } = require\\(''lucide-react''\\); console.log\\(''Twitter:'', !!Twitter, ''Facebook:'', !!Facebook, ''Instagram:'', !!Instagram, ''Linkedin:'', !!Linkedin\\);\")",
-      "Bash(find '/c/Users/laini/OneDrive/Documents/Antigravity Projects/smart-directory-nc/src/app/api' -name *.ts)"
+      "Bash(find '/c/Users/laini/OneDrive/Documents/Antigravity Projects/smart-directory-nc/src/app/api' -name *.ts)",
+      "Bash(cat src/app/category/[slug]/page.tsx)"
     ]
   }
 }
