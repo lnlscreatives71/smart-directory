@@ -127,7 +127,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <ul className="space-y-2 text-sm text-slate-300">
                   <li>📞 {settings.contact.phone}</li>
                   <li>📍 {settings.contact.address}</li>
-                  <li><Link href="/support" className="hover:text-white transition">Support Center</Link></li>
+                  <li>📧 <a href="mailto:directory@thetrianglehub.online" className="hover:text-white transition">directory@thetrianglehub.online</a></li>
+                  <li><Link href="/support" className="hover:text-white transition">Contact Us</Link></li>
                 </ul>
               </div>
               <div>
