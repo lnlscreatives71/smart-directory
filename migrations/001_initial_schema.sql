@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS listings (
   featured BOOLEAN DEFAULT false,
   active BOOLEAN NOT NULL DEFAULT true,
   claimed BOOLEAN DEFAULT false,
-  claim_status VARCHAR DEFAULT 'pending',
+  claim_status VARCHAR DEFAULT NULL,
   claimed_at TIMESTAMPTZ,
   plan_id INTEGER,
   feature_flags JSONB DEFAULT '{}',

@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
             l.contact_email,
             u.name AS claimant_name, u.email AS claimant_email, u.created_at AS claimed_on
         FROM listings l
-        LEFT JOIN users u ON u.listing_id = l.id AND u.role = 'smb'
+        INNER JOIN users u ON u.listing_id = l.id AND u.role = 'smb'
         WHERE l.claim_status = ${status}
         ORDER BY u.created_at DESC
         LIMIT 100
