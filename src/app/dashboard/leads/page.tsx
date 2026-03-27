@@ -405,6 +405,7 @@ export default function CRMPage() {
     const [batchLimit, setBatchLimit] = useState<string>('20');
     const [showBatchInput, setShowBatchInput] = useState(false);
     const [showAnalytics, setShowAnalytics] = useState(true);
+    const [activeFilter, setActiveFilter] = useState<'all' | 'pending' | 'active' | 'opened' | 'clicked' | 'claimed' | 'done'>('all');
 
     const fetchCampaigns = async () => {
         setLoading(true);
@@ -446,15 +447,27 @@ export default function CRMPage() {
         });
     };
 
-    // Metrics
-    const metrics = [
-        { label: 'Pending', value: campaigns.filter(c => c.status === 'pending').length, icon: Clock, accent: '' },
-        { label: 'Active Sequences', value: campaigns.filter(c => ['email_1_sent', 'email_2_sent', 'email_3_sent'].includes(c.status)).length, icon: Mail, accent: 'border-b-4 border-b-primary-500' },
-        { label: 'Opened Email', value: campaigns.filter(c => c.opens > 0).length, icon: Eye, accent: 'border-b-4 border-b-amber-500' },
-        { label: 'Clicked Link', value: campaigns.filter(c => c.clicks > 0).length, icon: MousePointerClick, accent: 'border-b-4 border-b-green-500' },
-        { label: 'Claimed', value: campaigns.filter(c => c.claimed).length, icon: CheckCircle2, accent: 'border-b-4 border-b-emerald-500' },
-        { label: 'Sequence Done', value: campaigns.filter(c => c.status === 'completed').length, icon: CheckCircle2, accent: '' },
+    // Metrics — with Number() coercion to handle postgres string returns
+    const metrics: { label: string; filter: typeof activeFilter; value: number; icon: React.ElementType; accent: string; activeAccent: string }[] = [
+        { label: 'All', filter: 'all', value: campaigns.length, icon: Building2, accent: '', activeAccent: 'border-b-4 border-b-slate-500 bg-slate-50 dark:bg-slate-800' },
+        { label: 'Pending', filter: 'pending', value: campaigns.filter(c => c.status === 'pending').length, icon: Clock, accent: '', activeAccent: 'border-b-4 border-b-slate-400 bg-slate-50 dark:bg-slate-800' },
+        { label: 'Active', filter: 'active', value: campaigns.filter(c => ['email_1_sent', 'email_2_sent', 'email_3_sent'].includes(c.status)).length, icon: Mail, accent: '', activeAccent: 'border-b-4 border-b-primary-500 bg-primary-50 dark:bg-primary-900/20' },
+        { label: 'Opened Email', filter: 'opened', value: campaigns.filter(c => Number(c.opens) > 0).length, icon: Eye, accent: '', activeAccent: 'border-b-4 border-b-amber-500 bg-amber-50 dark:bg-amber-900/20' },
+        { label: 'Clicked Link', filter: 'clicked', value: campaigns.filter(c => Number(c.clicks) > 0).length, icon: MousePointerClick, accent: '', activeAccent: 'border-b-4 border-b-green-500 bg-green-50 dark:bg-green-900/20' },
+        { label: 'Claimed', filter: 'claimed', value: campaigns.filter(c => c.claimed).length, icon: CheckCircle2, accent: '', activeAccent: 'border-b-4 border-b-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' },
+        { label: 'Sequence Done', filter: 'done', value: campaigns.filter(c => c.status === 'completed').length, icon: CheckCircle2, accent: '', activeAccent: 'border-b-4 border-b-violet-500 bg-violet-50 dark:bg-violet-900/20' },
     ];
+
+    const filteredCampaigns = campaigns.filter(c => {
+        if (activeFilter === 'all') return true;
+        if (activeFilter === 'pending') return c.status === 'pending';
+        if (activeFilter === 'active') return ['email_1_sent', 'email_2_sent', 'email_3_sent'].includes(c.status);
+        if (activeFilter === 'opened') return Number(c.opens) > 0;
+        if (activeFilter === 'clicked') return Number(c.clicks) > 0;
+        if (activeFilter === 'claimed') return c.claimed;
+        if (activeFilter === 'done') return c.status === 'completed';
+        return true;
+    });
 
     return (
         <div className="max-w-7xl mx-auto space-y-8">
@@ -521,16 +534,24 @@ export default function CRMPage() {
                 {showAnalytics && <AnalyticsDashboard />}
             </div>
 
-            {/* Metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                {metrics.map(m => (
-                    <div key={m.label} className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm ${m.accent}`}>
-                        <div className="flex items-center text-slate-500 mb-2 font-medium text-sm gap-2">
-                            <m.icon size={14} /> {m.label}
-                        </div>
-                        <div className="text-3xl font-bold text-slate-900 dark:text-white">{m.value}</div>
-                    </div>
-                ))}
+            {/* Clickable Metric Filter Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                {metrics.map(m => {
+                    const isActive = activeFilter === m.filter;
+                    return (
+                        <button
+                            key={m.label}
+                            onClick={() => { setActiveFilter(m.filter); setView('list'); }}
+                            className={`text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm transition-all hover:shadow-md hover:border-slate-300 dark:hover:border-slate-600 ${isActive ? m.activeAccent : ''}`}
+                        >
+                            <div className="flex items-center text-slate-500 mb-1.5 font-medium text-xs gap-1.5">
+                                <m.icon size={12} /> {m.label}
+                            </div>
+                            <div className={`text-2xl font-bold ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>{m.value}</div>
+                            {isActive && <div className="text-[10px] text-slate-400 mt-0.5">showing below ↓</div>}
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Console log */}
@@ -558,15 +579,26 @@ export default function CRMPage() {
                 <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                     <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2 bg-slate-50/50 dark:bg-slate-950/50">
                         <Building2 size={15} className="text-slate-400" />
-                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">Pipeline Database</h3>
-                        <span className="ml-auto text-xs text-slate-400">{campaigns.length} contacts</span>
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                            {activeFilter === 'all' ? 'All Contacts' :
+                             activeFilter === 'opened' ? '👁 Opened Email' :
+                             activeFilter === 'clicked' ? '↗ Clicked Link' :
+                             activeFilter === 'active' ? 'Active Sequences' :
+                             activeFilter === 'pending' ? 'Pending' :
+                             activeFilter === 'claimed' ? 'Claimed' :
+                             'Sequence Done'}
+                        </h3>
+                        {activeFilter !== 'all' && (
+                            <button onClick={() => setActiveFilter('all')} className="text-xs text-primary-500 hover:underline">clear filter</button>
+                        )}
+                        <span className="ml-auto text-xs text-slate-400">{filteredCampaigns.length} of {campaigns.length} contacts</span>
                     </div>
                     <div className="divide-y divide-slate-100 dark:divide-slate-800">
                         {loading ? (
                             <div className="px-6 py-8 text-center text-slate-400 text-sm">Loading pipeline...</div>
-                        ) : campaigns.length === 0 ? (
-                            <div className="px-6 py-8 text-center text-slate-400 text-sm">No campaigns found. Import businesses with email addresses to start.</div>
-                        ) : campaigns.map(camp => {
+                        ) : filteredCampaigns.length === 0 ? (
+                            <div className="px-6 py-8 text-center text-slate-400 text-sm">No contacts match this filter.</div>
+                        ) : filteredCampaigns.map(camp => {
                             const stage = getStage(camp.pipeline_stage || 'prospect');
                             const isOpen = expandedId === camp.id;
                             return (

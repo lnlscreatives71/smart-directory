@@ -28,8 +28,8 @@ export async function GET() {
                 l.image_url
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
-            WHERE l.claimed = false
-            ORDER BY c.updated_at DESC
+            WHERE (l.claimed = false OR l.claimed IS NULL)
+            ORDER BY c.opens DESC, c.clicks DESC, c.updated_at DESC
         `;
         return NextResponse.json({ success: true, data: campaigns });
     } catch (error: any) {

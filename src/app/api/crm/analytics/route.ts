@@ -18,7 +18,7 @@ export async function GET() {
                 COUNT(*) FILTER (WHERE status = 'pending') AS pending
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
-            WHERE l.claimed = FALSE
+            WHERE (l.claimed = FALSE OR l.claimed IS NULL)
         `;
 
         // A/B variant breakdown
@@ -33,7 +33,7 @@ export async function GET() {
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE ab_variant IS NOT NULL
-              AND l.claimed = FALSE
+              AND (l.claimed = FALSE OR l.claimed IS NULL)
             GROUP BY ab_variant
             ORDER BY ab_variant
         `;
@@ -55,7 +55,7 @@ export async function GET() {
                 COUNT(*) FILTER (WHERE email_4_resend_id IS NOT NULL AND clicks > 0) AS email4_clicked
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
-            WHERE l.claimed = FALSE
+            WHERE (l.claimed = FALSE OR l.claimed IS NULL)
         `;
 
         // Daily sends over last 14 days
@@ -68,7 +68,7 @@ export async function GET() {
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
             WHERE email_1_sent_at > NOW() - INTERVAL '14 days'
-              AND l.claimed = FALSE
+              AND (l.claimed = FALSE OR l.claimed IS NULL)
             GROUP BY DATE(email_1_sent_at)
             ORDER BY day ASC
         `;
