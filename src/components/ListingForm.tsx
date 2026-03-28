@@ -33,6 +33,7 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
         name: initialData?.name || '',
         contact_name: initialData?.contact_name || '',
         contact_email: initialData?.contact_email || '',
+        contact_email_2: (initialData as any)?.contact_email_2 || '',
         phone: initialData?.phone || '',
         website: initialData?.website || '',
         slug: initialData?.slug || '',
@@ -269,6 +270,12 @@ export default function ListingForm({ initialData = null, agencyId }: { initialD
                             <input type="email" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
                                 placeholder="owner@business.com"
                                 value={formData.contact_email} onChange={e => setFormData({ ...formData, contact_email: e.target.value })} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold mb-1.5">Secondary Email <span className="text-slate-500 text-xs">(optional)</span></label>
+                            <input type="email" className="w-full p-2.5 border border-slate-300 rounded-lg dark:bg-slate-950 dark:border-slate-800 focus:ring-2 focus:ring-primary-500/50 outline-none"
+                                placeholder="alternate@business.com"
+                                value={formData.contact_email_2} onChange={e => setFormData({ ...formData, contact_email_2: e.target.value })} />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold mb-1.5">URL Slug <span className="text-red-500">*</span></label>
