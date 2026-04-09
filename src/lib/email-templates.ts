@@ -7,7 +7,7 @@ const LOGO_URL = process.env.NEXT_PUBLIC_LOGO_URL || `${SITE_URL}/triangle-hub-l
 const PRIMARY_COLOR = process.env.NEXT_PUBLIC_PRIMARY_COLOR || '#6366f1';
 const STRATEGY_CALL_URL = process.env.STRATEGY_CALL_URL || `${SITE_URL}/contact`;
 
-function baseTemplate(content: string, preheader?: string): string {
+function baseTemplate(content: string, preheader?: string, unsubscribeUrl?: string): string {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -44,6 +44,7 @@ function baseTemplate(content: string, preheader?: string): string {
               Brought to you by <a href="https://www.lnlaiagency.com/" target="_blank" style="color:#6366f1;text-decoration:none;font-weight:600;">LNL AI Agency</a>
               &nbsp;·&nbsp; AI marketing &amp; automation for local service businesses
             </p>
+            ${unsubscribeUrl ? `<p style="margin:12px 0 0;"><a href="${unsubscribeUrl}" style="color:#334155;font-size:11px;text-decoration:underline;">Unsubscribe from these emails</a></p>` : ''}
           </td>
         </tr>
       </table>
@@ -64,6 +65,7 @@ function greeting(contactName?: string | null): string {
 // ─── Email 1: Notification & Introduction ───────────────────────────────────
 export function email1_notification(businessName: string, contactName: string | null, listingId: number): string {
     const claimUrl = `${SITE_URL}/biz/claim?id=${listingId}`;
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?lid=${listingId}`;
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Your business is live! 🎉</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(contactName)}</p>
@@ -81,11 +83,12 @@ export function email1_notification(businessName: string, contactName: string | 
         </div>
         ${ctaButton('Claim Your Free Profile →', claimUrl)}
         <p style="margin-top:20px;color:#64748b;font-size:13px;">This takes less than 2 minutes. No credit card required.</p>
-    `);
+    `, undefined, unsubscribeUrl);
 }
 
 // ─── Email 2: Reminder & Benefits (Premium Upsell) ───────────────────────────
-export function email2_upsell(businessName: string, contactName: string | null): string {
+export function email2_upsell(businessName: string, contactName: string | null, listingId: number): string {
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?lid=${listingId}`;
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Get more leads from your listing 📈</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(contactName)}</p>
@@ -115,12 +118,13 @@ export function email2_upsell(businessName: string, contactName: string | null):
         </table>
         ${ctaButton('Upgrade to Premium — $29/mo →', UPGRADE_URL)}
         <p style="margin-top:20px;color:#64748b;font-size:13px;">Cancel anytime. No contracts.</p>
-    `);
+    `, undefined, unsubscribeUrl);
 }
 
 // ─── Email 3: Finalization Notice ────────────────────────────────────────────
 export function email3_finalization(businessName: string, contactName: string | null, listingId: number): string {
     const claimUrl = `${SITE_URL}/biz/claim?id=${listingId}`;
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?lid=${listingId}`;
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">We're finalizing listings this week ⚠️</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(contactName)}</p>
@@ -139,12 +143,13 @@ export function email3_finalization(businessName: string, contactName: string | 
         </div>
         ${ctaButton('Confirm & Claim My Listing →', claimUrl)}
         <p style="margin-top:20px;color:#64748b;font-size:13px;">Free to claim · Takes 2 minutes</p>
-    `);
+    `, undefined, unsubscribeUrl);
 }
 
 // ─── Email 4: Final Reminder ──────────────────────────────────────────────────
 export function email4_finalReminder(businessName: string, contactName: string | null, listingId: number): string {
     const claimUrl = `${SITE_URL}/biz/claim?id=${listingId}`;
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?lid=${listingId}`;
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Last chance — don't miss out 🚨</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(contactName)}</p>
@@ -161,11 +166,7 @@ export function email4_finalReminder(businessName: string, contactName: string |
             </p>
         </div>
         ${ctaButton('Claim My Free Listing Now →', claimUrl)}
-        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
-        <p style="color:#475569;font-size:13px;line-height:1.6;">
-            If you'd prefer not to hear from us again, simply reply with "remove" and we'll take you off our list.
-        </p>
-    `);
+    `, undefined, unsubscribeUrl);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -175,6 +176,7 @@ export function email4_finalReminder(businessName: string, contactName: string |
 // B: Email 1 — Social proof angle ("Your neighbors are finding you")
 export function email1_notification_B(businessName: string, contactName: string | null, listingId: number): string {
     const claimUrl = `${SITE_URL}/biz/claim?id=${listingId}`;
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?lid=${listingId}`;
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Your neighbors are already finding you 👋</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(contactName)}</p>
@@ -192,11 +194,12 @@ export function email1_notification_B(businessName: string, contactName: string 
         </div>
         ${ctaButton('Take Control of My Profile →', claimUrl)}
         <p style="margin-top:20px;color:#64748b;font-size:13px;">It takes less than 2 minutes.</p>
-    `);
+    `, undefined, unsubscribeUrl);
 }
 
 // B: Email 2 — ROI/outcome angle instead of feature list
-export function email2_upsell_B(businessName: string, contactName: string | null): string {
+export function email2_upsell_B(businessName: string, contactName: string | null, listingId: number): string {
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?lid=${listingId}`;
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">What would 10 more customers a month mean for you? 🤔</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(contactName)}</p>
@@ -219,12 +222,13 @@ export function email2_upsell_B(businessName: string, contactName: string | null
         </ul>
         ${ctaButton('Start My Premium Trial →', UPGRADE_URL)}
         <p style="margin-top:20px;color:#64748b;font-size:13px;">Cancel anytime. No long-term contracts.</p>
-    `);
+    `, undefined, unsubscribeUrl);
 }
 
 // B: Email 3 — Competitor angle ("your competitors just upgraded")
 export function email3_finalization_B(businessName: string, contactName: string | null, listingId: number): string {
     const claimUrl = `${SITE_URL}/biz/claim?id=${listingId}`;
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?lid=${listingId}`;
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Other businesses in your area just upgraded 🏆</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(contactName)}</p>
@@ -243,12 +247,13 @@ export function email3_finalization_B(businessName: string, contactName: string 
         </div>
         ${ctaButton('Claim My Listing & Stay Competitive →', claimUrl)}
         <p style="margin-top:20px;color:#64748b;font-size:13px;">Free to claim · Upgrade optional</p>
-    `);
+    `, undefined, unsubscribeUrl);
 }
 
 // B: Email 4 — Direct, no-fluff "we're closing your file" angle
 export function email4_finalReminder_B(businessName: string, contactName: string | null, listingId: number): string {
     const claimUrl = `${SITE_URL}/biz/claim?id=${listingId}`;
+    const unsubscribeUrl = `${SITE_URL}/unsubscribe?lid=${listingId}`;
     return baseTemplate(`
         <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">We're closing your file soon 📁</h1>
         <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greeting(contactName)}</p>
@@ -265,9 +270,7 @@ export function email4_finalReminder_B(businessName: string, contactName: string
             </p>
         </div>
         ${ctaButton('Claim Before We Close Your File →', claimUrl)}
-        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
-        <p style="color:#475569;font-size:13px;">Reply "remove" to opt out of future messages.</p>
-    `);
+    `, undefined, unsubscribeUrl);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

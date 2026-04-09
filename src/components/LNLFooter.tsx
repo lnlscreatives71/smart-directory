@@ -25,9 +25,9 @@ export default function LNLFooter() {
                             </div>
                         </div>
                         <div className="flex flex-col gap-3 shrink-0">
-                            <a 
-                                href="https://www.lnlaiagency.com/" 
-                                target="_blank" 
+                            <a
+                                href="https://booking.appointy.com/lnlaiagency?sr=1258318"
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-500 text-white font-bold px-6 py-3 rounded-xl transition"
                             >
@@ -46,28 +46,28 @@ export default function LNLFooter() {
 
                 {/* Feature Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                    <a href="https://www.lnlaiagency.com/" target="_blank" rel="noopener noreferrer" className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-primary-500/50 transition">
+                    <a href="https://www.lnlaiagency.com/services/ai-automation" target="_blank" rel="noopener noreferrer" className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-primary-500/50 transition">
                         <div className="flex items-center gap-3 mb-2">
                             <Bot size={20} className="text-primary-400 group-hover:text-primary-300" />
                             <h4 className="font-bold text-white text-sm">AI Chat Agents</h4>
                         </div>
                         <p className="text-xs text-slate-400">24/7 lead qualification and booking on your website</p>
                     </a>
-                    <a href="https://www.lnlaiagency.com/" target="_blank" rel="noopener noreferrer" className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-primary-500/50 transition">
+                    <a href="https://www.lnlaiagency.com/services/ai-automation" target="_blank" rel="noopener noreferrer" className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-primary-500/50 transition">
                         <div className="flex items-center gap-3 mb-2">
                             <Phone size={20} className="text-primary-400 group-hover:text-primary-300" />
                             <h4 className="font-bold text-white text-sm">AI Voice Agents</h4>
                         </div>
                         <p className="text-xs text-slate-400">Never miss a call. AI answers and books appointments.</p>
                     </a>
-                    <a href="https://www.lnlaiagency.com/" target="_blank" rel="noopener noreferrer" className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-primary-500/50 transition">
+                    <a href="https://booking.appointy.com/lnlaiagency?sr=1258318" target="_blank" rel="noopener noreferrer" className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-primary-500/50 transition">
                         <div className="flex items-center gap-3 mb-2">
                             <Calendar size={20} className="text-primary-400 group-hover:text-primary-300" />
                             <h4 className="font-bold text-white text-sm">Auto Booking</h4>
                         </div>
                         <p className="text-xs text-slate-400">AI schedules appointments directly to your calendar</p>
                     </a>
-                    <a href="https://www.lnlaiagency.com/" target="_blank" rel="noopener noreferrer" className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-primary-500/50 transition">
+                    <a href="https://www.lnlaiagency.com/services/ai-seo" target="_blank" rel="noopener noreferrer" className="group p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-primary-500/50 transition">
                         <div className="flex items-center gap-3 mb-2">
                             <TrendingUp size={20} className="text-primary-400 group-hover:text-primary-300" />
                             <h4 className="font-bold text-white text-sm">AiEO</h4>
@@ -86,25 +86,27 @@ export default function LNLFooter() {
                             </a>
                         </div>
                         <span className="text-slate-600">-</span>
-                        <button 
-                            onClick={() => window.open('https://www.lnlaiagency.com/', '_blank')}
+                        <a
+                            href="https://www.lnlaiagency.com/ai-readiness-quiz"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-primary-400 hover:text-primary-300 text-sm font-semibold transition flex items-center gap-1"
                         >
                             <MessageSquare size={14} />
                             AI Readiness Quiz
-                        </button>
+                        </a>
                     </div>
                     <div className="flex items-center gap-6 text-sm text-slate-400">
-                        <a href="https://www.lnlaiagency.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
+                        <a href="https://www.lnlaiagency.com/services/ai-automation" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                             AI Automation
                         </a>
-                        <a href="https://www.lnlaiagency.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
+                        <a href="https://www.lnlaiagency.com/services/ai-seo" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                             AiEO
                         </a>
-                        <a href="https://www.lnlaiagency.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
+                        <a href="https://www.lnlaiagency.com/services/web-design" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                             Web Design
                         </a>
-                        <a href="https://www.lnlaiagency.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
+                        <a href="https://booking.appointy.com/lnlaiagency?sr=1258318" target="_blank" rel="noopener noreferrer" className="hover:text-white transition">
                             Book Strategy Call
                         </a>
                     </div>

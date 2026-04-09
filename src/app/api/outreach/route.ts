@@ -29,8 +29,11 @@ export async function GET(request: Request) {
             COUNT(*) FILTER (WHERE c.status = 'email_3_sent') as email3,
             COUNT(*) FILTER (WHERE c.status = 'email_4_sent') as email4,
             COUNT(*) FILTER (WHERE c.status = 'completed') as completed,
+            COUNT(*) FILTER (WHERE c.unsubscribed = TRUE) as unsubscribed,
             COALESCE(SUM(c.opens), 0) as total_opens,
             COALESCE(SUM(c.clicks), 0) as total_clicks,
+            COUNT(*) FILTER (WHERE c.opens > 0) as unique_openers,
+            COUNT(*) FILTER (WHERE c.status != 'pending') as total_emailed,
             COUNT(*) FILTER (WHERE c.email_1_sent_at::date = CURRENT_DATE
                 OR c.email_2_sent_at::date = CURRENT_DATE
                 OR c.email_3_sent_at::date = CURRENT_DATE

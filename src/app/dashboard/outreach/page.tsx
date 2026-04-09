@@ -71,6 +71,15 @@ export default function OutreachPage() {
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
+    // Debounced auto-search: fires 400ms after user stops typing
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setSearch(searchInput);
+            setPage(1);
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [searchInput]);
+
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         setSearch(searchInput);
@@ -117,7 +126,7 @@ export default function OutreachPage() {
 
     const totalPages = Math.ceil(total / 50);
 
-    const openRate = stats ? (Number(stats.total_opens) / Math.max(Number(stats.email1) + Number(stats.email2) + Number(stats.email3) + Number(stats.email4) + Number(stats.completed), 1) * 100).toFixed(1) : '0';
+    const openRate = stats ? (Number(stats.unique_openers) / Math.max(Number(stats.total_emailed), 1) * 100).toFixed(1) : '0';
 
     return (
         <div className="space-y-6">
@@ -155,13 +164,14 @@ export default function OutreachPage() {
 
             {/* Stats */}
             {stats && (
-                <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-4">
                     <StatCard label="Queued" value={Number(stats.queued).toLocaleString()} icon={Clock} color="bg-slate-500" />
                     <StatCard label="Email 1 Sent" value={Number(stats.email1).toLocaleString()} icon={Mail} color="bg-blue-600" />
                     <StatCard label="Email 2 Sent" value={Number(stats.email2).toLocaleString()} icon={Mail} color="bg-indigo-600" />
                     <StatCard label="Email 3 Sent" value={Number(stats.email3).toLocaleString()} icon={Mail} color="bg-violet-600" />
-                    <StatCard label="Opens" value={Number(stats.total_opens).toLocaleString()} sub={`${openRate}% rate`} icon={Eye} color="bg-amber-500" />
+                    <StatCard label="Unique Openers" value={Number(stats.unique_openers).toLocaleString()} sub={`${openRate}% open rate`} icon={Eye} color="bg-amber-500" />
                     <StatCard label="Clicks" value={Number(stats.total_clicks).toLocaleString()} sub={`${Number(stats.sent_today)} sent today`} icon={TrendingUp} color="bg-emerald-600" />
+                    <StatCard label="Unsubscribed" value={Number(stats.unsubscribed).toLocaleString()} icon={XCircle} color="bg-red-700" />
                 </div>
             )}
 

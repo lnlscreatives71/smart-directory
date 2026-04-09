@@ -37,6 +37,7 @@ export async function POST(request: Request) {
             WHERE c.status = 'pending'
               AND l.contact_email IS NOT NULL
               AND l.claimed = FALSE
+              AND (c.unsubscribed IS NULL OR c.unsubscribed = FALSE)
             LIMIT ${batchLimit}
         `;
 
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
               AND c.email_2_sent_at IS NULL
               AND l.contact_email IS NOT NULL
               AND l.claimed = FALSE
+              AND (c.unsubscribed IS NULL OR c.unsubscribed = FALSE)
               AND c.email_1_sent_at < NOW() - ${emailInterval}::interval
         `;
 
@@ -88,7 +90,7 @@ export async function POST(request: Request) {
                 const { messageId: mid2 } = await sendEmail({
                     to: c.contact_email as string,
                     subject,
-                    html: emails.email2(c.name as string, c.contact_name as string | null),
+                    html: emails.email2(c.name as string, c.contact_name as string | null, c.listing_id as number),
                 });
                 await sql`UPDATE outreach_campaigns SET email_2_resend_id = ${mid2 || null} WHERE id = ${c.id}`;
             } catch (sendErr) {
@@ -106,6 +108,7 @@ export async function POST(request: Request) {
               AND c.email_3_sent_at IS NULL
               AND l.claimed = FALSE
               AND l.contact_email IS NOT NULL
+              AND (c.unsubscribed IS NULL OR c.unsubscribed = FALSE)
               AND c.email_2_sent_at < NOW() - ${emailInterval}::interval
         `;
 
@@ -138,6 +141,7 @@ export async function POST(request: Request) {
               AND c.email_4_sent_at IS NULL
               AND l.claimed = FALSE
               AND l.contact_email IS NOT NULL
+              AND (c.unsubscribed IS NULL OR c.unsubscribed = FALSE)
               AND c.email_3_sent_at < NOW() - ${emailInterval}::interval
         `;
 
