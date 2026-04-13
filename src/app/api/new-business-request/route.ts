@@ -83,7 +83,8 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ success: true });
     } catch (err) {
-        console.error('new-business-request error:', err);
-        return NextResponse.json({ success: false, error: 'Server error.' }, { status: 500 });
+        const message = err instanceof Error ? err.message : String(err);
+        console.error('new-business-request error:', message);
+        return NextResponse.json({ success: false, error: `Server error: ${message}` }, { status: 500 });
     }
 }
