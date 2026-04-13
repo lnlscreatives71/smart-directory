@@ -21,15 +21,15 @@ export async function POST(req: Request) {
         let userId: number;
 
         const [existingUser] = await sql`
-            SELECT id FROM users WHERE email = ${normalizedEmail} AND role = 'smb' LIMIT 1
+            SELECT id FROM users WHERE email = ${normalizedEmail} LIMIT 1
         `;
 
         if (existingUser) {
             userId = existingUser.id as number;
         } else {
             const [newUser] = await sql`
-                INSERT INTO users (name, email, role)
-                VALUES (${contact_name}, ${normalizedEmail}, 'smb')
+                INSERT INTO users (name, email, role, password_hash)
+                VALUES (${contact_name}, ${normalizedEmail}, 'smb', '')
                 RETURNING id
             `;
             userId = newUser.id as number;
@@ -58,19 +58,27 @@ export async function POST(req: Request) {
         `;
 
         // --- 4. Send "submission received + login" email to SMB ---
-        await sendEmail({
-            to: normalizedEmail,
-            subject: `We've received your submission for ${name}`,
-            html: newBusinessSubmitted(name, contact_name, magicLink),
-        });
+        try {
+            await sendEmail({
+                to: normalizedEmail,
+                subject: `We've received your submission for ${name}`,
+                html: newBusinessSubmitted(name, contact_name, magicLink),
+            });
+        } catch (emailErr) {
+            console.error('new-business-request: failed to send SMB confirmation email:', emailErr);
+        }
 
         // --- 5. Notify admin ---
         if (ADMIN_EMAIL) {
-            await sendEmail({
-                to: ADMIN_EMAIL,
-                subject: `📋 New Business Request: ${name}`,
-                html: adminNewBusinessNotification(name, contact_name, normalizedEmail, request.id as number),
-            });
+            try {
+                await sendEmail({
+                    to: ADMIN_EMAIL,
+                    subject: `📋 New Business Request: ${name}`,
+                    html: adminNewBusinessNotification(name, contact_name, normalizedEmail, request.id as number),
+                });
+            } catch (emailErr) {
+                console.error('new-business-request: failed to send admin notification email:', emailErr);
+            }
         }
 
         return NextResponse.json({ success: true });

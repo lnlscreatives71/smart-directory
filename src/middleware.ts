@@ -69,17 +69,11 @@ export async function middleware(request: NextRequest) {
         }
     }
     
-    // Multi-tenant routing for custom domains
-    if (!isApiRoute && !isStaticFile) {
-        // Get agency from custom domain or subdomain
-        let agencySlug: string | null = null;
-        let agencyDomain: string | null = null;
-
-        // Check for custom domain
-        const customDomain = hostname;
-        
-        // Check for subdomain (e.g., agency.trianglehub.online)
+    // Multi-tenant routing: only activate for actual subdomains (e.g. agency.trianglehub.online)
+    // Do NOT fetch for the primary domain — that fired on every request and consumed all CPU.
+    if (!isApiRoute) {
         const hostParts = hostname.split('.');
+        let agencySlug: string | null = null;
         if (hostParts.length >= 3) {
             const potentialSlug = hostParts[0];
             if (potentialSlug !== 'www' && potentialSlug !== 'app') {
@@ -87,22 +81,16 @@ export async function middleware(request: NextRequest) {
             }
         }
 
-        // Fetch agency info and set headers
-        if (agencySlug || (customDomain && !customDomain.includes('vercel.app'))) {
+        if (agencySlug) {
             try {
                 const agencyUrl = new URL('/api/agencies', request.url);
-                if (agencySlug) {
-                    agencyUrl.searchParams.set('slug', agencySlug);
-                } else if (customDomain) {
-                    agencyUrl.searchParams.set('domain', customDomain);
-                }
+                agencyUrl.searchParams.set('slug', agencySlug);
 
                 const agencyRes = await fetch(agencyUrl.toString());
                 if (agencyRes.ok) {
                     const agencyData = await agencyRes.json();
                     if (agencyData.data && (!Array.isArray(agencyData.data) || agencyData.data.length > 0)) {
                         const agency = Array.isArray(agencyData.data) ? agencyData.data[0] : agencyData.data;
-                        
                         requestHeaders.set('x-agency-id', agency.id.toString());
                         requestHeaders.set('x-agency-slug', agency.slug);
                         requestHeaders.set('x-agency-name', agency.name);
@@ -125,6 +113,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+        '/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
     ],
 };
