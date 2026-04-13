@@ -65,8 +65,14 @@ export async function POST(req: NextRequest) {
 
     if (action === 'approve') {
         await sql`
-            UPDATE listings SET claim_status = 'approved', updated_at = NOW()
+            UPDATE listings SET claim_status = 'approved', claimed = TRUE, claimed_at = NOW(), updated_at = NOW()
             WHERE id = ${listingId}
+        `;
+
+        // Stop cold outreach — listing is now claimed
+        await sql`
+            UPDATE outreach_campaigns SET status = 'completed'
+            WHERE listing_id = ${listingId} AND status NOT IN ('completed')
         `;
 
         // Send approval email to SMB
