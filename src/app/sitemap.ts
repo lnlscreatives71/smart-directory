@@ -1,6 +1,8 @@
 import { sql } from '@/lib/db';
 import { MetadataRoute } from 'next';
 
+export const revalidate = 3600;
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.thetrianglehub.online';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

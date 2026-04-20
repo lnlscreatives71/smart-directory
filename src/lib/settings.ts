@@ -1,7 +1,10 @@
+import { unstable_cache } from 'next/cache';
 import { sql } from '@/lib/db';
 import { siteConfig as defaultConfig } from '@/config/site';
 
-export async function getSiteSettings() {
+export const SITE_SETTINGS_CACHE_TAG = 'site-settings';
+
+async function fetchSiteSettings() {
     try {
         const res = await sql`SELECT * FROM agency_settings WHERE id = 1 LIMIT 1`;
         if (res && res.length > 0) {
@@ -37,3 +40,9 @@ export async function getSiteSettings() {
 
     return defaultConfig;
 }
+
+export const getSiteSettings = unstable_cache(
+    fetchSiteSettings,
+    ['site-settings-v1'],
+    { revalidate: 3600, tags: [SITE_SETTINGS_CACHE_TAG] }
+);

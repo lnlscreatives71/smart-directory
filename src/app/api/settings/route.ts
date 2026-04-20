@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { sql } from '@/lib/db';
+import { SITE_SETTINGS_CACHE_TAG } from '@/lib/settings';
 
 export async function GET() {
     try {
@@ -51,6 +53,8 @@ export async function PUT(req: Request) {
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = 1
         `;
+
+        revalidateTag(SITE_SETTINGS_CACHE_TAG, { expire: 0 });
 
         return NextResponse.json({ success: true });
     } catch (e: any) {

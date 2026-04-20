@@ -14,7 +14,7 @@ import LNLFooter from '@/components/LNLFooter';
 import DynamicMenu from '@/components/DynamicMenu';
 import MainHeader, { MainBody } from '@/components/MainHeader';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export async function generateMetadata() {
   const settings = await getSiteSettings();
