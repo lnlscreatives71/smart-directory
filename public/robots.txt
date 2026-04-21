@@ -6,3 +6,7 @@ Disallow: /dashboard
 Disallow: /login
 
 Sitemap: https://www.thetrianglehub.online/sitemap.xml
+
+# AI/LLM crawler guidance
+# https://llmstxt.org/
+# See /llms.txt for directory structure and AI-friendly site overview
