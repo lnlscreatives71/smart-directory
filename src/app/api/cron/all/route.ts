@@ -3,6 +3,7 @@ import { POST as runOutreach } from '../outreach/route';
 import { POST as runPremiumUpsell } from '../premium-upsell/route';
 import { POST as runSaasPush } from '../saas-push/route';
 import { POST as runMarketingServices } from '../marketing-services/route';
+import { POST as runColdReactivation } from '../cold-reactivation/route';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,6 +53,13 @@ export async function POST(request: Request) {
         results.marketingServices = await r4.json();
     } catch (e) {
         results.marketingServices = { error: String(e) };
+    }
+
+    try {
+        const r5 = await runColdReactivation(makeRequest());
+        results.coldReactivation = await r5.json();
+    } catch (e) {
+        results.coldReactivation = { error: String(e) };
     }
 
     return NextResponse.json({ success: true, results });

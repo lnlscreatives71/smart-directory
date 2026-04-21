@@ -1445,3 +1445,333 @@ export function email_booking_status_update({
         </p>
     `);
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ─── COLD REACTIVATION (4 emails, +2 days cadence) ─────────────────────────
+// Triggered: 30 days after outreach email_4 for listings still unclaimed.
+// Focus: directory member features (articles, events, jobs, featured
+//        placement, photos). Email 1 carries the free 10-point AI / Local
+//        Search Visibility Audit incentive from LNL AI Agency for claiming.
+// ═══════════════════════════════════════════════════════════════════════════
+
+function claimUrl(listingId: number): string {
+    return `${SITE_URL}/biz/claim?id=${listingId}`;
+}
+
+// ─── COLD REACTIVATION: Email 1 — Features + free audit offer ──────────────
+export function coldReactivation_email1(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+    const claim = claimUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `There's a free audit attached to this email (sort of)`;
+        const preheader = `Confirm your Triangle Hub listing, get a 10-point AI / local search visibility audit. Worth $500.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Short version first.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    Confirm your <strong style="color:#fff;">${businessName}</strong> listing on Triangle Hub and we send you a free <strong style="color:#fff;">10-point AI &amp; Local Search Visibility Audit</strong> from <strong style="color:#fff;">LNL AI Agency</strong> (the team behind the directory). Normally $500. Yours for hitting the claim button.
+                </p>
+                <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:20px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                    <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">🎁 What's in the 10-point audit</p>
+                    <ul style="color:#cbd5e1;font-size:14px;line-height:1.9;padding-left:16px;margin:0;">
+                        <li>Where ${businessName} ranks in Google's local 3-pack today</li>
+                        <li>AI Overview + ChatGPT/Perplexity visibility check</li>
+                        <li>Google Business Profile completeness score</li>
+                        <li>Trust signals — reviews, citations, E-E-A-T</li>
+                        <li>Tech SEO gaps (speed, schema, AI-readability)</li>
+                        <li>Three top-priority fixes, quantified by monthly call impact</li>
+                    </ul>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    By the way — claiming also unlocks the directory features you're <em>not</em> using right now:
+                </p>
+                <ul style="color:#cbd5e1;font-size:15px;line-height:2;padding-left:20px;margin:0 0 16px;">
+                    <li>📝 Publish articles on the directory (local SEO juice)</li>
+                    <li>📅 Advertise your events to the local audience</li>
+                    <li>💼 Post jobs to the Triangle Hub job board</li>
+                    <li>⭐ Featured placement on category pages</li>
+                    <li>📸 Photo gallery + enhanced description</li>
+                </ul>
+                ${ctaButton(`Claim ${businessName} + get the free audit →`, claim)}
+                <p style="margin-top:16px;color:#64748b;font-size:13px;">Takes 2 minutes. The audit lands in your inbox within 48 hours.</p>
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `Your ${businessName} listing is doing 20% of what it could`;
+    const preheader = `Free member features you're not using — plus a 10-point audit as a thank-you for claiming.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">You left something on the table.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                When <strong style="color:#fff;">${businessName}</strong> landed on Triangle Hub, your listing got the basics. There's another 80% of what a claimed member can do — and you're leaving it on the table.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;border-left:4px solid #10b981;">
+                <p style="margin:0 0 8px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">What members unlock — free</p>
+                <ul style="color:#cbd5e1;font-size:14px;line-height:1.9;padding-left:16px;margin:0;">
+                    <li><strong style="color:#fff;">Articles</strong> — publish on the directory domain; rankable content without building your own blog</li>
+                    <li><strong style="color:#fff;">Events</strong> — promote things you're hosting to the local audience</li>
+                    <li><strong style="color:#fff;">Jobs</strong> — post openings to the Triangle Hub job board (pulled into Google for Jobs)</li>
+                    <li><strong style="color:#fff;">Featured placement</strong> — sort higher on category pages</li>
+                    <li><strong style="color:#fff;">Photos + enhanced description</strong> — richer listing = higher click-through</li>
+                </ul>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                <strong style="color:#fff;">Why this matters:</strong> fresh content signals activity to Google. Articles published on a trusted local domain often rank faster than posts on a new business site. Events and job listings pull independent search traffic. Your listing becomes a real marketing asset instead of a static card.
+            </p>
+            <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">🎁 Thank-you bonus for claiming</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    Confirm your listing and <strong style="color:#fff;">LNL AI Agency</strong> (the marketing arm powering Triangle Hub) will send you a complimentary <strong style="color:#fff;">10-point AI &amp; Local Search Visibility Audit</strong> — where you rank, where you're invisible in AI answers, and the three highest-impact fixes. Normally $500. Yours for claiming.
+                </p>
+            </div>
+            ${ctaButton(`Claim ${businessName} + get the free audit →`, claim)}
+            <p style="margin-top:16px;color:#64748b;font-size:13px;">Two-minute claim. No credit card. Audit delivered within 48 hours of confirmation.</p>
+        `, preheader, unsub),
+    };
+}
+
+// ─── COLD REACTIVATION: Email 2 — Articles as local SEO ────────────────────
+export function coldReactivation_email2(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+    const claim = claimUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `Free publishing + free discovery for ${businessName}`;
+        const preheader = `Articles, events, jobs — all free when you claim. Here's what each unlocks.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Triangle Hub has a publishing layer most SMBs never see.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    When you claim <strong style="color:#fff;">${businessName}</strong>, the directory opens up a publishing layer: articles, events, jobs. All free. All rankable in Google.
+                </p>
+                <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;">
+                    <p style="margin:0 0 6px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Articles</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 14px;">
+                        Write about work you just did, common questions, seasonal tips. Each article gets its own URL on a trusted local domain — discoverable by Google and by anyone browsing the directory.
+                    </p>
+                    <p style="margin:0 0 6px;color:#fcd34d;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Events</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 14px;">
+                        Hosting an open house, workshop, community event? The directory's events feed pulls in local traffic actively searching for "${businessName.split(' ')[0] || 'things'} this weekend."
+                    </p>
+                    <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Jobs</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                        Post openings that surface in the Triangle Hub job board and get structured data pulled by Google for Jobs — so your role shows up in the dedicated jobs search.
+                    </p>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    Still a free listing. You just have to confirm it to activate these.
+                </p>
+                ${ctaButton(`Activate your features for ${businessName} →`, claim)}
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `A quiet Google trick local businesses are using`;
+    const preheader = `Publishing articles on a trusted local directory ranks faster than posts on a new business blog. Here's why.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Fresh content on a trusted domain ranks faster.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                This one flies under the radar. Local businesses that publish articles on a trusted directory often rank in Google faster than the same content on a brand-new business blog.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                Education piece: Google weighs two signals heavily — <strong style="color:#fff;">domain authority</strong> (does the site already rank?) and <strong style="color:#fff;">topical relevance</strong> (is this site about this topic?). A new business site fails both. A local directory that's been indexed for years passes both. So when you publish on Triangle Hub, you're renting that authority for your content.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;border-left:4px solid #10b981;">
+                <p style="margin:0 0 8px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">What to publish</p>
+                <ul style="color:#cbd5e1;font-size:14px;line-height:1.9;padding-left:16px;margin:0;">
+                    <li>Real work you just completed (case studies, before/afters)</li>
+                    <li>Answers to the top 5 questions customers ask you on every call</li>
+                    <li>Seasonal tips tied to your industry</li>
+                    <li>Local how-to content (how-to in the Triangle area)</li>
+                </ul>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                <strong style="color:#fff;">The issue it solves:</strong> most SMBs know "content matters for SEO" but never actually publish because their own site is slow to build and slower to rank. Directory publishing kills both blockers.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                Article publishing is unlocked the second you claim <strong style="color:#fff;">${businessName}</strong>. No credit card. No commitment.
+            </p>
+            ${ctaButton(`Claim ${businessName} →`, claim)}
+            <p style="margin-top:16px;color:#64748b;font-size:13px;">Reminder: claiming also gets you the free 10-point audit from LNL AI Agency.</p>
+        `, preheader, unsub),
+    };
+}
+
+// ─── COLD REACTIVATION: Email 3 — Events + Jobs ────────────────────────────
+export function coldReactivation_email3(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+    const claim = claimUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `The events bucket your competitors aren't in`;
+        const preheader = `Plus the job-post hack that ranks on Google for Jobs. Both free with claim.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Two free channels most SMBs skip.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    Most local businesses leave two free distribution channels untouched. Both live on Triangle Hub. Both are unlocked when you claim <strong style="color:#fff;">${businessName}</strong>.
+                </p>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #f59e0b;">
+                    <p style="margin:0 0 8px;color:#fcd34d;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Local Events Feed</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 6px;">
+                        <strong style="color:#fff;">What it does:</strong> your event shows up in Triangle Hub's event browse + search, which pulls steady local traffic from people planning weekends.
+                    </p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                        <strong style="color:#fff;">Issue it solves:</strong> paid event promotion is expensive. A directory's event page is free and ranks on long-tail queries ("things to do in Raleigh this weekend").
+                    </p>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                    <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Triangle Hub Job Board</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 6px;">
+                        <strong style="color:#fff;">What it does:</strong> your job posts are structured with proper schema, so Google for Jobs can pull them into the dedicated jobs search.
+                    </p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                        <strong style="color:#fff;">Issue it solves:</strong> Indeed and LinkedIn job posts cost real money. Google for Jobs is free distribution — and the Triangle Hub board is one of the simplest ways to feed into it.
+                    </p>
+                </div>
+                ${ctaButton(`Claim ${businessName} and activate both →`, claim)}
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `Hosting anything? Or hiring anyone?`;
+    const preheader = `Two quick questions — and two free channels on Triangle Hub that most SMBs forget exist.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Two quick questions for ${businessName}.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                Hosting any events in the next 90 days? Hiring anyone in the next 6 months?
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                If either answer is yes, you're leaving two free distribution channels on the table — both live on Triangle Hub, both unlocked when you claim your listing.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #f59e0b;">
+                <p style="margin:0 0 8px;color:#fcd34d;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Events → discoverable by local search</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    Open houses, workshops, ribbon cuttings, community events. Triangle Hub's events feed pulls visitors searching "things to do in Raleigh this weekend" or "${businessName.split(' ')[0] || 'events'} near me." Free posting, permanent URL, full SEO value.
+                </p>
+            </div>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Jobs → surfaces in Google for Jobs</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    Our job board marks posts with structured data so Google for Jobs can pull them into its dedicated search. Your role reaches local candidates for free — instead of the usual Indeed bill.
+                </p>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                <strong style="color:#fff;">Issue both solve:</strong> paid distribution (ads, Indeed, Eventbrite premium) is the default most SMBs use because they don't realize the free channels exist. These do.
+            </p>
+            ${ctaButton(`Claim ${businessName} to activate both →`, claim)}
+            <p style="margin-top:16px;color:#64748b;font-size:13px;">Reminder: claiming still gets you the free 10-point audit from LNL AI Agency.</p>
+        `, preheader, unsub),
+    };
+}
+
+// ─── COLD REACTIVATION: Email 4 — Last email / recap ───────────────────────
+export function coldReactivation_email4(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+    const claim = claimUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `We'll stop reaching out after this`;
+        const preheader = `One last reminder of what's free for the taking at Triangle Hub.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Last email. Then we're quiet.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    If the timing is off, no worries — we'll take your silence as the answer. Before we go, the one-minute recap of what a free claim unlocks for <strong style="color:#fff;">${businessName}</strong>:
+                </p>
+                <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;">
+                    <ul style="color:#cbd5e1;font-size:15px;line-height:2;padding-left:20px;margin:0;">
+                        <li>📝 Publish articles on the directory domain</li>
+                        <li>📅 Advertise your events to the local audience</li>
+                        <li>💼 Post jobs (feeds into Google for Jobs)</li>
+                        <li>⭐ Featured placement on category pages</li>
+                        <li>📸 Photo gallery + enhanced description</li>
+                        <li>🎁 Free 10-point AI / Local Search Visibility Audit — $500 value, yours for claiming</li>
+                    </ul>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    Triangle Hub is <strong style="color:#fff;">powered by LNL AI Agency</strong>. If the directory itself isn't the fit, but AI-powered search visibility or agents sound interesting, reply to this email and we'll chat.
+                </p>
+                ${ctaButton(`Claim ${businessName} before we go quiet →`, claim)}
+                <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+                <p style="color:#64748b;font-size:13px;">That's the last we'll send on this.</p>
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `Last email from us — short version`;
+    const preheader = `Everything you'd unlock with a free claim. Then we stop.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Final email. Here's the short version.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                Three minutes of your time, then we stop. Here's everything <strong style="color:#fff;">${businessName}</strong> would unlock by confirming the listing.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #10b981;">
+                <p style="margin:0 0 8px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Free member features</p>
+                <ul style="color:#cbd5e1;font-size:14px;line-height:1.9;padding-left:16px;margin:0;">
+                    <li><strong style="color:#fff;">Articles</strong> — publish on a trusted local domain, rank faster</li>
+                    <li><strong style="color:#fff;">Events</strong> — promote what you're hosting to local searchers</li>
+                    <li><strong style="color:#fff;">Jobs</strong> — post roles that feed Google for Jobs</li>
+                    <li><strong style="color:#fff;">Featured placement + photos + enhanced profile</strong></li>
+                </ul>
+            </div>
+            <div style="background:#1e3a5f;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">🎁 Free audit for claiming</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">LNL AI Agency</strong> (the team behind the directory) will send you a complimentary 10-point AI &amp; Local Search Visibility Audit — your Google ranking, AI Overview presence, GBP gaps, and three priority fixes. Normally $500. Yours for confirming.
+                </p>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                If now isn't the right time, no worries — we'll go quiet after this. But the claim button still works whenever you are ready.
+            </p>
+            ${ctaButton(`Claim ${businessName} →`, claim)}
+            <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+            <p style="color:#64748b;font-size:13px;">Last email in this series. Reply anytime and we will be here.</p>
+        `, preheader, unsub),
+    };
+}

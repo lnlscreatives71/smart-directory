@@ -33,6 +33,12 @@ export async function GET(request: Request) {
         WHERE listing_id = ${listingId}
           AND opted_out_at IS NULL
     `;
+    await sql`
+        UPDATE cold_reactivation_campaigns
+        SET unsubscribed = TRUE, unsubscribed_at = NOW()
+        WHERE listing_id = ${listingId}
+          AND (unsubscribed IS NULL OR unsubscribed = FALSE)
+    `;
 
     return NextResponse.json({ success: true });
 }
