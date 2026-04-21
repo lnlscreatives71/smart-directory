@@ -623,206 +623,651 @@ export function premiumUpgrade_email4(businessName: string, contactName: string 
 // ═══════════════════════════════════════════════════════════════════════════
 // ─── SAAS PUSH (4 emails, +2 days cadence) ─────────────────────────────────
 // Triggered: after premium conversion (listing upgraded to premium)
+// Focus: AI agents (Personal Assistant for busy SMBs, Customer Service Agent
+//        for home services, Personal Assistant Agent for real estate)
 // ═══════════════════════════════════════════════════════════════════════════
 
-export function saasPush_email1(businessName: string, contactName: string | null): string {
-    return baseTemplate(`
-        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">What if your business could run itself? 🤖</h1>
-        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            Congrats on going Premium — your listing is already working harder for you. But there's a level beyond that.
-        </p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            Imagine <strong style="color:#fff;">${businessName}</strong> with a system that automatically:
-        </p>
-        <ul style="color:#cbd5e1;font-size:15px;line-height:2.2;padding-left:20px;margin:0 0 24px;">
-            <li>🤖 Answers leads instantly — even at 2am</li>
-            <li>📅 Books appointments without you lifting a finger</li>
-            <li>🔄 Follows up with prospects who didn't convert</li>
-            <li>📊 Reports on what's working every week</li>
-        </ul>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            That's exactly what we build for local businesses at <strong style="color:#6366f1;">LNL AI Agency</strong>.
-            AI-powered marketing and automation — done for you, not by you.
-        </p>
-        ${ctaButton('See How It Works →', STRATEGY_CALL_URL)}
-        <p style="margin-top:16px;color:#64748b;font-size:13px;">No pressure — just a 20-minute conversation about your goals.</p>
-    `, 'AI handles your leads, follow-ups, and bookings automatically — while you focus on the work.');
+type EmailOutput = { subject: string; preheader: string; html: string };
+
+function unsubUrl(listingId: number): string {
+    return `${SITE_URL}/unsubscribe?lid=${listingId}`;
 }
 
-export function saasPush_email2(businessName: string, contactName: string | null): string {
-    return baseTemplate(`
-        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">How many leads are you actually losing? 📉</h1>
-        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            Here's a stat that surprises most local business owners: <strong style="color:#fff;">78% of customers go with the first business that responds to their inquiry.</strong>
-        </p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            If someone finds <strong style="color:#fff;">${businessName}</strong> at 9pm on a Tuesday and you don't respond until Wednesday morning — chances are they've already booked someone else.
-        </p>
-        <div style="background:#7f1d1d30;border:1px solid #ef444460;border-radius:10px;padding:16px 20px;margin:20px 0;">
-            <p style="margin:0;color:#fca5a5;font-size:14px;">
-                ⚠️ <strong>The cost of slow response:</strong> Every unanswered inquiry after hours is a potential job that goes to a competitor who responded faster.
+function bridgeLine(): string {
+    return `Quick context: Triangle Hub, where you're listed, is <strong style="color:#fff;">powered by LNL AI Agency</strong> — the marketing arm behind it. The directory is how we meet local businesses. What we actually <em>do</em> is build the systems below.`;
+}
+
+// ─── SAAS PUSH: Email 1 — Intro to AI Agents ────────────────────────────────
+export function saasPush_email1(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `One question most owners never ask themselves`;
+        const preheader = `The answer tells you whether you're running the business — or it's running you.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">What part of your week would disappear?</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    If you had a 24/7 assistant who never called in sick — what part of <strong style="color:#fff;">${businessName}</strong>'s week would disappear?
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    Take a second. Answer honestly. For most owners we talk to, it's some mix of inbox triage, after-hours lead responses, booking coordination, and the same 10 questions asked in 10 different ways. Easily 12 hours a week, usually more.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">${bridgeLine()}</p>
+                <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                    <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Education moment</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                        <strong style="color:#fff;">Chatbots answer questions. AI agents take action.</strong><br/>
+                        An agent books the appointment, pulls the customer's address into your system, adds it to your calendar, and texts you a summary. It doesn't just acknowledge a voicemail — it transcribes, classifies urgency, drafts your reply, and waits for you to hit send.
+                    </p>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    <strong style="color:#fff;">The specific problem this solves:</strong> the bottleneck where your business can't grow because you can't clone yourself. Over the next few emails we'll walk through what an agent looks like for real estate, home services, and busy owners — and why it matters more this year than last.
+                </p>
+                ${ctaButton(`Show me what an AI agent would do for ${businessName} →`, STRATEGY_CALL_URL)}
+                <p style="margin-top:16px;color:#64748b;font-size:13px;">No pitch. Just a walkthrough.</p>
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `Quick thought about ${businessName}`;
+    const preheader = `Before we pitch anything — here's some context you should have.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">There's a reason you ended up on Triangle Hub.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                ${contactName || 'Friend'}, you probably don't know this yet — but there's a reason <strong style="color:#fff;">${businessName}</strong> landed on Triangle Hub.
             </p>
-        </div>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            Our AI responds instantly, 24/7. We set it up. You just show up for the jobs.
-        </p>
-        ${ctaButton('See How It Works — Book a Call →', STRATEGY_CALL_URL)}
-        <p style="margin-top:16px;color:#64748b;font-size:13px;">Free 20-min strategy call. No commitment.</p>
-    `, 'Every unanswered after-hours inquiry is a job that goes to whoever responded first.');
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                Triangle Hub is a directory. That's the obvious part. The less obvious part: it's <strong style="color:#fff;">powered by LNL AI Agency</strong> — the marketing arm behind it. We built the directory as a way to meet local businesses. What we actually <em>do</em> is build AI agents for them.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">First — what's an AI agent?</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    Most people hear "AI" and think "chatbot." They're different. <strong style="color:#fff;">A chatbot answers. An agent acts.</strong> It books the appointment, updates your calendar, drafts the follow-up in your voice, and hands it to you ready to send.
+                </p>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                <strong style="color:#fff;">The specific issue it solves:</strong> the average local business owner spends 12–15 hours a week on work that doesn't require their judgment — inbox triage, booking coordination, lead qualification, after-hours replies. That's almost two full workdays a week you could get back.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                At LNL AI Agency, we build three flavors depending on the business:
+            </p>
+            <ul style="color:#cbd5e1;font-size:15px;line-height:2;padding-left:20px;margin:0 0 20px;">
+                <li><strong style="color:#fff;">Real Estate</strong> — Personal Assistant agent: qualifies buyer leads, schedules showings, tracks contract deadlines</li>
+                <li><strong style="color:#fff;">Home Services</strong> — Customer Service agent: handles after-hours inquiries, confirms dispatches, requests reviews</li>
+                <li><strong style="color:#fff;">Any busy SMB owner</strong> — Personal Assistant: triages email, manages calendar, tracks tasks</li>
+            </ul>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                This is the first of a short series. We'll break down exactly what each one does, where the hours go, and what you'd get back.
+            </p>
+            ${ctaButton(`See what this looks like for ${businessName} →`, STRATEGY_CALL_URL)}
+            <p style="margin-top:16px;color:#64748b;font-size:13px;">No pressure. Just education first.</p>
+        `, preheader, unsub),
+    };
 }
 
-export function saasPush_email3(businessName: string, contactName: string | null): string {
-    return baseTemplate(`
-        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Why more local businesses are using this 👥</h1>
-        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            Local service businesses in the Triangle are quietly getting a big edge on their competition — and most competitors have no idea.
-        </p>
-        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;border-left:4px solid #10b981;">
-            <p style="margin:0 0 4px;color:#6ee7b7;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">What businesses are using it for</p>
-            <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:8px 0 0;">
-                <li>Responding to after-hours inquiries automatically</li>
-                <li>Booking appointments without picking up the phone</li>
-                <li>Following up with customers without lifting a finger</li>
-                <li>Reclaiming hours every week spent on repetitive tasks</li>
-            </ul>
-        </div>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            For <strong style="color:#fff;">${businessName}</strong>, a system like this could run quietly in the background
-            while you focus on the work you're actually good at.
-        </p>
-        ${ctaButton("See If It's a Fit for Your Business →", STRATEGY_CALL_URL)}
-        <p style="margin-top:16px;color:#64748b;font-size:13px;">20 minutes. We'll show you exactly what it would look like for your business.</p>
-    `, 'Other local businesses are already using this — here\'s what changed for them.');
+// ─── SAAS PUSH: Email 2 — Vertical-specific agents ─────────────────────────
+export function saasPush_email2(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `What your week looks like with an AI teammate`;
+        const preheader = `A day-in-the-life walkthrough. Not chatbots — actual agents.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Monday, 8:00 AM.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    You haven't opened your laptop yet. Your AI agent already handled 14 after-hours inquiries, confirmed today's appointments, flagged 3 leads that actually need you, and queued draft replies in your voice.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    That's the before-coffee version of what an AI agent does. Here's what it looks like by vertical at <strong style="color:#fff;">LNL AI Agency</strong>:
+                </p>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #10b981;">
+                    <p style="margin:0 0 4px;color:#6ee7b7;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Real Estate — Personal Assistant</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;"><strong style="color:#fff;">Solves:</strong> agents spending more time on admin than closing. Your PA qualifies leads from Zillow/web/text, schedules showings against your calendar, and surfaces the hot ones.</p>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #f59e0b;">
+                    <p style="margin:0 0 4px;color:#fcd34d;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Home Services — Customer Service Agent</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;"><strong style="color:#fff;">Solves:</strong> missed calls and slow review collection hurting your GMB rank. Your CSR fields after-hours inquiries, confirms dispatches by text, and asks for Google reviews at the right moment.</p>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                    <p style="margin:0 0 4px;color:#a5b4fc;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Busy SMB Owner — Personal Assistant</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;"><strong style="color:#fff;">Solves:</strong> you being the bottleneck. Your PA triages email, manages calendar, tracks tasks, surfaces what's urgent and buries what isn't.</p>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    These aren't generic chatbots. They're custom-built systems with access to <em>your</em> tools (calendar, CRM, email, phone) and trained on <em>your</em> voice.
+                </p>
+                ${ctaButton(`See the agent built for ${businessName} →`, STRATEGY_CALL_URL)}
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `If you run ${businessName}, this probably fits`;
+    const preheader = `Three AI agents, each built for a specific industry. Pick yours.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Most "AI for small business" pitches are generic. These aren't.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                Last email we covered what an AI agent actually is (action-taking, not answering). Today: the three we build at <strong style="color:#fff;">LNL AI Agency</strong> — and the specific problem each one kills.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #10b981;">
+                <p style="margin:0 0 8px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">1. Real Estate → Personal Assistant Agent</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 8px;">
+                    <strong style="color:#fff;">What it does:</strong> qualifies inbound buyer/seller leads, books showings against your calendar, tracks contract deadlines, follows up on inactive prospects.
+                </p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">Issue it solves:</strong> top agents lose deals to faster ones. The PA responds in under a minute, 24/7, so speed-to-lead stops being your weakness.
+                </p>
+            </div>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #f59e0b;">
+                <p style="margin:0 0 8px;color:#fcd34d;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">2. Home Services → Customer Service Agent</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 8px;">
+                    <strong style="color:#fff;">What it does:</strong> takes after-hours inquiries, dispatches to techs, texts ETAs to customers, asks for Google reviews at the right moment.
+                </p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">Issue it solves:</strong> missed evening/weekend calls (when most emergencies happen) going to whoever responded faster, plus flat review growth that's quietly hurting your GMB rank.
+                </p>
+            </div>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">3. Busy SMB Owner → Personal Assistant</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 8px;">
+                    <strong style="color:#fff;">What it does:</strong> triages email, manages calendar, tracks tasks, drafts replies in your voice, flags what actually needs you.
+                </p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">Issue it solves:</strong> the owner-as-bottleneck problem. You can't grow the business past the cap of your own hours.
+                </p>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                These are custom systems — not off-the-shelf bots. Built on <em>your</em> tools, trained on <em>your</em> voice.
+            </p>
+            ${ctaButton(`See the agent for ${businessName} →`, STRATEGY_CALL_URL)}
+        `, preheader, unsub),
+    };
 }
 
-export function saasPush_email4(businessName: string, contactName: string | null): string {
-    return baseTemplate(`
-        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Want to test it out for free? 🎁</h1>
-        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            The best way to see if AI automation is right for <strong style="color:#fff;">${businessName}</strong> is to actually experience it.
-        </p>
-        <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid #6366f1;">
-            <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;">🎁 Free Strategy Session Includes:</p>
-            <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:8px 0 0;">
-                <li>A look at where you're spending the most time in your business</li>
-                <li>A live demo of what AI automation would look like for your business</li>
-                <li>A clear picture of what you could hand off — and reclaim every week</li>
-            </ul>
-            <p style="margin:12px 0 0;color:#64748b;font-size:13px;">No charge. No pitch. Just real strategy.</p>
-        </div>
-        ${ctaButton('Book My Free Strategy Session →', STRATEGY_CALL_URL)}
-        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
-        <p style="color:#64748b;font-size:13px;">Reply to this email if you have questions or want to learn more first.</p>
-    `, 'A free custom audit of your lead flow + a live demo built for your business. No charge.');
+// ─── SAAS PUSH: Email 3 — After-hours / invisible revenue ──────────────────
+export function saasPush_email3(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `Invisible revenue`;
+        const preheader = `The leads you never knew you missed — and why they're the most expensive kind.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">There's a bucket of revenue you can't see.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    Most local businesses have one — a bucket of revenue they're losing and don't know about.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    Here's why it's invisible: missed after-hours inquiries, ignored form fills, voicemails that never get a callback — none of these show up in any report. Your CRM tracks what you <em>did</em>, not what you <em>didn't</em>.
+                </p>
+                <div style="background:#7f1d1d30;border:1px solid #ef444460;border-radius:10px;padding:18px 22px;margin:20px 0;">
+                    <p style="margin:0 0 6px;color:#fca5a5;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">The data</p>
+                    <p style="color:#fca5a5;font-size:14px;line-height:1.7;margin:0;">
+                        <strong>78%</strong> of buyers go with the first business that responds. Average local SMB response time on an after-hours inquiry: <strong>12+ hours</strong>. Multiply your average job value by the number of inquiries past 5pm — that's a floor on the revenue leak.
+                    </p>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    This is where an AI agent from <strong style="color:#fff;">LNL AI Agency</strong> earns its keep: sub-minute response 24/7, with full logging so you can finally see the bucket. Every inquiry gets acknowledged, qualified, and either booked or escalated to you.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    <strong style="color:#fff;">The issue it solves:</strong> you can't fix what you can't measure. First you see the leak. Then you plug it.
+                </p>
+                ${ctaButton(`See your invisible bucket for ${businessName} →`, STRATEGY_CALL_URL)}
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `The "10pm problem" for ${businessName}`;
+    const preheader = `Your best leads come at the worst times. Here's what it's actually costing you.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Someone searched for you at 10pm Tuesday.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                Did they ever hear back from <strong style="color:#fff;">${businessName}</strong>?
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                Local service queries spike 6–10pm (people finally dealing with the thing after work) and Saturday 9–11am (people doing weekend planning). These are real buyers with real intent — they'll book the first business that responds.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;border-left:4px solid #ef4444;">
+                <p style="margin:0 0 6px;color:#fca5a5;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Why response speed decides the deal</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">78%</strong> of customers pick the first business that responds. After 5 minutes, your odds of contacting the lead drop <strong>10x</strong>. After an hour, they're essentially gone.
+                </p>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                <strong style="color:#fff;">The issue this solves:</strong> the gap between inquiry and response is where your competitors win. An AI Customer Service agent from <strong style="color:#fff;">LNL AI Agency</strong> closes that gap to under a minute — including 10pm on a Tuesday.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                It's not replacing you. It's holding the door open until you can get there.
+            </p>
+            ${ctaButton(`See how this works for ${businessName} →`, STRATEGY_CALL_URL)}
+        `, preheader, unsub),
+    };
+}
+
+// ─── SAAS PUSH: Email 4 — Free strategy call CTA ───────────────────────────
+export function saasPush_email4(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `Worth 20 minutes to ${contactName || 'you'}?`;
+        const preheader = `One call. Custom plan. No charge, no pitch.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">A fair ask.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    If AI automation sounds interesting but you're not sure where it'd fit in <strong style="color:#fff;">${businessName}</strong> — we built a 20-minute call specifically for that problem.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    Most owners don't need another pitch. They need someone who can look at their actual workflow and say "yeah, this here — that's automatable, and here's what you'd get back."
+                </p>
+                <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;">
+                    <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;">🗓️ On the call, <strong style="color:#fff;">LNL AI Agency</strong> will:</p>
+                    <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:0;">
+                        <li>Map where your hours are actually going</li>
+                        <li>Identify the top 2–3 automation candidates in your workflow</li>
+                        <li>Give you a rough estimate of hours reclaimed per week</li>
+                        <li>Tell you honestly if AI is a fit — or if it's not yet</li>
+                    </ul>
+                </div>
+                ${ctaButton(`Book the 20-minute call →`, STRATEGY_CALL_URL)}
+                <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+                <p style="color:#64748b;font-size:13px;">If the timing's not right, reply anytime — we'll pick it up later.</p>
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `20 minutes, then we leave you alone`;
+    const preheader = `No pitch, no hard close. Just a plan you can keep.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Last email — and the only one with an actual offer.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                Over the last few emails we covered what AI agents are, the three flavors we build at <strong style="color:#fff;">LNL AI Agency</strong>, and the invisible revenue leak most local businesses are living with.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                Here's the offer: 20 minutes on a call, zero cost, zero follow-up pressure. We map your workflow, identify the top 2–3 automation candidates, and hand you a plan — whether you work with us or not.
+            </p>
+            <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;">🎁 The free strategy session covers:</p>
+                <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:8px 0 0;">
+                    <li>Where your week is actually getting spent (the honest version)</li>
+                    <li>Which AI agent flavor fits ${businessName} — if any</li>
+                    <li>A live walk-through of what a typical day looks like after</li>
+                    <li>The math: hours reclaimed, estimated cost, payback timeline</li>
+                </ul>
+                <p style="margin:12px 0 0;color:#64748b;font-size:13px;">No pitch. Just a plan.</p>
+            </div>
+            ${ctaButton(`Book the free strategy session →`, STRATEGY_CALL_URL)}
+            <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+            <p style="color:#64748b;font-size:13px;">Reply directly if you have questions — one of us reads every reply.</p>
+        `, preheader, unsub),
+    };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // ─── MARKETING SERVICES PUSH (4 emails, +2 days cadence) ───────────────────
 // Triggered: after SAAS push completes
+// Focus: AI SEO (AEO/GEO), GMB optimization, the 3-audit diagnostic system
 // ═══════════════════════════════════════════════════════════════════════════
 
-export function marketingPush_email1(businessName: string, contactName: string | null): string {
-    return baseTemplate(`
-        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Your website might be costing you customers 😬</h1>
-        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            Quick question about <strong style="color:#fff;">${businessName}</strong>: when a potential customer visits your website,
-            what happens? If it loads slow, looks outdated, or doesn't clearly tell them how to book — they leave.
-        </p>
-        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;">
-            <p style="margin:0 0 8px;color:#94a3b8;font-size:13px;font-weight:700;text-transform:uppercase;">The 3-second rule</p>
-            <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
-                53% of visitors leave a website that takes more than 3 seconds to load.
-                And 75% judge a company's credibility by design alone.
+// ─── MKT PUSH: Email 1 — AEO / GEO / AI Overviews ──────────────────────────
+export function marketingPush_email1(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `Google quietly changed (and local businesses are losing)`;
+        const preheader = `AI Overviews, zero-click, AEO — here's what it means for your traffic.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">If you haven't heard of AI Overviews yet…</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    …<strong style="color:#fff;">${businessName}</strong>'s Google traffic is probably already affected. Most owners haven't connected the dots yet.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    Quick education piece: when you search on Google now, you often see a generated answer at the top <em>before</em> the blue links. That's an AI Overview. It pulls from a handful of sources, answers the question, and the searcher never clicks through.
+                </p>
+                <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;border-left:4px solid #ef4444;">
+                    <p style="margin:0 0 6px;color:#fca5a5;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Why it matters for ${businessName}</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                        Zero-click searches are now majority. Click-through rates on "blue link" results have dropped <strong>30–40%</strong> in affected query categories. Local queries like "best plumber near me" are one of those categories.
+                    </p>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    <strong style="color:#fff;">The fix isn't traditional SEO anymore — it's AEO and GEO.</strong> AEO (Answer Engine Optimization) structures your site so AI extracts <em>your</em> business as the answer. GEO (Generative Engine Optimization) does the same for ChatGPT, Perplexity, and Gemini.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    This is what <strong style="color:#fff;">LNL AI Agency</strong> (powering Triangle Hub) specializes in. We don't just chase keywords — we make you the cited source in AI answers.
+                </p>
+                ${ctaButton(`Check if ${businessName} shows up in AI answers →`, STRATEGY_CALL_URL)}
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `ChatGPT was asked about your industry yesterday`;
+    const preheader = `Were you in the answer? Most local businesses aren't — and don't know it.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Someone asked ChatGPT about your industry this week.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                "Best ${businessName.includes('Services') ? 'service' : 'business'} in Raleigh" gets asked of ChatGPT, Perplexity, and Google's AI Overview thousands of times a month. <strong style="color:#fff;">${businessName}</strong> may or may not have been in those answers.
             </p>
-        </div>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            We build high-converting websites for local businesses — fast, mobile-optimized, and designed to turn visitors into booked appointments.
-        </p>
-        ${ctaButton('Get a Free Website Audit →', STRATEGY_CALL_URL)}
-        <p style="margin-top:16px;color:#64748b;font-size:13px;">We'll show you exactly what's holding your site back — at no charge.</p>
-    `, 'Your website is your #1 salesperson — is it actually converting visitors into customers?');
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">${bridgeLine()}</p>
+            <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">Education — two new acronyms worth knowing</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 8px;">
+                    <strong style="color:#fff;">AEO (Answer Engine Optimization)</strong> — structuring your site so Google's AI Overview, Bing Copilot, and similar engines pull <em>your</em> content as the answer.
+                </p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">GEO (Generative Engine Optimization)</strong> — the same idea, but for ChatGPT, Perplexity, Claude, and Gemini. These now get billions of queries a month.
+                </p>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                <strong style="color:#fff;">The specific issue this solves:</strong> AI answers show 1–3 cited sources instead of 10 blue links. If you're not the cited source, you're invisible. Traditional SEO alone won't fix this — AEO/GEO is a different playbook.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                At <strong style="color:#fff;">LNL AI Agency</strong>, we audit where you currently show up in AI answers, identify the gaps, and rebuild your content so you become the cited source. This email series walks through exactly how.
+            </p>
+            ${ctaButton(`See if ${businessName} shows up today →`, STRATEGY_CALL_URL)}
+        `, preheader, unsub),
+    };
 }
 
-export function marketingPush_email2(businessName: string, contactName: string | null): string {
-    return baseTemplate(`
-        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Want to show up first on Google? 🔍</h1>
-        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            When someone in the Triangle searches for what <strong style="color:#fff;">${businessName}</strong> does,
-            do you show up? If you're not in the top 3 Google results, you're invisible to most potential customers.
-        </p>
-        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;border-left:4px solid #6366f1;">
-            <p style="margin:0 0 8px;color:#a5b4fc;font-size:12px;font-weight:700;text-transform:uppercase;">Local SEO stats</p>
-            <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:0;">
-                <li>46% of all Google searches are looking for local info</li>
-                <li>76% of people who search locally visit a business within a day</li>
-                <li>The top 3 local results capture 75% of all clicks</li>
-            </ul>
-        </div>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            Our Local SEO service gets you ranking for the searches your customers are already doing — more visibility, more calls, more booked jobs. No ads required.
-        </p>
-        ${ctaButton('Get My Free SEO Analysis →', STRATEGY_CALL_URL)}
-        <p style="margin-top:16px;color:#64748b;font-size:13px;">We'll show you where you rank today and what it'll take to get to #1.</p>
-    `, '76% of local searchers visit a business within 24 hours — are they finding you first?');
+// ─── MKT PUSH: Email 2 — Google My Business optimization ───────────────────
+export function marketingPush_email2(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `Your Google profile is quietly costing you calls`;
+        const preheader = `There's probably a miss in there right now — wrong category, stale hours, or a missing photo.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Most GBP misses are small. The cost isn't.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    There's probably a miss on <strong style="color:#fff;">${businessName}</strong>'s Google Business Profile right now that's costing you calls. Wrong primary category, stale hours, unanswered Q&A, or a photo count below the ranking threshold.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    Education piece: GBP (formerly "Google My Business") is what powers the local 3-pack — the three businesses that appear on Google Maps for local queries. Top 3 capture <strong style="color:#fff;">75% of clicks</strong>. Below the fold, you're invisible.
+                </p>
+                <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;">
+                    <p style="margin:0 0 8px;color:#94a3b8;font-size:13px;font-weight:700;text-transform:uppercase;">Common misses we find on GBP audits</p>
+                    <ul style="color:#cbd5e1;font-size:14px;line-height:1.9;padding-left:16px;margin:0;">
+                        <li>Primary category picked too broad (e.g. "Contractor" vs "HVAC Contractor")</li>
+                        <li>Fewer than 10 photos (under the ranking floor)</li>
+                        <li>Weekly Posts haven't been used in 60+ days</li>
+                        <li>Customer Q&A section ignored (Google treats this as relevance signal)</li>
+                        <li>Service areas not listed or outdated</li>
+                        <li>No Products populated (even when services apply)</li>
+                    </ul>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    <strong style="color:#fff;">The issue this solves:</strong> a fully-optimized GBP outranks better-known competitors with weak profiles. It's the highest ROI lever in local SEO and most owners leave it half-configured.
+                </p>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    <strong style="color:#fff;">LNL AI Agency</strong> runs a free GBP audit — we show you the misses and what each one's roughly worth in monthly calls.
+                </p>
+                ${ctaButton(`Get the free GBP audit for ${businessName} →`, STRATEGY_CALL_URL)}
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `The $0 marketing asset most ${businessName.includes('Real Estate') ? 'agents' : 'owners'} waste`;
+    const preheader = `Your Google profile is either your #1 free lead source or your #1 hidden leak.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Your Google profile is free. It's also your #1 asset.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                For a local business, a fully optimized Google Business Profile (GBP) outperforms your own website, paid ads, and most SEO work combined. And it costs nothing.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                Education moment, because this matters: GBP is what feeds the <strong style="color:#fff;">local 3-pack</strong> — the three businesses Google shows on the map for local searches. The top 3 capture 75% of all clicks. Spot 4+ gets almost nothing.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:18px 22px;margin:20px 0;border-left:4px solid #10b981;">
+                <p style="margin:0 0 8px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;">What ranks a GBP in 2026</p>
+                <ul style="color:#cbd5e1;font-size:14px;line-height:1.9;padding-left:16px;margin:0;">
+                    <li><strong style="color:#fff;">Relevance</strong> — primary category, services, business name (exact match to query type)</li>
+                    <li><strong style="color:#fff;">Prominence</strong> — review count, review recency, citations across the web</li>
+                    <li><strong style="color:#fff;">Activity signals</strong> — Posts, Q&A, photo uploads, booking link clicks</li>
+                    <li><strong style="color:#fff;">Proximity</strong> — how close you are to the searcher (not much you can do here)</li>
+                </ul>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                <strong style="color:#fff;">The issue this solves:</strong> most owners set up GBP once and never optimize it. Every week without fresh Posts, new photos, or answered Q&A, your prominence score decays. A competitor with a weaker business but a better-maintained profile will rank above you.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                GBP optimization is one of the three audits we run at <strong style="color:#fff;">LNL AI Agency</strong>. More on the other two next email.
+            </p>
+            ${ctaButton(`Get a free GBP audit for ${businessName} →`, STRATEGY_CALL_URL)}
+        `, preheader, unsub),
+    };
 }
 
-export function marketingPush_email3(businessName: string, contactName: string | null): string {
-    return baseTemplate(`
-        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Get more leads instantly with Google Ads 💰</h1>
-        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            SEO builds long-term momentum. But if you need leads <em>now</em>, Google Ads is the fastest way to get
-            <strong style="color:#fff;">${businessName}</strong> in front of high-intent buyers who are ready to hire.
-        </p>
-        <div style="background:#0f172a;border-radius:12px;padding:20px 24px;margin:20px 0;">
-            <p style="margin:0 0 12px;color:#94a3b8;font-size:13px;font-weight:700;text-transform:uppercase;">Why local PPC works</p>
-            ${[
-                ['🎯', 'Only pay when someone clicks — no wasted budget'],
-                ['📍', 'Target by zip code, city, or radius — reach your exact market'],
-                ['📞', 'Call-only ads send leads straight to your phone'],
-                ['📊', 'Full tracking — you know exactly what every dollar produces'],
-            ].map(([icon, text]) => `<p style="margin:0 0 8px;color:#cbd5e1;font-size:14px;">${icon} ${text}</p>`).join('')}
-        </div>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            We manage everything — campaign setup, ad copy, targeting, and monthly optimization — so you just take the calls.
-        </p>
-        ${ctaButton('See What PPC Can Do for My Business →', STRATEGY_CALL_URL)}
-        <p style="margin-top:16px;color:#64748b;font-size:13px;">Free strategy call — we'll model out your potential ROI before you spend a dollar.</p>
-    `, 'Only pay when someone clicks. Target your exact market. Full tracking on every dollar.');
+// ─── MKT PUSH: Email 3 — The 3-audit diagnostic system ─────────────────────
+export function marketingPush_email3(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `Why we diagnose before we prescribe`;
+        const preheader = `Three specific audits. Zero guesswork. Here's what each one reveals.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">You wouldn't trust a doctor who prescribed without tests.</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    Most SEO agencies work that way anyway — they sell you a package, then figure it out. At <strong style="color:#fff;">LNL AI Agency</strong>, we run three audits first. Here's what each one reveals.
+                </p>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #10b981;">
+                    <p style="margin:0 0 8px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Audit 1 — Trust</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                        <strong style="color:#fff;">Reveals:</strong> whether Google sees ${businessName} as authoritative. We score reviews (count, recency, response rate), citations (NAP consistency across directories), brand mentions, and E-E-A-T signals. Trust is the ceiling on how high you can rank — fix it first.
+                    </p>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #f59e0b;">
+                    <p style="margin:0 0 8px;color:#fcd34d;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Audit 2 — GBP</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                        <strong style="color:#fff;">Reveals:</strong> every miss on your Google Business Profile. Category gaps, missing services, photo count under threshold, stale Posts, unanswered Q&A. We quantify each miss in roughly "calls per month lost."
+                    </p>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                    <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Audit 3 — Tech SEO</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                        <strong style="color:#fff;">Reveals:</strong> whether your site can even be found and parsed. Speed scores, mobile issues, indexing problems, broken schema, AEO-readiness (is your content structured for AI extraction?). This is where most sites quietly bleed rankings.
+                    </p>
+                </div>
+                <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                    <strong style="color:#fff;">The issue this solves:</strong> fixing the wrong thing. Most SEO spend is wasted because the agency didn't diagnose first.
+                </p>
+                ${ctaButton(`Get all 3 audits for ${businessName} →`, STRATEGY_CALL_URL)}
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `Before we touch any SEO, we check 3 things`;
+    const preheader = `The diagnostic system that decides what actually gets fixed.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">We don't guess. Here's how we diagnose.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                Most SEO agencies show up with a recommendation before they've looked at anything. At <strong style="color:#fff;">LNL AI Agency</strong>, every engagement starts with three audits. This is the part nobody explains — so here it is.
+            </p>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #10b981;">
+                <p style="margin:0 0 8px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Audit 1 — Trust Audit</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 8px;">
+                    <strong style="color:#fff;">What we check:</strong> review volume/recency/response rate, NAP consistency across directories, brand mentions, E-E-A-T (Experience, Expertise, Authoritativeness, Trust) signals.
+                </p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">Why it matters:</strong> Google won't rank you above your Trust ceiling no matter how perfect the rest of your SEO is. Fix this first.
+                </p>
+            </div>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #f59e0b;">
+                <p style="margin:0 0 8px;color:#fcd34d;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Audit 2 — GBP Audit</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 8px;">
+                    <strong style="color:#fff;">What we check:</strong> primary category, services listed, photo count, Posts cadence, Q&A completeness, review response rate, booking/message enablement.
+                </p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">Why it matters:</strong> GBP drives the local 3-pack, which drives 75% of local clicks. Every miss has a rough "calls per month lost" we can quantify.
+                </p>
+            </div>
+            <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Audit 3 — Tech SEO Audit</p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0 0 8px;">
+                    <strong style="color:#fff;">What we check:</strong> Core Web Vitals (speed), mobile usability, indexing status, schema markup, internal linking, and AEO-readiness — whether your content is structured so AI engines can extract it as the answer.
+                </p>
+                <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">
+                    <strong style="color:#fff;">Why it matters:</strong> a slow or poorly structured site can't rank no matter how good the content is. And in the AI-answer era, unstructured content is invisible.
+                </p>
+            </div>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                <strong style="color:#fff;">The issue this solves:</strong> marketing spend wasted on the wrong fix. Diagnose first. Then fix.
+            </p>
+            ${ctaButton(`Get all 3 audits free for ${businessName} →`, STRATEGY_CALL_URL)}
+        `, preheader, unsub),
+    };
 }
 
-export function marketingPush_email4(businessName: string, contactName: string | null): string {
-    return baseTemplate(`
-        <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Let's make a plan for your business growth 📋</h1>
-        <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${contactName ? `Hi ${contactName},` : 'Hi there,'}</p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            You've built something real with <strong style="color:#fff;">${businessName}</strong>. Let's talk about how to scale it.
-        </p>
-        <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
-            Over the past few weeks we've shared how we help local businesses with AI automation, SEO, and paid ads.
-            The most valuable thing we offer is a clear, honest growth strategy — customized for your market and goals.
-        </p>
-        <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;">
-            <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;">🗓️ On our strategy call, we'll cover:</p>
-            <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:0;">
-                <li>Your current marketing gaps and quick wins</li>
-                <li>The #1 channel to invest in for your industry right now</li>
-                <li>A 90-day roadmap with realistic revenue projections</li>
-                <li>Whether done-for-you or coaching makes more sense for you</li>
-            </ul>
-        </div>
-        ${ctaButton('Book My Free Growth Strategy Call →', STRATEGY_CALL_URL)}
-        <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
-        <p style="color:#64748b;font-size:13px;">
-            This is our last email in this series. If the timing is not right, no worries — reply anytime and we will be here.
-        </p>
-    `, 'One free call. A custom growth plan built for your business. No obligation.');
+// ─── MKT PUSH: Email 4 — Free audit offer / last email ─────────────────────
+export function marketingPush_email4(
+    businessName: string,
+    contactName: string | null,
+    listingId: number,
+    variant: 'A' | 'B' = 'A'
+): EmailOutput {
+    const greet = contactName ? `Hi ${contactName},` : 'Hi there,';
+    const unsub = unsubUrl(listingId);
+
+    if (variant === 'B') {
+        const subject = `Last email — here's what we'd do for ${businessName}`;
+        const preheader = `A specific 30-day plan. Yours to keep either way.`;
+        return {
+            subject, preheader,
+            html: baseTemplate(`
+                <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">If we were handed ${businessName} tomorrow…</h1>
+                <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+                <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                    …here's what the first 30 days would look like at <strong style="color:#fff;">LNL AI Agency</strong>. No fluff, no discovery-phase stalling.
+                </p>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #10b981;">
+                    <p style="margin:0 0 6px;color:#6ee7b7;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Week 1 — The 3 Audits</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">Trust Audit, GBP Audit, Tech SEO Audit. Quantified: "here's what each miss is costing per month."</p>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid #f59e0b;">
+                    <p style="margin:0 0 6px;color:#fcd34d;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Week 2 — GBP Fixes</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">Category correction, photo ramp, Posts cadence started, Q&A populated, review automation turned on. Highest-ROI lever, fixed first.</p>
+                </div>
+                <div style="background:#0f172a;border-radius:10px;padding:20px;margin:18px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                    <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Weeks 3–4 — AEO + Tech SEO</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">Content restructured for AI extraction, schema deployed, speed issues fixed, answer-ready pages published for your top queries.</p>
+                </div>
+                <div style="background:#1e3a5f;border-radius:10px;padding:20px;margin:18px 0;">
+                    <p style="margin:0 0 6px;color:#a5b4fc;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Bonus — AI Agent Integration</p>
+                    <p style="color:#cbd5e1;font-size:14px;line-height:1.7;margin:0;">If you're interested from the earlier series: the same agents can be plugged into the new marketing flows so SEO leads land with an agent already handling intake.</p>
+                </div>
+                ${ctaButton(`Book the 30-day planning call →`, STRATEGY_CALL_URL)}
+                <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+                <p style="color:#64748b;font-size:13px;">Last email in this series — reply anytime and we will be here.</p>
+            `, preheader, unsub),
+        };
+    }
+
+    const subject = `One free thing we can do for ${businessName} this week`;
+    const preheader = `Three audits, no pitch attached. Yours to keep.`;
+    return {
+        subject, preheader,
+        html: baseTemplate(`
+            <h1 style="margin:0 0 8px;font-size:24px;color:#fff;">Final email — and the one where we give something away.</h1>
+            <p style="margin:0 0 20px;color:#94a3b8;font-size:15px;">${greet}</p>
+            <p style="color:#cbd5e1;font-size:16px;line-height:1.7;font-weight:500;">
+                Over the last few weeks we covered the AEO/GEO shift in search, why Google Business Profile is the highest-ROI asset in local, and the 3-audit system <strong style="color:#fff;">LNL AI Agency</strong> runs before touching anything.
+            </p>
+            <p style="color:#cbd5e1;font-size:15px;line-height:1.7;">
+                Here's the offer: we'll run all 3 audits on <strong style="color:#fff;">${businessName}</strong> for free. You'll get the output whether you work with us or not.
+            </p>
+            <div style="background:#1e3a5f;border-radius:12px;padding:20px 24px;margin:24px 0;border-left:4px solid ${PRIMARY_COLOR};">
+                <p style="margin:0 0 8px;color:#a5b4fc;font-size:13px;font-weight:700;">🎁 Your free audit package includes:</p>
+                <ul style="color:#cbd5e1;font-size:14px;line-height:2;padding-left:16px;margin:0;">
+                    <li><strong style="color:#fff;">Trust Audit</strong> — reviews, citations, brand signals, E-E-A-T score</li>
+                    <li><strong style="color:#fff;">GBP Audit</strong> — every miss, scored and prioritized by calls/month impact</li>
+                    <li><strong style="color:#fff;">Tech SEO + AEO Audit</strong> — what's broken, what's slow, what's invisible to AI</li>
+                    <li>A 20-minute walk-through of all three — then we leave you alone</li>
+                </ul>
+                <p style="margin:12px 0 0;color:#64748b;font-size:13px;">No pitch. No follow-up pressure. Hand on heart.</p>
+            </div>
+            ${ctaButton(`Get the free 3-audit package →`, STRATEGY_CALL_URL)}
+            <hr style="border:none;border-top:1px solid #1e293b;margin:28px 0;" />
+            <p style="color:#64748b;font-size:13px;">This is our last email in the series. If the timing is not right, reply anytime — we'll pick it up when you're ready.</p>
+        `, preheader, unsub),
+    };
 }
 
 // ─── Booking: Customer Confirmation ──────────────────────────────────────────

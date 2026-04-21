@@ -20,5 +20,19 @@ export async function GET(request: Request) {
           AND (unsubscribed IS NULL OR unsubscribed = FALSE)
     `;
 
+    // Also opt out of service-push sequences so they stop sending.
+    await sql`
+        UPDATE saas_push_campaigns
+        SET opted_out_at = NOW()
+        WHERE listing_id = ${listingId}
+          AND opted_out_at IS NULL
+    `;
+    await sql`
+        UPDATE marketing_services_campaigns
+        SET opted_out_at = NOW()
+        WHERE listing_id = ${listingId}
+          AND opted_out_at IS NULL
+    `;
+
     return NextResponse.json({ success: true });
 }

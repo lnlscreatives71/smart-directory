@@ -26,7 +26,11 @@ export async function POST(request: Request) {
 
         let emailsSent = 0;
 
-        // ── EMAIL 1: What If Your Business Could Run Itself? ──────────────────
+        // Deterministic A/B variant per listing_id — same recipient always
+        // gets the same variant across the full 4-email series for clean analytics.
+        const variantFor = (listingId: number): 'A' | 'B' => (Number(listingId) % 2 === 0 ? 'A' : 'B');
+
+        // ── EMAIL 1: Intro to AI Agents + LNL AI Agency bridge ──────────────
         const email1Queue = await sql`
             SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM saas_push_campaigns c
@@ -35,11 +39,9 @@ export async function POST(request: Request) {
               AND c.opted_out_at IS NULL
         `;
         for (const c of email1Queue) {
-            await sendEmail({
-                to: c.contact_email as string,
-                subject: `What if ${c.name} could run itself?`,
-                html: saasPush_email1(c.name as string, c.contact_name as string | null),
-            });
+            const v = variantFor(c.listing_id as number);
+            const email = saasPush_email1(c.name as string, c.contact_name as string | null, c.listing_id as number, v);
+            await sendEmail({ to: c.contact_email as string, subject: email.subject, html: email.html });
             await sql`
                 UPDATE saas_push_campaigns
                 SET status = 'email_1_sent', email_1_sent_at = NOW(), updated_at = NOW()
@@ -49,7 +51,7 @@ export async function POST(request: Request) {
             emailsSent++;
         }
 
-        // ── EMAIL 2: How Many Leads Are You Losing? (+2 days) ────────────────
+        // ── EMAIL 2: Vertical-specific agent deep-dive (+2 days) ────────────
         const email2Queue = await sql`
             SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM saas_push_campaigns c
@@ -59,11 +61,9 @@ export async function POST(request: Request) {
               AND c.email_1_sent_at < NOW() - ${delay2}::interval
         `;
         for (const c of email2Queue) {
-            await sendEmail({
-                to: c.contact_email as string,
-                subject: `How many leads is ${c.name} actually losing?`,
-                html: saasPush_email2(c.name as string, c.contact_name as string | null),
-            });
+            const v = variantFor(c.listing_id as number);
+            const email = saasPush_email2(c.name as string, c.contact_name as string | null, c.listing_id as number, v);
+            await sendEmail({ to: c.contact_email as string, subject: email.subject, html: email.html });
             await sql`
                 UPDATE saas_push_campaigns
                 SET status = 'email_2_sent', email_2_sent_at = NOW(), updated_at = NOW()
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
             emailsSent++;
         }
 
-        // ── EMAIL 3: Why More Local Businesses Are Using This (+2 days) ───────
+        // ── EMAIL 3: After-hours / invisible revenue (+2 days) ──────────────
         const email3Queue = await sql`
             SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM saas_push_campaigns c
@@ -83,11 +83,9 @@ export async function POST(request: Request) {
               AND c.email_2_sent_at < NOW() - ${delay2}::interval
         `;
         for (const c of email3Queue) {
-            await sendEmail({
-                to: c.contact_email as string,
-                subject: `Why more local businesses are using this`,
-                html: saasPush_email3(c.name as string, c.contact_name as string | null),
-            });
+            const v = variantFor(c.listing_id as number);
+            const email = saasPush_email3(c.name as string, c.contact_name as string | null, c.listing_id as number, v);
+            await sendEmail({ to: c.contact_email as string, subject: email.subject, html: email.html });
             await sql`
                 UPDATE saas_push_campaigns
                 SET status = 'email_3_sent', email_3_sent_at = NOW(), updated_at = NOW()
@@ -97,7 +95,7 @@ export async function POST(request: Request) {
             emailsSent++;
         }
 
-        // ── EMAIL 4: Want to Test It Out for Free? (+2 days) ─────────────────
+        // ── EMAIL 4: Free strategy call CTA (+2 days) ───────────────────────
         const email4Queue = await sql`
             SELECT c.id, c.listing_id, c.contact_email, c.contact_name, l.name
             FROM saas_push_campaigns c
@@ -107,11 +105,9 @@ export async function POST(request: Request) {
               AND c.email_3_sent_at < NOW() - ${delay2}::interval
         `;
         for (const c of email4Queue) {
-            await sendEmail({
-                to: c.contact_email as string,
-                subject: `Want to test it out for free?`,
-                html: saasPush_email4(c.name as string, c.contact_name as string | null),
-            });
+            const v = variantFor(c.listing_id as number);
+            const email = saasPush_email4(c.name as string, c.contact_name as string | null, c.listing_id as number, v);
+            await sendEmail({ to: c.contact_email as string, subject: email.subject, html: email.html });
             await sql`
                 UPDATE saas_push_campaigns
                 SET status = 'email_4_sent', email_4_sent_at = NOW(), updated_at = NOW()
