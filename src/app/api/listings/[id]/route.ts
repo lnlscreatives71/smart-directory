@@ -1,5 +1,6 @@
 import { sql } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { sendEmail } from '@/lib/email';
@@ -148,6 +149,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
                 }
             }
 
+            revalidatePath('/sitemap.xml');
+
             return NextResponse.json({ success: true, data: result[0] });
         }
 
@@ -167,6 +170,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
             WHERE id = ${id}
             RETURNING *
         `;
+        revalidatePath('/sitemap.xml');
         return NextResponse.json({ success: true, data: result[0] });
 
     } catch (error: unknown) {
@@ -202,6 +206,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         }
 
         const updated = await sql`SELECT * FROM listings WHERE id = ${id} LIMIT 1`;
+
+        if ('active' in body || 'claimed' in body) {
+            revalidatePath('/sitemap.xml');
+        }
+
         return NextResponse.json({ success: true, data: updated[0] });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
@@ -221,6 +230,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         }
 
         await sql`DELETE FROM listings WHERE id = ${id}`;
+        revalidatePath('/sitemap.xml');
         return NextResponse.json({ success: true });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);

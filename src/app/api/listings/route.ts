@@ -1,5 +1,6 @@
 import { sql } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -79,6 +80,8 @@ export async function POST(request: Request) {
             VALUES (${result[0].id}, 'pending')
            `;
         }
+
+        revalidatePath('/sitemap.xml');
 
         return NextResponse.json({ success: true, data: result[0] });
     } catch (error: unknown) {
