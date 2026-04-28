@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { sql } from '@/lib/db';
 import { Job, Event, News } from '@/lib/types';
 
@@ -42,8 +43,8 @@ export default async function NewsPage() {
                                 <div className="absolute top-0 left-0 w-1 h-full bg-primary-500 rounded-l-2xl"></div>
                                 <div className="flex flex-col md:flex-row gap-6">
                                     {news.image_url && (
-                                        <div className="w-full md:w-48 aspect-video md:aspect-square shrink-0 rounded-xl overflow-hidden bg-slate-100">
-                                            <img src={news.image_url} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <div className="relative w-full md:w-48 aspect-video md:aspect-square shrink-0 rounded-xl overflow-hidden bg-slate-100">
+                                            <Image src={news.image_url} alt={news.title} fill sizes="(max-width: 768px) 100vw, 192px" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                                         </div>
                                     )}
                                     <div className="flex flex-col justify-center flex-1">

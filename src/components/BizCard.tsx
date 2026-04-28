@@ -1,8 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import { useState } from 'react';
 import { Listing } from '@/lib/types';
 import { ExternalLink, Copy, Heart, Star, MapPin } from 'lucide-react';
+
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800';
 
 export default function BizCard({ biz, showFeatured = false }: { biz: Listing; showFeatured?: boolean }) {
   const isHighlight = biz.feature_flags?.highlight_on_home === true || biz.featured;
@@ -22,22 +26,24 @@ export default function BizCard({ biz, showFeatured = false }: { biz: Listing; s
   };
   
   const imageId = biz.image_url ? null : getCategoryImage(biz.category);
+  const initialSrc = biz.image_url || `https://images.unsplash.com/${imageId}?auto=format&fit=crop&q=80&w=500`;
+  const [imgSrc, setImgSrc] = useState(initialSrc);
 
   return (
     <div className="biz-card flex flex-col">
       {/* Image */}
       <div className="relative">
         <Link href={`/biz/${biz.slug}`}>
-          <img
-            src={biz.image_url || `https://images.unsplash.com/${imageId}?auto=format&fit=crop&q=80&w=500`}
+          <Image
+            src={imgSrc}
             alt={biz.name}
+            width={500}
+            height={300}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="biz-card-img hover:opacity-95 transition-opacity"
-            onError={(e) => {
-              // Fallback if image fails to load
-              const target = e.target as HTMLImageElement;
-              if (!target.src.includes('photo-1497366216548-37526070297c')) {
-                target.src = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=500';
-              }
+            loading="lazy"
+            onError={() => {
+              if (imgSrc !== FALLBACK_IMG) setImgSrc(FALLBACK_IMG);
             }}
           />
         </Link>

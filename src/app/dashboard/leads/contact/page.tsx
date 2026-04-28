@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
     ArrowLeft, Mail, Phone, Globe, MapPin, Tag, ExternalLink,
     Instagram, Facebook, Linkedin, Twitter, Youtube, Star,
@@ -142,7 +143,7 @@ function ContactPageInner() {
                 <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                     <div className="flex items-center gap-4">
                         {contact.image_url ? (
-                            <img src={contact.image_url} alt={contact.listing_name} className="w-16 h-16 rounded-xl object-cover border border-slate-200 dark:border-slate-700" />
+                            <Image src={contact.image_url} alt={contact.listing_name || ''} width={64} height={64} className="w-16 h-16 rounded-xl object-cover border border-slate-200 dark:border-slate-700" />
                         ) : (
                             <div className="w-16 h-16 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                                 <Building2 size={28} className="text-slate-400" />

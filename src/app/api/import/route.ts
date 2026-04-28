@@ -23,7 +23,7 @@ interface BusinessRow {
 
 const MAPS_API_KEY = process.env.MAPS_SERVER_API_KEY || process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
 
-async function fetchGooglePhoto(name: string, city: string, state: string): Promise<string | null> {
+async function fetchGooglePhotoRef(name: string, city: string, state: string): Promise<string | null> {
     if (!MAPS_API_KEY) return null;
     try {
         const query = `${name} ${city} ${state}`;
@@ -32,9 +32,7 @@ async function fetchGooglePhoto(name: string, city: string, state: string): Prom
         );
         const searchData = await searchRes.json();
         const photoRef = searchData?.candidates?.[0]?.photos?.[0]?.photo_reference;
-        if (!photoRef) return null;
-        // Return the Places photo URL (redirects to actual image)
-        return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${MAPS_API_KEY}`;
+        return photoRef || null;
     } catch {
         return null;
     }
@@ -171,13 +169,16 @@ export async function POST(request: Request) {
             const safeRating = isNaN(rating) ? 4.0 : Math.min(5.0, Math.max(1.0, rating));
 
             try {
-                // Try Google Places photo first, fall back to Unsplash category image
-                const googlePhoto = await fetchGooglePhoto(
+                // Try Google Places photo first, fall back to Unsplash category image.
+                // Store the photo_reference separately so /api/photo can re-sign URLs server-side.
+                const googlePhotoRef = await fetchGooglePhotoRef(
                     row.name,
                     row.location_city || 'Raleigh',
                     row.location_state || 'NC'
                 );
-                const imageUrl = googlePhoto || getImageForCategory(row.category || 'Other');
+                const imageUrl = googlePhotoRef
+                    ? `/api/photo?ref=${googlePhotoRef}`
+                    : getImageForCategory(row.category || 'Other');
 
                 // Insert the listing
                 let customFieldsJson = '{}';
@@ -191,7 +192,7 @@ export async function POST(request: Request) {
                         street_address, zip_code, location_city, location_state, location_region,
                         lat, lng, services, rating, featured, claimed,
                         plan_id, feature_flags, contact_email,
-                        contact_name, phone, website, image_url, custom_fields
+                        contact_name, phone, website, image_url, google_photo_ref, custom_fields
                     ) VALUES (
                         ${row.name},
                         ${slug},
@@ -216,6 +217,7 @@ export async function POST(request: Request) {
                         ${row.phone || null},
                         ${row.website || null},
                         ${imageUrl},
+                        ${googlePhotoRef},
                         ${customFieldsJson}
                     )
                     RETURNING id

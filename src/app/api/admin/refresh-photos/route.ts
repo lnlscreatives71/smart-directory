@@ -8,12 +8,10 @@ export const maxDuration = 60;
 
 const MAPS_API_KEY = process.env.MAPS_SERVER_API_KEY || process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
 
-async function fetchGoogleData(name: string, city: string, state: string): Promise<{ photo: string | null; rating: number | null; debug?: unknown }> {
-    if (!MAPS_API_KEY) return { photo: null, rating: null };
+async function fetchGoogleData(name: string, city: string, state: string): Promise<{ photoRef: string | null; rating: number | null; debug?: unknown }> {
+    if (!MAPS_API_KEY) return { photoRef: null, rating: null };
     try {
-        // Strip parenthetical suffixes e.g. "Peak Seasons HVAC (Plumbing)" → "Peak Seasons HVAC"
         const cleanName = name.replace(/\s*\(.*?\)\s*$/, '').trim();
-        // Use Raleigh as fallback if city is a state abbreviation or too short
         const cleanCity = city.length <= 2 ? 'Raleigh' : city;
         const query = `${cleanName} ${cleanCity} ${state}`;
         const res = await fetch(
@@ -21,14 +19,11 @@ async function fetchGoogleData(name: string, city: string, state: string): Promi
         );
         const data = await res.json();
         const candidate = data?.candidates?.[0];
-        const photoRef = candidate?.photos?.[0]?.photo_reference;
-        const photo = photoRef
-            ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=${photoRef}&key=${MAPS_API_KEY}`
-            : null;
+        const photoRef = candidate?.photos?.[0]?.photo_reference || null;
         const rating = typeof candidate?.rating === 'number' ? candidate.rating : null;
-        return { photo, rating, debug: { status: data?.status, candidateCount: data?.candidates?.length ?? 0 } };
+        return { photoRef, rating, debug: { status: data?.status, candidateCount: data?.candidates?.length ?? 0 } };
     } catch (e) {
-        return { photo: null, rating: null, debug: { error: String(e) } };
+        return { photoRef: null, rating: null, debug: { error: String(e) } };
     }
 }
 
@@ -54,21 +49,22 @@ export async function POST() {
     const debugSample: unknown[] = [];
 
     for (const l of listings) {
-        const { photo, rating, debug } = await fetchGoogleData(
+        const { photoRef, rating, debug } = await fetchGoogleData(
             l.name as string,
             (l.location_city as string) || 'Raleigh',
             (l.location_state as string) || 'NC'
         );
 
-        // Capture first 3 results for debugging
         if (debugSample.length < 3) {
-            debugSample.push({ name: l.name, photo: !!photo, rating, debug });
+            debugSample.push({ name: l.name, photo: !!photoRef, rating, debug });
         }
 
-        if (photo || rating !== null) {
+        if (photoRef || rating !== null) {
+            const proxyUrl = photoRef ? `/api/photo?ref=${photoRef}` : null;
             await sql`
                 UPDATE listings SET
-                    image_url = COALESCE(${photo}, image_url),
+                    image_url = COALESCE(${proxyUrl}, image_url),
+                    google_photo_ref = COALESCE(${photoRef}, google_photo_ref),
                     rating = COALESCE(${rating}, rating)
                 WHERE id = ${l.id}
             `;

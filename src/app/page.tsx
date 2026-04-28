@@ -1,6 +1,7 @@
 import { sql } from '@/lib/db';
 import { Listing } from '@/lib/types';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search, ExternalLink, Copy, Heart, Star, MapPin, ArrowUpRight } from 'lucide-react';
 import BizCard from '@/components/BizCard';
 import { getSiteSettings } from '@/lib/settings';
@@ -57,10 +58,13 @@ export default async function Home({
       <section className="hero-bg flex flex-col items-center justify-center text-center px-4 py-32 relative overflow-hidden">
         {/* Top Hero Background Image */}
         <div className="absolute inset-0 z-0">
-          <img
+          <Image
             src="/trianglehubcityimage.png"
             alt={settings.hero.bannerTitle}
-            className="w-full h-full object-cover object-bottom opacity-80 mix-blend-lighten"
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover object-bottom opacity-80 mix-blend-lighten"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/5 via-transparent to-[#0B0F19]/40"></div>
         </div>
@@ -163,9 +167,12 @@ export default async function Home({
                   <Link key={cat.label} href={cat.href} className="cat-tile block group">
                     <div className="relative">
                       <div className="absolute inset-0 bg-primary-600/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 mix-blend-overlay"></div>
-                      <img
+                      <Image
                         src={cat.img}
                         alt={cat.label}
+                        width={300}
+                        height={300}
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
                         className="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                       <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/90 to-transparent flex items-end p-4 z-20">
@@ -212,10 +219,13 @@ export default async function Home({
 
             {/* ── CTA Banner ─────────────────────────────── */}
             <section className="relative text-white py-24 text-center overflow-hidden border-t border-slate-800/50 mt-16">
-              <img
+              <Image
                 src="/trianglehubcityimage.png"
                 alt="Cityscape"
-                className="absolute inset-0 w-full h-full object-cover object-bottom opacity-70 mix-blend-lighten z-0"
+                fill
+                sizes="100vw"
+                loading="lazy"
+                className="object-cover object-bottom opacity-70 mix-blend-lighten z-0"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19]/50 to-[#0B0F19]/10 z-0"></div>
               <div className="relative z-10 max-w-3xl mx-auto px-4">

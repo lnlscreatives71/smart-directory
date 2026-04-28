@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Phone, UserCircle, ArrowUpRight } from 'lucide-react';
 import DynamicMenu from './DynamicMenu';
 
@@ -33,7 +34,7 @@ export default function MainHeader({ phone, phoneRaw }: Props) {
         <header className="fixed top-0 z-50 w-full glass-nav">
             <div className="max-w-7xl mx-auto px-4 h-24 flex items-center justify-between gap-4">
                 <Link href="/" className="flex items-center shrink-0">
-                    <img src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" className="h-[75px] w-auto drop-shadow-lg" />
+                    <Image src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" width={260} height={75} priority className="h-[75px] w-auto drop-shadow-lg" />
                 </Link>
                 <DynamicMenu />
                 <div className="flex items-center gap-5 shrink-0">

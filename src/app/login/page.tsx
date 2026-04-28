@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -54,7 +55,7 @@ export default function LoginPage() {
             <div className="relative z-10 w-full max-w-md">
                 <div className="text-center mb-10">
                     <Link href="/" className="inline-block">
-                        <img src="/triangle-hub-logo-dark.png" alt="Smart Directory" className="h-20 w-auto mx-auto mb-6" />
+                        <Image src="/triangle-hub-logo-dark.png" alt="Smart Directory" width={280} height={80} priority className="h-20 w-auto mx-auto mb-6" />
                     </Link>
                     <h2 className="text-4xl font-extrabold text-white tracking-tight">Welcome Back</h2>
                     <p className="mt-3 text-slate-400 text-lg">Sign in to your administration panel</p>

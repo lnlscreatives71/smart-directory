@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Phone, UserCircle, ArrowUpRight } from 'lucide-react';
 import { siteConfig } from '@/config/site';
 import { verifyLicense } from '@/lib/license';
@@ -116,7 +117,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
               <div>
                 <Link href="/">
-                  <img src="/triangle-hub-logo-dark.png" alt={settings.name} className="h-[46px] w-auto mb-4 drop-shadow-md" />
+                  <Image src="/triangle-hub-logo-dark.png" alt={settings.name} width={160} height={46} className="h-[46px] w-auto mb-4 drop-shadow-md" />
                 </Link>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   {settings.description}

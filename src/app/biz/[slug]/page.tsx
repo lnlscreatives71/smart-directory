@@ -3,6 +3,7 @@ import { Listing, Event, Blog, News, Job } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import { Star, MapPin, CheckCircle, ExternalLink, Calendar, MessageSquare, Briefcase, FileText } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import BookingWidget from '@/components/BookingWidget';
 import AIChatWidget from '@/components/AIChatWidget';
 import ReviewsSection from '@/components/ReviewsSection';
@@ -56,10 +57,13 @@ export default async function BusinessDetail({
         <div className="min-h-screen pb-20 text-white">
             {/* Header Banner */}
             <div className="h-[300px] w-full bg-slate-800 relative">
-                <img
+                <Image
                     src={biz.image_url || `https://images.unsplash.com/photo-${biz.id % 2 === 0 ? '1497366216548-37526070297c' : '1517248135467-4c7edcad34c4'}?auto=format&fit=crop&q=80&w=1200`}
                     alt={biz.name}
-                    className="w-full h-full object-cover opacity-60"
+                    fill
+                    sizes="100vw"
+                    priority
+                    className="object-cover opacity-60"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
                 <div className="absolute bottom-0 w-full">

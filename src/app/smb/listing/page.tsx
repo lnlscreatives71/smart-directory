@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
     Building2, Phone, Globe, Mail, MapPin, FileText,
     Camera, Clock, Save, CheckCircle2, AlertCircle, Plus, Trash2,
@@ -349,7 +350,7 @@ export default function SmbListingEditorPage() {
                 </h2>
                 <div className="flex items-start gap-4">
                     {imageUrl ? (
-                        <img src={imageUrl} alt="Business" className="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" />
+                        <Image src={imageUrl} alt="Business" width={96} height={96} className="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" />
                     ) : (
                         <div className="w-24 h-24 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
                             <Camera size={24} className="text-slate-300 dark:text-slate-600" />

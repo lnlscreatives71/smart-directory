@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { sql } from '@/lib/db';
 import { Blog } from '@/lib/types';
 
@@ -42,7 +43,7 @@ export default async function BlogsPage() {
                             <Link key={blog.id} href={`/listing/${blog.listing_id}#blog-${blog.id}`} className="glass rounded-2xl overflow-hidden border border-white/10 shadow-sm hover:shadow-xl transition-shadow group flex flex-col">
                                 {blog.image_url ? (
                                     <div className="aspect-video w-full overflow-hidden relative bg-slate-800">
-                                        <img src={blog.image_url} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <Image src={blog.image_url} alt={blog.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" loading="lazy" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                                     </div>
                                 ) : (
                                     <div className="aspect-video w-full bg-slate-800 flex items-center justify-center text-slate-600">
