@@ -12,6 +12,10 @@ const FALLBACK_IMG = 'https://images.unsplash.com/photo-1497366216548-3752607029
 export default function BizCard({ biz, showFeatured = false }: { biz: Listing; showFeatured?: boolean }) {
   const isHighlight = biz.feature_flags?.highlight_on_home === true || biz.featured;
   const [imgSrc, setImgSrc] = useState(getListingImageUrl(biz, 500));
+  // Bypass next/image optimizer for Google Photos — its server-side fetch has
+  // no Referer, which fails HTTP-referrer-restricted keys. Browser <img> sends
+  // the right Referer.
+  const unoptimized = imgSrc.includes('maps.googleapis.com');
 
   return (
     <div className="biz-card flex flex-col">
@@ -26,6 +30,7 @@ export default function BizCard({ biz, showFeatured = false }: { biz: Listing; s
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="biz-card-img hover:opacity-95 transition-opacity"
             loading="lazy"
+            unoptimized={unoptimized}
             onError={() => {
               if (imgSrc !== FALLBACK_IMG) setImgSrc(FALLBACK_IMG);
             }}
