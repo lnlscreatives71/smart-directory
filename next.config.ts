@@ -8,12 +8,6 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'maps.googleapis.com' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
     ],
-    // Once localPatterns is set, ONLY matching paths are allowed — so we have
-    // to whitelist everything, not just /api/photo. The wildcard pattern keeps
-    // the default permissive behaviour while still allowing query strings.
-    localPatterns: [
-      { pathname: '/**' },
-    ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 2592000,
   },
