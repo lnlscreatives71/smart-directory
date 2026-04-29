@@ -60,10 +60,11 @@ export async function POST() {
         }
 
         if (photoRef || rating !== null) {
-            const proxyUrl = photoRef ? `/api/photo?ref=${photoRef}` : null;
+            // When we have a fresh ref, clear image_url so getListingImageUrl()
+            // routes through /api/photo with proper URL encoding.
             await sql`
                 UPDATE listings SET
-                    image_url = COALESCE(${proxyUrl}, image_url),
+                    image_url = CASE WHEN ${photoRef}::text IS NOT NULL THEN NULL ELSE image_url END,
                     google_photo_ref = COALESCE(${photoRef}, google_photo_ref),
                     rating = COALESCE(${rating}, rating)
                 WHERE id = ${l.id}

@@ -170,15 +170,14 @@ export async function POST(request: Request) {
 
             try {
                 // Try Google Places photo first, fall back to Unsplash category image.
-                // Store the photo_reference separately so /api/photo can re-sign URLs server-side.
+                // Store the photo_reference separately; components derive /api/photo URLs
+                // via getListingImageUrl() to handle URL-encoding correctly.
                 const googlePhotoRef = await fetchGooglePhotoRef(
                     row.name,
                     row.location_city || 'Raleigh',
                     row.location_state || 'NC'
                 );
-                const imageUrl = googlePhotoRef
-                    ? `/api/photo?ref=${googlePhotoRef}`
-                    : getImageForCategory(row.category || 'Other');
+                const imageUrl = googlePhotoRef ? null : getImageForCategory(row.category || 'Other');
 
                 // Insert the listing
                 let customFieldsJson = '{}';

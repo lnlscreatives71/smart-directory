@@ -49,6 +49,7 @@ export interface Listing {
     phone?: string;
     website?: string;
     image_url?: string;
+    google_photo_ref?: string | null;
     business_hours?: BusinessHour[];
     social_media?: SocialMediaLinks;
     contact_form_enabled?: boolean;

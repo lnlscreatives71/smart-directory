@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Star, MapPin, CheckCircle, ExternalLink, Calendar, MessageSquare, Briefcase, FileText } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getListingImageUrl } from '@/lib/images';
 import BookingWidget from '@/components/BookingWidget';
 import AIChatWidget from '@/components/AIChatWidget';
 import ReviewsSection from '@/components/ReviewsSection';
@@ -58,7 +59,7 @@ export default async function BusinessDetail({
             {/* Header Banner */}
             <div className="h-[300px] w-full bg-slate-800 relative">
                 <Image
-                    src={biz.image_url || `https://images.unsplash.com/photo-${biz.id % 2 === 0 ? '1497366216548-37526070297c' : '1517248135467-4c7edcad34c4'}?auto=format&fit=crop&q=80&w=1200`}
+                    src={getListingImageUrl(biz, 1200)}
                     alt={biz.name}
                     fill
                     sizes="100vw"
