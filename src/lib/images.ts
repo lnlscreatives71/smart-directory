@@ -47,6 +47,10 @@ export function getListingImageUrl(listing: Pick<Listing, 'image_url' | 'categor
     if (listing.google_photo_ref && MAPS_KEY) {
         return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${width}&photo_reference=${listing.google_photo_ref}&key=${MAPS_KEY}`;
     }
+    // Stale corrupted /api/photo?ref=... URLs from migration 004 — skip them.
+    if (listing.image_url?.startsWith('/api/photo')) {
+        return categoryFallback(listing.category, width);
+    }
     if (listing.image_url && /^https?:\/\//.test(listing.image_url)) {
         return listing.image_url;
     }

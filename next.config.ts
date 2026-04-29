@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'maps.googleapis.com' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
     ],
+    // Required when local image src includes query strings (e.g. /api/photo?ref=…).
+    localPatterns: [
+      { pathname: '/api/photo', search: '' },
+    ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 2592000,
   },
