@@ -81,13 +81,19 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
                             >
                                 {/* Image */}
                                 <div className="relative h-48 bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                    <Image
-                                        src={getListingImageUrl(listing, 600)}
-                                        alt={listing.name}
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
+                                    {(() => {
+                                        const src = getListingImageUrl(listing, 600);
+                                        return (
+                                            <Image
+                                                src={src}
+                                                alt={listing.name}
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                                unoptimized={src.includes('maps.googleapis.com')}
+                                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                            />
+                                        );
+                                    })()}
                                     {listing.featured && (
                                         <div className="absolute top-3 right-3 px-3 py-1 bg-secondary-500 text-white text-xs font-bold rounded-full">
                                             Featured
