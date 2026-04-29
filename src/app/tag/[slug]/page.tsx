@@ -89,7 +89,7 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
                                                 alt={listing.name}
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                                unoptimized={src.includes('maps.googleapis.com')}
+                                                unoptimized={src.startsWith('/api/photo') || src.includes('maps.googleapis.com')}
                                                 className="object-cover group-hover:scale-105 transition-transform duration-300"
                                             />
                                         );

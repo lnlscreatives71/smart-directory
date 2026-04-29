@@ -12,10 +12,9 @@ const FALLBACK_IMG = 'https://images.unsplash.com/photo-1497366216548-3752607029
 export default function BizCard({ biz, showFeatured = false }: { biz: Listing; showFeatured?: boolean }) {
   const isHighlight = biz.feature_flags?.highlight_on_home === true || biz.featured;
   const [imgSrc, setImgSrc] = useState(getListingImageUrl(biz, 500));
-  // Bypass next/image optimizer for Google Photos — its server-side fetch has
-  // no Referer, which fails HTTP-referrer-restricted keys. Browser <img> sends
-  // the right Referer.
-  const unoptimized = imgSrc.includes('maps.googleapis.com');
+  // Bypass next/image optimizer for our own /api/photo proxy (already returns
+  // optimized JPEG) and any direct Google URLs.
+  const unoptimized = imgSrc.startsWith('/api/photo') || imgSrc.includes('maps.googleapis.com');
 
   return (
     <div className="biz-card flex flex-col">
