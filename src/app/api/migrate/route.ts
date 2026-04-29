@@ -34,10 +34,9 @@ export async function GET(req: NextRequest) {
     return runMigrations();
 }
 
-// Neon's sql function supports both template-tag and (query, params) call forms
-// at runtime, but the exported types only describe the template-tag form.
-// This helper lets us run arbitrary SQL strings (e.g. migration files) safely.
-const rawSql = sql as unknown as (query: string, params?: unknown[]) => Promise<unknown>;
+// Neon v1 requires sql.query(...) for raw SQL strings; the bare sql(...) form
+// was removed in favour of the template-tag-only API.
+const rawSql = (sql as unknown as { query: (query: string, params?: unknown[]) => Promise<unknown> }).query.bind(sql);
 
 async function runMigrations() {
     const results: { file: string; status: 'applied' | 'skipped' | 'error'; error?: string }[] = [];
