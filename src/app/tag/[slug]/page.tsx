@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Star, Phone, Globe, CheckCircle } from 'lucide-react';
+import { getListingImageUrl } from '@/lib/images';
 
 export async function generateStaticParams() {
     // Generate paths for common tags
@@ -80,18 +81,13 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
                             >
                                 {/* Image */}
                                 <div className="relative h-48 bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                    {listing.image_url ? (
-                                        <Image
-                                            src={listing.image_url}
-                                            alt={listing.name}
-                                            fill
-                                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                        />
-                                    ) : (
-                                        <div className="flex items-center justify-center h-full text-slate-400">
-                                            <span className="text-4xl">🏢</span>
-                                        </div>
-                                    )}
+                                    <Image
+                                        src={getListingImageUrl(listing, 600)}
+                                        alt={listing.name}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
                                     {listing.featured && (
                                         <div className="absolute top-3 right-3 px-3 py-1 bg-secondary-500 text-white text-xs font-bold rounded-full">
                                             Featured
