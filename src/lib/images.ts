@@ -30,15 +30,22 @@ function categoryFallback(category: string | undefined, w = 800): string {
     return `https://images.unsplash.com/${id}?auto=format&fit=crop&q=80&w=${w}`;
 }
 
+// Public Maps key — exposed to client because images must be loadable in the browser.
+// next/image optimizer caches the result for 30 days, which protects us against
+// key rotation breakage between caches.
+const MAPS_KEY = process.env.NEXT_PUBLIC_MAPS_API_KEY || '';
+
 /**
  * Resolve the best image URL for a listing.
- * - Prefer google_photo_ref via the /api/photo proxy (handles key rotation).
- * - Fall back to image_url if it's a usable absolute URL.
+ * - Prefer a direct Google Places photo URL built from google_photo_ref.
+ *   next/image proxies and caches it, so a key change won't immediately
+ *   nuke every cached image.
+ * - Fall back to image_url if it's an absolute URL.
  * - Otherwise return a category-appropriate Unsplash image.
  */
 export function getListingImageUrl(listing: Pick<Listing, 'image_url' | 'category'> & { google_photo_ref?: string | null }, width = 800): string {
-    if (listing.google_photo_ref) {
-        return `/api/photo?ref=${encodeURIComponent(listing.google_photo_ref)}&w=${width}`;
+    if (listing.google_photo_ref && MAPS_KEY) {
+        return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${width}&photo_reference=${listing.google_photo_ref}&key=${MAPS_KEY}`;
     }
     if (listing.image_url && /^https?:\/\//.test(listing.image_url)) {
         return listing.image_url;

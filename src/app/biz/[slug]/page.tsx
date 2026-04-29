@@ -58,13 +58,11 @@ export default async function BusinessDetail({
         <div className="min-h-screen pb-20 text-white">
             {/* Header Banner */}
             <div className="h-[300px] w-full bg-slate-800 relative">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                     src={getListingImageUrl(biz, 1200)}
                     alt={biz.name}
-                    fill
-                    sizes="100vw"
-                    priority
-                    className="object-cover opacity-60"
+                    className="absolute inset-0 w-full h-full object-cover opacity-60"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
                 <div className="absolute bottom-0 w-full">
