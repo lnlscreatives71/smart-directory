@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
         // Notify SMB with magic login link
         await sendEmail({
             to: nbr.contact_email as string,
-            subject: `🎉 Your business "${nbr.name}" is now live on The Triangle Hub!`,
+            subject: `🎉 Your business "${nbr.name}" is now live on ${process.env.NEXT_PUBLIC_SITE_NAME || 'The Triangle Hub'}!`,
             html: newBusinessApproved(nbr.name as string, nbr.contact_name as string, listing.slug as string, magicLink),
         });
 
@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
 
         await sendEmail({
             to: nbr.contact_email as string,
-            subject: `Update on your business submission to The Triangle Hub`,
+            subject: `Update on your business submission to ${process.env.NEXT_PUBLIC_SITE_NAME || 'The Triangle Hub'}`,
             html: newBusinessRejected(nbr.name as string, nbr.contact_name as string),
         });
 

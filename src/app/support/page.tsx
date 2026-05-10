@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { siteConfig } from '@/config/site';
 
 export default function SupportPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: 'general', message: '' });
@@ -137,7 +138,7 @@ export default function SupportPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-white">Email</p>
-                    <a href="mailto:directory@thetrianglehub.online" className="text-slate-400 hover:text-primary-400 transition-colors">directory@thetrianglehub.online</a>
+                    <a href={`mailto:${siteConfig.contact.email}`} className="text-slate-400 hover:text-primary-400 transition-colors">{siteConfig.contact.email}</a>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -146,7 +147,7 @@ export default function SupportPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-white">Phone</p>
-                    <a href="tel:+13507772961" className="text-slate-400 hover:text-primary-400 transition-colors">(350) 777-2961</a>
+                    <a href={`tel:${siteConfig.contact.phoneRaw}`} className="text-slate-400 hover:text-primary-400 transition-colors">{siteConfig.contact.phone}</a>
                     <p className="text-xs text-slate-500 mt-1">Mon-Fri, 9am - 5pm EST</p>
                   </div>
                 </div>
@@ -156,7 +157,7 @@ export default function SupportPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-white">Headquarters</p>
-                    <p className="text-slate-400">Raleigh, North Carolina 27601</p>
+                    <p className="text-slate-400">{siteConfig.contact.address}</p>
                   </div>
                 </div>
               </div>

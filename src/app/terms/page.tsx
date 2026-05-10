@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { siteConfig } from '@/config/site';
 
 export default function TermsPage() {
   return (
@@ -24,14 +25,14 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4 text-white">1. Introduction</h2>
             <p className="text-slate-300 leading-relaxed">
-              Welcome to Triangle Local Hub ("we", "our", or "us"). By accessing or using our website, services, or tools (collectively, the "Services"), you agree to comply with and be bound by these Terms of Service. If you do not agree with any part of these terms, please do not use our Services.
+              Welcome to {siteConfig.name} (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;). By accessing or using our website, services, or tools (collectively, the &quot;Services&quot;), you agree to comply with and be bound by these Terms of Service. If you do not agree with any part of these terms, please do not use our Services.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold mb-4 text-white">2. Use of Services</h2>
             <p className="text-slate-300 leading-relaxed mb-4">
-              Our Services are designed to connect local consumers with businesses in the Triangle area (Raleigh, Durham, Cary, and surrounding areas).
+              Our Services are designed to connect local consumers with businesses in {siteConfig.locations.primaryRegion}.
             </p>
             <ul className="list-disc pl-5 text-slate-300 space-y-2 marker:text-primary-500">
               <li>You must be at least 18 years old to create a business listing.</li>
@@ -58,7 +59,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4 text-white">5. Limitation of Liability</h2>
             <p className="text-slate-300 leading-relaxed">
-              Triangle Local Hub provides the Services "as is". We make no warranties regarding the accuracy of business information or the quality of services provided by listed businesses. We shall not be liable for any indirect, incidental, special, or consequential damages resulting from your use of the Services.
+              {siteConfig.name} provides the Services &quot;as is&quot;. We make no warranties regarding the accuracy of business information or the quality of services provided by listed businesses. We shall not be liable for any indirect, incidental, special, or consequential damages resulting from your use of the Services.
             </p>
           </section>
 
@@ -71,7 +72,7 @@ export default function TermsPage() {
 
           <div className="pt-6 border-t border-white/10">
             <p className="text-slate-400">
-              If you have any questions about these Terms, please contact us at <a href="mailto:legal@trianglelocalhub.com" className="text-primary-400 hover:text-primary-300 transition-colors">legal@trianglelocalhub.com</a>.
+              If you have any questions about these Terms, please contact us at <a href={`mailto:${siteConfig.contact.email}`} className="text-primary-400 hover:text-primary-300 transition-colors">{siteConfig.contact.email}</a>.
             </p>
           </div>
         </div>

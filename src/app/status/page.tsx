@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { siteConfig } from '@/config/site';
 
 export default function StatusPage() {
     const [checking, setChecking] = useState(false);
@@ -87,8 +88,8 @@ export default function StatusPage() {
                 <div className="mt-8 text-center">
                     <p className="text-slate-500 text-sm">
                         Having trouble? Contact support at{' '}
-                        <a href="mailto:support@thetrianglehub.online" className="text-primary-400 hover:underline">
-                            support@thetrianglehub.online
+                        <a href={`mailto:${siteConfig.contact.email}`} className="text-primary-400 hover:underline">
+                            {siteConfig.contact.email}
                         </a>
                     </p>
                 </div>

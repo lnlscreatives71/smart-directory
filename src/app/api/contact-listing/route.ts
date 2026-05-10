@@ -38,7 +38,7 @@ export async function POST(request: Request) {
         await sendEmail({
             to: listing.contact_email as string,
             replyTo: email || undefined,
-            subject: `New inquiry from ${name} via The Triangle Hub`,
+            subject: `New inquiry from ${name} via ${process.env.NEXT_PUBLIC_SITE_NAME || 'The Triangle Hub'}`,
             html: `
                 <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px;">
                     <h2 style="margin:0 0 16px;">New Contact Form Inquiry</h2>

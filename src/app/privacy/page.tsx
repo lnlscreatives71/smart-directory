@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { siteConfig } from '@/config/site';
 
 export default function PrivacyPage() {
   return (
@@ -75,7 +76,7 @@ export default function PrivacyPage() {
 
           <div className="pt-6 border-t border-white/10">
             <p className="text-slate-400">
-              If you have any questions about this Privacy Policy, please contact us at <a href="mailto:privacy@trianglelocalhub.com" className="text-primary-400 hover:text-primary-300 transition-colors">privacy@trianglelocalhub.com</a>.
+              If you have any questions about this Privacy Policy, please contact us at <a href={`mailto:${siteConfig.contact.email}`} className="text-primary-400 hover:text-primary-300 transition-colors">{siteConfig.contact.email}</a>.
             </p>
           </div>
         </div>
