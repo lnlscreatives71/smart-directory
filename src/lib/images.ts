@@ -32,17 +32,18 @@ function categoryFallback(category: string | undefined, w = 800): string {
 
 /**
  * Resolve the best image URL for a listing.
- * - Prefer the /api/photo proxy (uses MAPS_SERVER_API_KEY, which is unrestricted —
- *   bypasses HTTP-referrer restrictions that block the public key).
- * - Fall back to image_url if it's an absolute URL.
- * - Otherwise return a category-appropriate Unsplash image.
+ * - Prefer image_url when it's a real absolute URL (SMB uploads, manual imports).
+ *   Skip Google Maps URLs — those require live API calls per render and were
+ *   burning ~$125/mo before we cut them off.
+ * - Otherwise fall back to a category-appropriate Unsplash image.
+ *
+ * google_photo_ref is intentionally ignored. The column stays for historical
+ * reference but Google Photos are no longer fetched at runtime.
  */
 export function getListingImageUrl(listing: Pick<Listing, 'image_url' | 'category'> & { google_photo_ref?: string | null }, width = 800): string {
-    if (listing.google_photo_ref) {
-        return `/api/photo?ref=${encodeURIComponent(listing.google_photo_ref)}&w=${width}`;
-    }
-    if (listing.image_url && /^https?:\/\//.test(listing.image_url)) {
-        return listing.image_url;
+    const url = listing.image_url;
+    if (url && /^https?:\/\//.test(url) && !url.includes('maps.googleapis.com')) {
+        return url;
     }
     return categoryFallback(listing.category, width);
 }
