@@ -48,3 +48,14 @@ next-env.d.ts
 # Dolt database files (added by bd init)
 .dolt/
 *.db
+
+# Beads runtime export state (regenerated on every `bd` invocation)
+.beads/export-state.json
+
+# OMC + Claude local state
+.omc/
+.claude/scheduled_tasks.lock
+.claude/worktrees/
+
+# Cora local analytics
+.cora/

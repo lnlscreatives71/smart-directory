@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { Save, Palette, Globe, Upload, Building2, Users, BarChart3, Settings } from 'lucide-react';
+import { siteConfig } from '@/config/site';
+
+const ROOT_DOMAIN = (() => {
+    try {
+        return new URL(siteConfig.url).host.replace(/^www\./, '');
+    } catch {
+        return 'thetrianglehub.online';
+    }
+})();
+const AGENCY_SLUG = process.env.NEXT_PUBLIC_AGENCY_SLUG || 'trianglehub';
 
 export default function AgencyDashboardPage() {
     const [loading, setLoading] = useState(true);
@@ -26,7 +36,7 @@ export default function AgencyDashboardPage() {
 
     useEffect(() => {
         // Fetch current agency info
-        fetch('/api/agencies?slug=trianglehub')
+        fetch(`/api/agencies?slug=${AGENCY_SLUG}`)
             .then(res => res.json())
             .then(data => {
                 if (data.success && data.data) {
@@ -237,7 +247,7 @@ export default function AgencyDashboardPage() {
                                         onChange={e => setFormData({...formData, slug: e.target.value})}
                                         className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary-500"
                                     />
-                                    <span className="text-slate-400 text-sm">.trianglehub.online</span>
+                                    <span className="text-slate-400 text-sm">.{ROOT_DOMAIN}</span>
                                 </div>
                             </div>
                             <div>
@@ -249,7 +259,7 @@ export default function AgencyDashboardPage() {
                                     placeholder="directory.yourcompany.com"
                                     className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm outline-none focus:border-primary-500"
                                 />
-                                <p className="text-xs text-slate-500 mt-1">Point your DNS CNAME to trianglehub.online</p>
+                                <p className="text-xs text-slate-500 mt-1">Point your DNS CNAME to {ROOT_DOMAIN}</p>
                             </div>
                         </div>
                     </section>
