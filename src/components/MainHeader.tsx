@@ -9,6 +9,8 @@ import DynamicMenu from './DynamicMenu';
 interface Props {
     phone: string;
     phoneRaw: string;
+    logoUrl: string;
+    siteName: string;
 }
 
 const HIDDEN_ROUTES = ['/smb', '/dashboard'];
@@ -26,7 +28,7 @@ export function MainBody({ children }: { children: React.ReactNode }) {
     );
 }
 
-export default function MainHeader({ phone, phoneRaw }: Props) {
+export default function MainHeader({ phone, phoneRaw, logoUrl, siteName }: Props) {
     const pathname = usePathname();
     if (isHiddenRoute(pathname)) return null;
 
@@ -34,7 +36,7 @@ export default function MainHeader({ phone, phoneRaw }: Props) {
         <header className="fixed top-0 z-50 w-full glass-nav">
             <div className="max-w-7xl mx-auto px-4 h-24 flex items-center justify-between gap-4">
                 <Link href="/" className="flex items-center shrink-0">
-                    <Image src="/triangle-hub-logo-dark.png" alt="Triangle Local Hub" width={260} height={75} priority className="h-[75px] w-auto drop-shadow-lg" />
+                    <Image src={logoUrl} alt={siteName} width={260} height={75} priority className="h-[75px] w-auto drop-shadow-lg" unoptimized={!logoUrl.startsWith('/')} />
                 </Link>
                 <DynamicMenu />
                 <div className="flex items-center gap-5 shrink-0">

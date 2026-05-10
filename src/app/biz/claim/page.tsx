@@ -5,6 +5,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { CheckCircle2, ShieldCheck, AlertCircle, ArrowRight, Building2, Phone, Globe, FileText, Star, Mail, Lock, User } from 'lucide-react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
+import { siteConfig } from '@/config/site';
 
 interface ListingData {
     id: number;
@@ -177,7 +178,7 @@ function ClaimContent() {
             </div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">You're live!</h1>
             <p className="text-slate-500 mb-8 leading-relaxed">
-                <strong className="text-slate-800 dark:text-white">{biz?.name}</strong> is now verified on The Triangle Hub.
+                <strong className="text-slate-800 dark:text-white">{biz?.name}</strong> is now verified on {siteConfig.name}.
             </p>
             <Link href="/smb/login" className="btn-primary px-6 py-3 text-sm font-bold">
                 Go to My Dashboard →

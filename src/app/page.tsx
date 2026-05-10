@@ -59,11 +59,12 @@ export default async function Home({
         {/* Top Hero Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/trianglehubcityimage.png"
+            src={settings.hero.imageUrl}
             alt={settings.hero.bannerTitle}
             fill
             sizes="100vw"
             priority
+            unoptimized={!settings.hero.imageUrl.startsWith('/')}
             className="object-cover object-bottom opacity-80 mix-blend-lighten"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/5 via-transparent to-[#0B0F19]/40"></div>
@@ -220,11 +221,12 @@ export default async function Home({
             {/* ── CTA Banner ─────────────────────────────── */}
             <section className="relative text-white py-24 text-center overflow-hidden border-t border-slate-800/50 mt-16">
               <Image
-                src="/trianglehubcityimage.png"
+                src={settings.hero.imageUrl}
                 alt="Cityscape"
                 fill
                 sizes="100vw"
                 loading="lazy"
+                unoptimized={!settings.hero.imageUrl.startsWith('/')}
                 className="object-cover object-bottom opacity-70 mix-blend-lighten z-0"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19]/50 to-[#0B0F19]/10 z-0"></div>

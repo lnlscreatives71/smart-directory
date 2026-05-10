@@ -105,7 +105,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="min-h-screen flex flex-col">
 
           {/* ── HEADER ───────────────────────────────────── */}
-          <MainHeader phone={settings.contact.phone} phoneRaw={settings.contact.phoneRaw} />
+          <MainHeader
+            phone={settings.contact.phone}
+            phoneRaw={settings.contact.phoneRaw}
+            logoUrl={settings.logoUrl}
+            siteName={settings.name}
+          />
 
           {/* ── BODY ─────────────────────────────────────── */}
           <MainBody>
@@ -117,7 +122,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
               <div>
                 <Link href="/">
-                  <Image src="/triangle-hub-logo-dark.png" alt={settings.name} width={160} height={46} className="h-[46px] w-auto mb-4 drop-shadow-md" />
+                  <Image src={settings.logoUrl} alt={settings.name} width={160} height={46} className="h-[46px] w-auto mb-4 drop-shadow-md" unoptimized={!settings.logoUrl.startsWith('/')} />
                 </Link>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   {settings.description}
@@ -128,7 +133,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <ul className="space-y-2 text-sm text-slate-300">
                   <li>📞 {settings.contact.phone}</li>
                   <li>📍 {settings.contact.address}</li>
-                  <li>📧 <a href="mailto:directory@thetrianglehub.online" className="hover:text-white transition">directory@thetrianglehub.online</a></li>
+                  <li>📧 <a href={`mailto:${settings.contact.email}`} className="hover:text-white transition">{settings.contact.email}</a></li>
                   <li><Link href="/support" className="hover:text-white transition">Contact Us</Link></li>
                 </ul>
               </div>

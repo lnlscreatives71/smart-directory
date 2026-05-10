@@ -72,7 +72,26 @@
       "Bash(node -e \":*)",
       "Bash(node -e \"const { Twitter, Facebook, Instagram, Linkedin } = require\\(''lucide-react''\\); console.log\\(''Twitter:'', !!Twitter, ''Facebook:'', !!Facebook, ''Instagram:'', !!Instagram, ''Linkedin:'', !!Linkedin\\);\")",
       "Bash(find '/c/Users/laini/OneDrive/Documents/Antigravity Projects/smart-directory-nc/src/app/api' -name *.ts)",
-      "Bash(cat src/app/category/[slug]/page.tsx)"
+      "Bash(cat src/app/category/[slug]/page.tsx)",
+      "Bash(find 'c:/Users/laini/OneDrive/Documents/Antigravity Projects/smart-directory-nc/src' -name Footer* -o -name footer*)",
+      "Bash(curl -s -X POST https://api.resend.com/emails -H \"Authorization: Bearer re_UMa3HEuE_GkpT8xaVgpao8KtSZzHsZ2Av\" -H \"Content-Type: application/json\" -d '{:*)",
+      "Bash(grep -n \"contact_email\" src/app/api/listings/[id]/route.ts)",
+      "Bash(head -5 src/app/api/listings/[id]/route.ts)",
+      "mcp__Neon__run_sql_transaction",
+      "Bash(sed -i \"s/import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase, LogOut, Tags, MenuSquare, ShieldCheck } from ''lucide-react'';/import { Settings, Users, LayoutDashboard, Database, CreditCard, Bell, Search, Menu, X, ExternalLink, Upload, Calendar, FileText, Briefcase, LogOut, Tags, MenuSquare, ShieldCheck, Send } from ''lucide-react'';/\" src/app/dashboard/layout.tsx)",
+      "Bash(sed -i \"s/{ name: ''Leads \\\\& CRM'', href: ''\\\\/dashboard\\\\/leads'', icon: Users },/{ name: ''Leads \\\\& CRM'', href: ''\\\\/dashboard\\\\/leads'', icon: Users },\\\\n        { name: ''Outreach'', href: ''\\\\/dashboard\\\\/outreach'', icon: Send },/\" src/app/dashboard/layout.tsx)",
+      "Bash(node -e ':*)",
+      "Bash(grep -n \"new_business_requests\" migrations/*.sql)",
+      "Bash(node send-test-emails.mjs)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(p.dependencies.next\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const t=fs.readFileSync\\('node_modules/next/dist/server/web/spec-extension/revalidate.d.ts','utf8'\\); console.log\\(t\\);\")",
+      "Bash(grep -E \"^\\(├|└\\).*\\(biz|category|blogs|sitemap|/$|/  \\)\" \"C:/Users/laini/AppData/Local/Temp/claude/c--Users-laini-OneDrive-Documents-Antigravity-Projects-smart-directory-nc/8a851358-0192-4681-9403-8027accadd16/tasks/bjclcapv0.output\")",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code} time=%{time_total}s\\\\n\" https://www.thetrianglehub.online/api/health)",
+      "Bash(curl -s https://www.thetrianglehub.online/api/health)",
+      "Bash(curl -s -o /dev/null -w \"sitemap=%{http_code} time=%{time_total}s\\\\n\" https://www.thetrianglehub.online/sitemap.xml)",
+      "Bash(curl -s -o /dev/null -w \"homepage=%{http_code} time=%{time_total}s\\\\n\" https://www.thetrianglehub.online/)",
+      "Bash(curl -s -o /dev/null -w \"llms.txt=%{http_code}\\\\n\" https://www.thetrianglehub.online/llms.txt)",
+      "Bash(curl -s -o /dev/null -w \"robots.txt=%{http_code}\\\\n\" https://www.thetrianglehub.online/robots.txt)"
     ]
   }
 }

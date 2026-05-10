@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const FROM = process.env.RESEND_FROM_EMAIL || 'directory@outreach.thetrianglehub.online';
 const REPLY_TO = process.env.RESEND_REPLY_TO_EMAIL || 'directory@thetrianglehub.online';
-const SITE_NAME = 'The Triangle Hub';
+const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'The Triangle Hub';
 
 export async function sendEmail({
     to,
