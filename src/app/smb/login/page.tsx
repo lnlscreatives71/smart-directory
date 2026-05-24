@@ -160,12 +160,20 @@ function LoginContent() {
 
                         {/* Magic link fallback */}
                         {!showMagic ? (
-                            <button
-                                onClick={() => setShowMagic(true)}
-                                className="w-full text-sm text-slate-500 hover:text-primary-600 dark:hover:text-primary-400 transition font-medium"
-                            >
-                                Forgot password? Send me a login link →
-                            </button>
+                            <div className="space-y-2 text-center">
+                                <button
+                                    onClick={() => setShowMagic(true)}
+                                    className="w-full text-sm text-slate-500 hover:text-primary-600 dark:hover:text-primary-400 transition font-medium"
+                                >
+                                    Send me a one-time login link →
+                                </button>
+                                <Link
+                                    href="/forgot-password"
+                                    className="block text-sm text-slate-500 hover:text-primary-600 dark:hover:text-primary-400 transition font-medium"
+                                >
+                                    Reset my password →
+                                </Link>
+                            </div>
                         ) : magicSent ? (
                             <div className="text-center py-2">
                                 <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-3">
