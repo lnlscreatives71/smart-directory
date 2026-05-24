@@ -53,6 +53,7 @@ function ContactPageInner() {
 
     const [contact, setContact] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [fetchError, setFetchError] = useState<string | null>(null);
     const [stage, setStage] = useState('prospect');
     const [notes, setNotes] = useState<any[]>([]);
     const [noteContent, setNoteContent] = useState('');
@@ -62,16 +63,23 @@ function ContactPageInner() {
     const textRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
-        if (!id) return;
+        if (!id) {
+            setFetchError('No contact id in URL.');
+            setLoading(false);
+            return;
+        }
         fetch(`/api/crm/contact?id=${id}`)
-            .then(r => r.json())
-            .then(d => {
+            .then(async r => {
+                const d = await r.json().catch(() => ({ success: false, error: `HTTP ${r.status}` }));
                 if (d.success) {
                     setContact(d.data);
                     setStage(d.data.pipeline_stage || 'prospect');
                     setNotes(d.data.notes || []);
+                } else {
+                    setFetchError(d.error || `Request failed (${r.status})`);
                 }
             })
+            .catch(e => setFetchError(e?.message || 'Network error'))
             .finally(() => setLoading(false));
     }, [id]);
 
@@ -111,7 +119,14 @@ function ContactPageInner() {
         <div className="max-w-5xl mx-auto py-20 text-center text-slate-400">Loading contact...</div>
     );
     if (!contact) return (
-        <div className="max-w-5xl mx-auto py-20 text-center text-slate-400">Contact not found.</div>
+        <div className="max-w-2xl mx-auto py-20 text-center space-y-4">
+            <p className="text-lg text-slate-300">Contact not found.</p>
+            {fetchError && <p className="text-sm text-red-400 font-mono">{fetchError}</p>}
+            {id && <p className="text-xs text-slate-500">Requested id: <span className="font-mono">{id}</span></p>}
+            <Link href="/dashboard/leads" className="inline-flex items-center gap-1.5 text-sm text-primary-400 hover:text-primary-300">
+                <ArrowLeft size={14} /> Back to Leads & CRM
+            </Link>
+        </div>
     );
 
     const currentStage = STAGES.find(s => s.id === stage) || STAGES[0];
