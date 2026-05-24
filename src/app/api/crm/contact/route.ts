@@ -27,14 +27,14 @@ export async function GET(req: NextRequest) {
                 l.location_state,
                 l.category,
                 l.recommended_services,
-                l.social_media,
-                l.custom_fields,
+                COALESCE(l.social_media, '{}'::jsonb) AS social_media,
+                COALESCE(l.custom_fields, '{}'::jsonb) AS custom_fields,
                 l.claimed,
                 l.claim_status,
                 l.image_url,
                 l.description,
                 l.rating,
-                l.review_count,
+                COALESCE(l.review_count, 0) AS review_count,
                 l.slug
             FROM outreach_campaigns c
             JOIN listings l ON c.listing_id = l.id
