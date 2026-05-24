@@ -257,7 +257,7 @@ export default function OutreachPage() {
                                 return (
                                     <tr key={c.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                                         <td className="px-4 py-3">
-                                            <Link href={`/dashboard/leads/contact?id=${c.listing_id}`} className="font-medium text-slate-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                            <Link href={`/dashboard/leads/contact?id=${c.id}`} className="font-medium text-slate-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                                                 {c.name}
                                             </Link>
                                             {c.claimed && <span className="ml-2 text-xs text-emerald-400">✓ Claimed</span>}
