@@ -23,7 +23,7 @@ const sql = neon(DATABASE_URL);
 
 async function run() {
     // Create migrations tracking table
-    await sql.unsafe(`
+    await sql.query(`
         CREATE TABLE IF NOT EXISTS _migrations (
             id SERIAL PRIMARY KEY,
             filename VARCHAR(255) NOT NULL UNIQUE,
@@ -59,7 +59,8 @@ async function run() {
             .filter(s => s.length > 0 && !s.replace(/--[^\n]*/g, '').trim().startsWith('/*') && s.replace(/--[^\n]*/g, '').trim().length > 0);
 
         for (const stmt of statements) {
-            await sql.unsafe(stmt);
+            // sql.unsafe() silently no-ops DDL on @neondatabase/serverless 1.x; sql.query() persists it.
+            await sql.query(stmt);
         }
 
         await sql`INSERT INTO _migrations (filename) VALUES (${file})`;
