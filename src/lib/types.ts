@@ -53,6 +53,7 @@ export interface Listing {
     business_hours?: BusinessHour[];
     social_media?: SocialMediaLinks;
     contact_form_enabled?: boolean;
+    hide_map?: boolean;
     created_at: Date;
     updated_at: Date;
 
