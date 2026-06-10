@@ -1,6 +1,7 @@
 import { sql } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
+import { campaignsPaused, campaignsPausedResponse } from '@/lib/campaigns';
 import {
     premiumUpgrade_email1,
     premiumUpgrade_email2,
@@ -15,6 +16,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+    if (campaignsPaused()) return campaignsPausedResponse();
     try {
         let forceRun = false;
         try {

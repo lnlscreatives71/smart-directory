@@ -4,6 +4,7 @@ import { POST as runPremiumUpsell } from '../premium-upsell/route';
 import { POST as runSaasPush } from '../saas-push/route';
 import { POST as runMarketingServices } from '../marketing-services/route';
 import { POST as runColdReactivation } from '../cold-reactivation/route';
+import { campaignsPaused, campaignsPausedResponse } from '@/lib/campaigns';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+    if (campaignsPaused()) return campaignsPausedResponse();
     // Accept limit from query param (Vercel GET crons) or JSON body
     const url = new URL(request.url);
     const queryLimit = url.searchParams.get('limit');
